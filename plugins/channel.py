@@ -44,7 +44,7 @@ async def media(bot, message):
         return
     media.file_type = file_type
     media.caption = message.caption
-    success, silentxbotz = await save_file(bot, media)
+    success, silentxbotz = await save_file(media)
     try:  
         if success and silentxbotz == 1 and await get_status(bot.me.id):            
             await send_movie_update(bot, file_name=media.file_name, caption=media.caption)
