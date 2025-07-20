@@ -23,7 +23,7 @@ CACHE_TIME = int(environ.get('CACHE_TIME', 300))
 USE_CAPTION_FILTER = bool(environ.get('USE_CAPTION_FILTER', True))
 
 PICS = (environ.get('PICS', 'https://graph.org/file/82224bd9fb82955f59e9f-946f7bf88ccade7aed.jpg https://graph.org/file/9d178c720074c6e13b66d-fceee1e8455bd86e0f.jpg https://graph.org/file/5db2382459f3dcaea240a-b0b3d29811a7227da7.jpg https://graph.org/file/626ee6e3b12630697924f-bb9d4aacbbe38415bd.jpg https://graph.org/file/32ce8a14701db278510a4-fb408ce7db4aebeccb.jpg https://graph.org/file/996f44b5ba51a5cf384f8-60817dfbe9f3d5f926.jpg https://graph.org/file/d62db0f1e1ca7c00b9c84-5c262aeabd4d104645.jpg https://graph.org/file/5105d2d949304523c00ef-2d703fd3d5f8e3d3c7.jpg https://graph.org/file/f60ad193597645330b192-5c5fa0215ba6c6a073.jpg https://graph.org/file/5a4e0cd4e05ed51bef118-f4a96e965a36231e5f.jpg https://graph.org/file/0c0a0a1f226bd8123775b-6d50af5f20dcdcc405.jpg https://graph.org/file/a480495135131c07a789a-a943fdad64a788cc8b.jpg https://graph.org/file/6b256570a9d389dbb428a-5b08b055559e8ac48e.jpg')).split() 
-NOR_IMG = environ.get("NOR_IMG", "https://graph.org/file/62efbcc4e7580b76530ba.jpg")
+NOR_IMG = environ.get("NOR_IMG", "https://graph.org/file/befca0dc018bae97e5159-1b9f374b6d933a2fcd.jpg")
 MELCOW_VID = environ.get("MELCOW_VID", "https://graph.org/file/e215d12bfd4fa2155e90e.mp4")
 SPELL_IMG = environ.get("SPELL_IMG", "https://graph.org/file/13702ae26fb05df52667c.jpg")
 SUBSCRIPTION = (environ.get('SUBSCRIPTION', 'https://telegra.ph/file/f983d857f3ce40795e4b8.jpg'))
