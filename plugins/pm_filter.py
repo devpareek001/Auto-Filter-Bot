@@ -1509,15 +1509,21 @@ async def cb_handler(client: Client, query: CallbackQuery):
             InlineKeyboardButton('⇋ ʙᴀᴄᴋ ᴛᴏ ʜᴏᴍᴇ ⇋', callback_data='start')
         ]]
         reply_markup = InlineKeyboardMarkup(buttons)
-        await query.message.edit_text(
-            text=script.ABOUT_TXT.format(temp.U_NAME, temp.B_NAME, OWNER_LNK),
-            reply_markup=reply_markup,
+
+        media = InputMediaPhoto(
+            media=NOR_IMG,  # from info.py
+            caption=script.ABOUT_TXT.format(temp.U_NAME, temp.B_NAME, OWNER_LNK),
             parse_mode=enums.ParseMode.HTML
+        )
+
+        await query.message.edit_media(
+            media=media,
+            reply_markup=reply_markup
         )
         
     elif query.data == "source":
         buttons = [[
-            InlineKeyboardButton('Cᴏɴᴛᴀᴄᴛ Oᴡɴᴇʀ 😚', url='https://t.me/Morning006'),
+            InlineKeyboardButton('Cᴏɴᴛᴀᴄᴛ Oᴡɴᴇʀ 😚', url=OWNER_LNK)]]),
             InlineKeyboardButton('⇋ ʙᴀᴄᴋ ⇋', callback_data='start')
         ]]
         reply_markup = InlineKeyboardMarkup(buttons)
@@ -1529,7 +1535,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     elif query.data == "donate":
         buttons = [[
-            InlineKeyboardButton('🐻‍❄️ Sᴇɴᴅ Dᴏɴᴀᴛᴇ Sᴄʀᴇᴇɴꜱʜᴏᴛ Hᴇʀᴇ', url='https://t.me/Morning006'),
+            InlineKeyboardButton('🐻‍❄️ Sᴇɴᴅ Dᴏɴᴀᴛᴇ Sᴄʀᴇᴇɴꜱʜᴏᴛ Hᴇʀᴇ', url=OWNER_LNK)]]),
             InlineKeyboardButton("⬅️ Back", callback_data="me")
         ]]
         reply_markup = InlineKeyboardMarkup(buttons)
