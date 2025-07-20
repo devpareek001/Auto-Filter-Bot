@@ -1536,9 +1536,10 @@ async def cb_handler(client: Client, query: CallbackQuery):
     elif query.data == "donate":
         buttons = [[
             InlineKeyboardButton('🐻‍❄️ Sᴇɴᴅ Dᴏɴᴀᴛᴇ Sᴄʀᴇᴇɴꜱʜᴏᴛ Hᴇʀᴇ', url=OWNER_LNK)]]),
+        ],[
             InlineKeyboardButton("⬅️ Back", callback_data="me")
-        ]]
-        reply_markup = InlineKeyboardMarkup(buttons)
+	]]
+	reply_markup = InlineKeyboardMarkup(buttons)
 
         media = InputMediaPhoto(
             media=DONATE_IMG,
