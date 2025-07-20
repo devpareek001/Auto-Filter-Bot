@@ -1,8 +1,5 @@
 class script(object):
-    START_TXT = """<b>Hᴇʟʟᴏ 🌹{} {},\n\n🔺ɪ ᴀᴍ ᴘᴏᴡᴇʀғᴜʟ ᴀᴜᴛᴏ-ғɪʟᴛᴇʀ ʙᴏᴛ.
-🔺ɪ ᴄᴀɴ Pʀᴏᴠɪᴅᴇ ᴍᴏᴠɪᴇՏ ᴀɴᴅ ՏᴇʀɪᴇՏ😁
-📍Aᴅᴅ Mᴇ Tᴏ Yᴏᴜʀ Gʀᴏᴜᴘ As Aᴅᴍɪɴ Aɴᴅ Տᴇᴇ ᴛʜᴇ ᴍᴀɢɪᴄ💫😍\n\n<blockquote>🌿 ᴍᴀɪɴᴛᴀɪɴᴇᴅ ʙʏ : <a href="https://t.me/Morning006">𖧹𝙳𝚎𝚟࿐</a></blockquote></b>"""
-    FEATURES_TXT = """<b>ʜᴇʀᴇ ɪꜱ ᴀʟʟ ᴍʏ ꜰᴜɴᴛɪᴏɴꜱ.</b>"""
+    START_TXT = """<blockquote><b>Hᴇʟʟᴏ {},\nMʏ Nᴀᴍᴇ Is {}, \nI Cᴀɴ Pʀᴏᴠɪᴅᴇ Mᴏᴠɪᴇs, Jᴜsᴛ Aᴅᴅ Mᴇ Tᴏ Yᴏᴜʀ Gʀᴏᴜᴘ As Aᴅᴍɪɴ Aɴᴅ Eɴᴊᴏʏ 😍</b></blockquote>"""
 
     ABOUT_TXT = """<b>╭────[ ᴍʏ ᴅᴇᴛᴀɪʟs ]────⍟
 ├⍟ ᴍʏ ɴᴀᴍᴇ : <a href=https://t.me/{}>{}</a>
