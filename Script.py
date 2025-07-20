@@ -347,3 +347,13 @@ Requested by : {message.from_user.mention}</b>"""
 
 ✭ I ᴡɪʟʟ ᴄʀᴇᴀᴛᴇ ᴏɴᴇ ʙᴏᴛ ғᴏʀ ʏᴏᴜ.
 ✭ Cᴏɴᴛᴀᴄᴛ ᴛᴏ ᴛʜᴇ ᴅᴇᴠᴇʟᴏᴘᴇʀ ☟</b>"""
+
+    DONATE_TXT = """
+💖 *Support the Developer!*
+
+If you find this bot helpful, consider supporting:
+
+📍 *UPI:* `your-upi-id@bank`
+
+Thank you for your support 🙏
+"""
