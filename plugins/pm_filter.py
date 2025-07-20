@@ -1345,7 +1345,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                     InlineKeyboardButton('𝙼ᴏ𝚜ᴛ 𝚂ᴇᴀʀᴄʜ 🔍', callback_data="topsearch"),
                     InlineKeyboardButton('𝔓ʀᴇᴍɪᴜᴍ 🎫', callback_data="premium"),
                 ],[
-                    InlineKeyboardButton('ℋᴇʟᴘ ⚙️', callback_data='features'),
+                    InlineKeyboardButton('ℋᴇʟᴘ ⚙️', callback_data='disclaimer'),
                     InlineKeyboardButton('𝔄ʙᴏᴜᴛ 💌', callback_data='me')
                 ],[
                     InlineKeyboardButton('ᴇᴀʀɴ ᴍᴏɴᴇʏ 🤑', callback_data="earn"),
@@ -1363,6 +1363,27 @@ async def cb_handler(client: Client, query: CallbackQuery):
             parse_mode=enums.ParseMode.HTML
         )
   
+    elif query.data == "show_channels":
+        keyboard = InlineKeyboardMarkup([
+            [
+                InlineKeyboardButton("𝙼𝚊𝚒𝚗 𝙲𝚑𝚊𝚗𝚗𝚎𝚕 🦋", url="https://t.me/Hollywood_Movies_2025_hd"),
+                InlineKeyboardButton("𝙱𝚊𝚌𝚔𝚞𝚙 𝙲𝚑𝚊𝚗𝚗𝚎𝚕🦋", url="https://t.me/MoviesEmpire_Backup")
+            ],
+            [
+                InlineKeyboardButton("𝚂𝚞𝚙𝚙𝚘𝚛𝚝 Grp🦋", url="https://t.me/+bZFqbCxTU0kzNTU1"),
+                InlineKeyboardButton("𝙱𝚊𝚌𝚔𝚞𝚙 𝙶𝚛𝚘𝚞𝚙🦋", url="https://t.me/+VZw75b8hs-o0NjE1")
+            ],
+            [InlineKeyboardButton('⇋ 𝙱𝚊𝚌𝚔 𝚃𝚘 𝙷𝚘𝚖𝚎 ⇋', callback_data='start')]
+        ])
+        await query.message.edit_text(
+            "⚡ ɢʀᴏᴜᴘs & ᴄʜᴀɴɴᴇʟs ɪɴғᴏ ⚡\n\n"
+            "▫ ᴀʟʟ ɴᴇᴡ ᴍᴏᴠɪᴇs & sᴇʀɪᴇs.\n"
+            "▫ ғᴀsᴛᴇsᴛ ʙᴏᴛs ᴀʀᴇ ᴀᴅᴅᴇᴅ.\n"
+            "▫ ғʀᴇᴇ & ᴇᴀsʏ ᴛᴏ ᴜsᴇ.\n"
+            "▫ 2𝟺x𝟽 sᴇʀᴠɪᴄᴇs ᴀᴠᴀɪʟᴀʙʟᴇ.",
+            reply_markup=keyboard
+        )
+    
     elif query.data == "give_trial":
         try:
             user_id = query.from_user.id
