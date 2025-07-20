@@ -1363,33 +1363,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             parse_mode=enums.ParseMode.HTML
         )
   
-    elif query.data == "donation":
-        buttons = [[
-            InlineKeyboardButton('🌲 Sᴇɴᴅ Dᴏɴᴀᴛᴇ Sᴄʀᴇᴇɴsʜᴏᴛ Hᴇʀᴇ', url=OWNER_LNK)
-        ],[
-            InlineKeyboardButton('⇍ ʙᴀᴄᴋ ⇏', callback_data='about')
-        ]]
-        reply_markup = InlineKeyboardMarkup(buttons)
-        await query.message.edit_text(
-            text="● ◌ ◌"
-        )
-        await query.message.edit_text(
-            text="● ● ◌"
-        )
-        await query.message.edit_text(
-            text="● ● ●"
-        )
-        reply_markup = InlineKeyboardMarkup(buttons)
-        await client.edit_message_media(
-            query.message.chat.id, 
-            query.message.id, 
-            InputMediaPhoto('https://graph.org/file/99eebf5dbe8a134f548e0.jpg')
-        )
-        await query.message.edit_text(
-            text=script.Dev_DONATION.format(query.from_user.mention, QR_CODE, OWNER_UPI_ID),
-            reply_markup=reply_markup,
-            parse_mode=enums.ParseMode.HTML
-	)
+
     
     elif query.data == "show_channels":
         keyboard = InlineKeyboardMarkup([
@@ -1528,8 +1502,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
                     
     elif query.data == "me":
         buttons = [[
-            InlineKeyboardButton('ᴅᴏɴᴀᴛɪᴏɴ 💰', callback_data='donation'),
-	    InlineKeyboardButton ('🎁 sᴏᴜʀᴄᴇ', callback_data='source'),
+            InlineKeyboardButton('💖 Donate', callback_data='donate'),
+            InlineKeyboardButton('🎁 Source', callback_data='source')
         ],[
             InlineKeyboardButton('⇋ ʙᴀᴄᴋ ᴛᴏ ʜᴏᴍᴇ ⇋', callback_data='start')
         ]]
@@ -1552,8 +1526,19 @@ async def cb_handler(client: Client, query: CallbackQuery):
             parse_mode=enums.ParseMode.HTML
         )
 
+    elif query.data == "donate":
+    buttons = [[
+        InlineKeyboardButton("⬅️ Back", callback_data="me")
+    ]]
+    reply_markup = InlineKeyboardMarkup(buttons)
+    await query.message.edit_text(
+        text=script.DONATE_TXT,
+        reply_markup=reply_markup,
+        parse_mode=enums.ParseMode.HTML
+    )
+    
     elif query.data == "ref_point":
-        await query.answer(f'You Have: {referdb.get_refer_points(query.from_user.id)} Refferal points.', show_alert=True)
+            await query.answer(f'You Have: {referdb.get_refer_points(query.from_user.id)} Refferal points.', show_alert=True)
     
     
     elif query.data == "disclaimer":
