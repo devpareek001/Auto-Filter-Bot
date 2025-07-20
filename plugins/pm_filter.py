@@ -12,6 +12,7 @@ from pyrogram.errors.exceptions.bad_request_400 import MediaEmpty, PhotoInvalidD
 from Script import script
 import pyrogram
 from info import *
+from info import DONATE_IMG
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, InputMediaPhoto, WebAppInfo
 from pyrogram import Client, filters, enums
 from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerIdInvalid
@@ -1529,14 +1530,21 @@ async def cb_handler(client: Client, query: CallbackQuery):
     elif query.data == "donate":
         buttons = [[
             InlineKeyboardButton('🐻‍❄️ Sᴇɴᴅ Dᴏɴᴀᴛᴇ Sᴄʀᴇᴇɴꜱʜᴏᴛ Hᴇʀᴇ', url='https://t.me/Morning006'),
-	    InlineKeyboardButton("⬅️ Back", callback_data="me")
+            InlineKeyboardButton("⬅️ Back", callback_data="me")
         ]]
         reply_markup = InlineKeyboardMarkup(buttons)
-        await query.message.edit_text(
-            text=script.DONATE_TXT,
-            reply_markup=reply_markup,
+
+        media = InputMediaPhoto(
+            media=DONATE_IMG,
+            caption=script.DONATE_TXT,
             parse_mode=enums.ParseMode.HTML
         )
+
+        await query.message.edit_media(
+            media=media,
+            reply_markup=reply_markup
+        )
+
     
     elif query.data == "ref_point":
             await query.answer(f'You Have: {referdb.get_refer_points(query.from_user.id)} Refferal points.', show_alert=True)
