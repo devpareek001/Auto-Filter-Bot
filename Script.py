@@ -348,12 +348,19 @@ Requested by : {message.from_user.mention}</b>"""
 ✭ I ᴡɪʟʟ ᴄʀᴇᴀᴛᴇ ᴏɴᴇ ʙᴏᴛ ғᴏʀ ʏᴏᴜ.
 ✭ Cᴏɴᴛᴀᴄᴛ ᴛᴏ ᴛʜᴇ ᴅᴇᴠᴇʟᴏᴘᴇʀ ☟</b>"""
 
-    DONATE_TXT = """
-💖 *Support the Developer!*
+    DONATE_TXT = """<b>👋 ʜᴇʏ {},</b>
 
-If you find this bot helpful, consider supporting:
+<blockquote>💖 <b>ᴘʟᴇᴀꜱᴇ ᴅᴏɴᴀᴛᴇ ᴛᴏ ᴛʜᴇ ᴅᴇᴠᴇʟᴏᴘᴇʀ</b></blockquote>
 
-📍 *UPI:* `your-upi-id@bank`
+<b>🔧 ᴛᴏ ᴋᴇᴇᴘ ᴛʜɪꜱ ꜱᴇʀᴠɪᴄᴇ ᴀʟɪᴠᴇ, ᴀᴅᴅ ɴᴇᴡ ꜰᴇᴀᴛᴜʀᴇꜱ & ᴜᴘʟᴏᴀᴅ ʙᴇꜱᴛ ᴍᴏᴠɪᴇꜱ/ᴡᴇʙꜱᴇʀɪᴇꜱ ɴᴏɴ-ꜱᴛᴏᴘ ɪɴ ʜɪɢʜ Qᴜᴀʟɪᴛʏ, ᴡᴇ ɴᴇᴇᴅ ʏᴏᴜʀ ꜱᴜᴘᴘᴏʀᴛ.
+ɪᴛ ʜᴇʟᴘꜱ ᴜꜱ ᴘᴀʏ ꜰᴏʀ ʜᴇʀᴏᴋᴜ & ꜱᴇʀᴠᴇʀ ʀᴇꜱᴏᴜʀᴄᴇꜱ.</b>
 
-Thank you for your support 🙏
+<b>🌝 ʏᴏᴜ ᴄᴀɴ ᴅᴏɴᴀᴛᴇ ᴀɴʏ ᴀᴍᴏᴜɴᴛ ʏᴏᴜ ʜᴀᴠᴇ.</b>
+
+<blockquote>🎉 <b>ꜱᴇʟᴇᴄᴛ ʏᴏᴜʀ ᴅᴏɴᴀᴛɪᴏɴ ᴍᴇᴛʜᴏᴅ 👇</b></blockquote>
+
+➤ 📷 Qʀ ᴄᴏᴅᴇ → <a href='{}'>ᴄʟɪᴄᴋ ʜᴇʀᴇ ᴛᴏ ꜱᴄᴀɴ</a>  
+➤ 💸 ᴜᴘɪ ɪᴅ → <code>{}</code>
+
+‼️ <b>ᴍᴜꜱᴛ ꜱᴇɴᴅ ꜱᴄʀᴇᴇɴꜱʜᴏᴛ ᴀꜰᴛᴇʀ ᴅᴏɴᴀᴛɪɴɢ.</b>
 """
