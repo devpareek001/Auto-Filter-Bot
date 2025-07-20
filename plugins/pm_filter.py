@@ -1527,15 +1527,16 @@ async def cb_handler(client: Client, query: CallbackQuery):
         )
 
     elif query.data == "donate":
-    buttons = [[
-        InlineKeyboardButton("⬅️ Back", callback_data="me")
-    ]]
-    reply_markup = InlineKeyboardMarkup(buttons)
-    await query.message.edit_text(
-        text=script.DONATE_TXT,
-        reply_markup=reply_markup,
-        parse_mode=enums.ParseMode.HTML
-    )
+        buttons = [[
+            InlineKeyboardButton('🐻‍❄️ Sᴇɴᴅ Dᴏɴᴀᴛᴇ Sᴄʀᴇᴇɴꜱʜᴏᴛ Hᴇʀᴇ', url='https://t.me/Morning006'),
+	    InlineKeyboardButton("⬅️ Back", callback_data="me")
+        ]]
+        reply_markup = InlineKeyboardMarkup(buttons)
+        await query.message.edit_text(
+            text=script.DONATE_TXT,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )
     
     elif query.data == "ref_point":
             await query.answer(f'You Have: {referdb.get_refer_points(query.from_user.id)} Refferal points.', show_alert=True)
