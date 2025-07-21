@@ -79,9 +79,7 @@ async def start(client, message):
         await dlt.delete()
         return         
     if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
-        S =await message.reply_sticker("CAACAgUAAxkBAAKw22hNj_a5CfyQYgFcJEaPs0AlWM6SAAI8FwAC0B8wVQjB7nHRPGVaNgQ")
-        await asyncio.sleep(5)
-        await S.delete()
+        
         if not await db.get_chat(message.chat.id):
             total=await client.get_chat_members_count(message.chat.id)
             await client.send_message(LOG_CHANNEL, script.LOG_TEXT_G.format(message.chat.title, message.chat.id, total, "Unknown"))       
@@ -91,24 +89,28 @@ async def start(client, message):
         await db.add_user(message.from_user.id, message.from_user.first_name)
         await client.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(message.from_user.id, message.from_user.mention))
     if len(message.command) != 2:
+        silenxbotz=await message.reply_sticker("CAACAgUAAxkBAAKw22hNj_a5CfyQYgFcJEaPs0AlWM6SAAI8FwAC0B8wVQjB7nHRPGVaNgQ")
         buttons = [[
                     InlineKeyboardButton('☆ 𝔄ᴅᴅ 𝔐ᴇ 𝔗ᴏ 𝔜ᴏᴜʀ 𝔊ʀᴏᴜᴘ ☆', url=f'http://telegram.me/{temp.U_NAME}?startgroup=true')
                 ],[
                     InlineKeyboardButton('𝙼ᴏ𝚜ᴛ 𝚂ᴇᴀʀᴄʜ 🔍', callback_data="topsearch"),
                     InlineKeyboardButton('𝔓ʀᴇᴍɪᴜᴍ 🎫', callback_data="premium"),
                 ],[
-                    InlineKeyboardButton('ℋᴇʟᴘ ⚙️', callback_data='disclaimer'),
-                    InlineKeyboardButton('𝔄ʙᴏᴜᴛ 💌', callback_data='me')
+                    InlineKeyboardButton('ℋᴇʟᴘ ⚙️', callback_data='features'),
+                    InlineKeyboardButton('𝔄ʙᴏᴜᴛ 💌', callback_data='bot')
                 ],[
-                    InlineKeyboardButton('ᴇᴀʀɴ ᴍᴏɴᴇʏ 🤑', callback_data="earn"),
-                    InlineKeyboardButton("𝚂𝚞𝚙𝚙𝚘𝚛𝚝 🍁", callback_data="show_channels")
+                    InlineKeyboardButton('ᴇᴀʀɴ ᴍᴏɴᴇʏ 🤑', callback_data="earn"), 
+                    InlineKeyboardButton("🍁 𝚂𝚞𝚙𝚙𝚘𝚛𝚝", callback_data="show_channels")
                 ]]
         reply_markup = InlineKeyboardMarkup(buttons)
+        await asyncio.sleep(1)
+        await silenxbotz.delete()
         await message.reply_photo(
             photo=random.choice(PICS),
             caption=script.START_TXT.format(message.from_user.mention, temp.U_NAME, temp.B_NAME),
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML,
+            reply_to_message_id=message.id
         )
         return
         
