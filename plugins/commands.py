@@ -89,7 +89,7 @@ async def start(client, message):
         await db.add_user(message.from_user.id, message.from_user.first_name)
         await client.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(message.from_user.id, message.from_user.mention))
     if len(message.command) != 2:
-        silenxbotz=await message.reply_sticker("CAACAgUAAxkBAAKw22hNj_a5CfyQYgFcJEaPs0AlWM6SAAI8FwAC0B8wVQjB7nHRPGVaNgQ")
+        silenxbotz=await message.reply_sticker("CAACAgUAAxkBAAKw22hNj_a5CfyQYgFcJEaPs0AlWM6SAAI8FwAC0B8wVQjB7nHRPGVaNgQ CAACAgQAAxkBAAKzuGh-GKMMaPaSe4ewHm1CA47XAAEC5wAC4QMAAipyxAwmIqzr_aaU7zYE")
         buttons = [[
                     InlineKeyboardButton('☆ 𝔄ᴅᴅ 𝔐ᴇ 𝔗ᴏ 𝔜ᴏᴜʀ 𝔊ʀᴏᴜᴘ ☆', url=f'http://telegram.me/{temp.U_NAME}?startgroup=true')
                 ],[
