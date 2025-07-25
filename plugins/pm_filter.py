@@ -1512,7 +1512,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         reply_markup = InlineKeyboardMarkup(buttons)
 
         media = InputMediaPhoto(
-            media=NOR_IMG,  # from info.py
+            media=START_IMG,  # from info.py
             caption=script.ABOUT_TXT.format(temp.U_NAME, temp.B_NAME, OWNER_LNK),
             parse_mode=enums.ParseMode.HTML
         )
