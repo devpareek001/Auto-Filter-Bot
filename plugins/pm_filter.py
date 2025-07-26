@@ -1345,8 +1345,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
                     InlineKeyboardButton('𝙼ᴏ𝚜ᴛ 𝚂ᴇᴀʀᴄʜ 🔍', callback_data="topsearch"),
                     InlineKeyboardButton('𝔓ʀᴇᴍɪᴜᴍ 🎫', callback_data="premium"),
                 ],[
-                    InlineKeyboardButton('ℋᴇʟᴘ ⚙️', callback_data='disclaimer'),
-                    InlineKeyboardButton('𝔄ʙᴏᴜᴛ 💌', callback_data='me')
+                    InlineKeyboardButton('ℋᴇʟᴘ ⚙️', callback_data='help'),
+                    InlineKeyboardButton('𝔄ʙᴏᴜᴛ 💌', callback_data='about')
                 ],[
                     InlineKeyboardButton('ᴇᴀʀɴ ᴍᴏɴᴇʏ 🤑', callback_data="earn"),
                     InlineKeyboardButton("𝚂𝚞𝚙𝚙𝚘𝚛𝚝 🍁", callback_data="show_channels")
@@ -1500,19 +1500,25 @@ async def cb_handler(client: Client, query: CallbackQuery):
         except Exception as e:
             print(e)
                     
-    elif query.data == "me":
-        buttons = [[
-            InlineKeyboardButton('💖 Donate', callback_data='donate'),
-            InlineKeyboardButton('🎁 Source', callback_data='source')
-        ],[
-            InlineKeyboardButton('⇋ ʙᴀᴄᴋ ᴛᴏ ʜᴏᴍᴇ ⇋', callback_data='start')
-        ]]
-        reply_markup = InlineKeyboardMarkup(buttons)
-        await query.message.edit_text(
-            text=script.ABOUT_TXT.format(temp.U_NAME, temp.B_NAME, OWNER_LNK),
-            reply_markup=reply_markup,
-            parse_mode=enums.ParseMode.HTML
-	)
+    elif query.data == "about":
+    buttons = [[
+        InlineKeyboardButton('💖 𝙳𝚘𝚗𝚊𝚝𝚎', callback_data='donate'),
+        InlineKeyboardButton('🎁 𝚂𝚘𝚞𝚛𝚌𝚎', callback_data='source')
+    ],[
+        InlineKeyboardButton('⇋ ʙᴀᴄᴋ ᴛᴏ ʜᴏᴍᴇ ⇋', callback_data='start')
+    ]]
+    reply_markup = InlineKeyboardMarkup(buttons)
+
+    media = InputMediaPhoto(
+        media=NOR_IMG,  # Replaced NOR_IMG with START_IMG
+        caption=script.ABOUT_TXT.format(temp.U_NAME, temp.B_NAME, OWNER_LNK),
+        parse_mode=enums.ParseMode.HTML
+    )
+
+    await query.message.edit_media(
+        media=media,
+        reply_markup=reply_markup
+    )
         
         
     elif query.data == "source":
@@ -1551,13 +1557,13 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.answer(f'You Have: {referdb.get_refer_points(query.from_user.id)} Refferal points.', show_alert=True)
     
     
-    elif query.data == "disclaimer":
+    elif query.data == "help":
             btn = [[
                     InlineKeyboardButton("⇋ ʙᴀᴄᴋ ⇋", callback_data="start")
                   ]]
             reply_markup = InlineKeyboardMarkup(btn)
             await query.message.edit_text(
-                text=(script.DISCLAIMER_TXT),
+                text=(script.HELP_TXT),
                 reply_markup=reply_markup,
                 parse_mode=enums.ParseMode.HTML 
             )
