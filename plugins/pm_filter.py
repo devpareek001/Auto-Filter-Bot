@@ -1510,7 +1510,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         reply_markup = InlineKeyboardMarkup(buttons)
 
         media = InputMediaPhoto(
-            media=NOR_IMG,  # Replaced NOR_IMG with START_IMG
+            media=NOR_IMG,  # dev
             caption=script.ABOUT_TXT.format(temp.U_NAME, temp.B_NAME, OWNER_LNK),
             parse_mode=enums.ParseMode.HTML
         )
@@ -1537,7 +1537,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         buttons = [[
             InlineKeyboardButton('🐻‍❄️ Sᴇɴᴅ Dᴏɴᴀᴛᴇ Sᴄʀᴇᴇɴꜱʜᴏᴛ Hᴇʀᴇ', url=OWNER_LNK),
         ], [
-            InlineKeyboardButton("⬅️ Back", callback_data="me")
+            InlineKeyboardButton("⬅️ Back", callback_data="about")
         ]]
         reply_markup = InlineKeyboardMarkup(buttons)
 
