@@ -1501,24 +1501,24 @@ async def cb_handler(client: Client, query: CallbackQuery):
             print(e)
                     
     elif query.data == "about":
-    buttons = [[
-        InlineKeyboardButton('💖 𝙳𝚘𝚗𝚊𝚝𝚎', callback_data='donate'),
-        InlineKeyboardButton('🎁 𝚂𝚘𝚞𝚛𝚌𝚎', callback_data='source')
-    ],[
-        InlineKeyboardButton('⇋ ʙᴀᴄᴋ ᴛᴏ ʜᴏᴍᴇ ⇋', callback_data='start')
-    ]]
-    reply_markup = InlineKeyboardMarkup(buttons)
+        buttons = [[
+            InlineKeyboardButton('💖 𝙳𝚘𝚗𝚊𝚝𝚎', callback_data='donate'),
+            InlineKeyboardButton('🎁 𝚂𝚘𝚞𝚛𝚌𝚎', callback_data='source')
+        ],[
+            InlineKeyboardButton('⇋ ʙᴀᴄᴋ ᴛᴏ ʜᴏᴍᴇ ⇋', callback_data='start')
+        ]]
+        reply_markup = InlineKeyboardMarkup(buttons)
 
-    media = InputMediaPhoto(
-        media=NOR_IMG,  # Replaced NOR_IMG with START_IMG
-        caption=script.ABOUT_TXT.format(temp.U_NAME, temp.B_NAME, OWNER_LNK),
-        parse_mode=enums.ParseMode.HTML
-    )
+        media = InputMediaPhoto(
+            media=NOR_IMG,  # Replaced NOR_IMG with START_IMG
+            caption=script.ABOUT_TXT.format(temp.U_NAME, temp.B_NAME, OWNER_LNK),
+            parse_mode=enums.ParseMode.HTML
+        )
 
-    await query.message.edit_media(
-        media=media,
-        reply_markup=reply_markup
-    )
+        await query.message.edit_media(
+            media=media,
+            reply_markup=reply_markup
+        )
         
         
     elif query.data == "source":
