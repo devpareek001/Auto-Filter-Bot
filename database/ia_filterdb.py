@@ -91,7 +91,7 @@ async def save_file(media):
         print(f'{file_name} Is Already Saved In Primary Database!')
         return False, 0
         
-    if MULTIPLE_DB and primary_db_size >= 300:
+    if MULTIPLE_DB and primary_db_size >= 440:
         print("Primary Database Is Low On Space. Switching To Secondary DB.")
         saveMedia = Media2
         use_secondary = True
