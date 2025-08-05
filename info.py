@@ -53,6 +53,7 @@ DATABASE_URI2 = environ.get('DATABASE_URI2', "mongodb+srv://Demo22:Demo22@cluste
 
 ENABLE_GROUP_APPROVAL = os.environ.get("ENABLE_GROUP_APPROVAL", "True") == "True"
 OWNER_ID = int(os.environ.get("OWNER_ID", "6914788581"))  # Apna Telegram user ID daalein
+OWNER_USERNAME = os.environ.get("OWNER_USERNAME", "https://t.me/L_uciBot")  # Apna username bina @ ke
 APPROVED_GROUPS = set()
 CHANNEL_ID = int(os.environ.get("CHANNEL_ID", "-1002418666887"))  # <-- Apne channel ka default id ya blank chhod sakte hain
 
