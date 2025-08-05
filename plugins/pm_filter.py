@@ -26,7 +26,7 @@ from database.topdb import silentdb
 import requests
 import string
 import tracemalloc
-from data.access import get_approved_groups
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
