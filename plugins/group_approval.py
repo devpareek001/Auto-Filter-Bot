@@ -1,5 +1,6 @@
 from pyrogram import Client, filters
-from info import ENABLE_GROUP_APPROVAL, OWNER_ID, APPROVED_GROUPS, CHANNEL_ID
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from info import ENABLE_GROUP_APPROVAL, OWNER_ID, APPROVED_GROUPS, CHANNEL_ID, OWNER_USERNAME
 
 @Client.on_chat_member_updated()
 async def group_add_check(client, chat_member_updated):
@@ -10,13 +11,20 @@ async def group_add_check(client, chat_member_updated):
     if chat_member_updated.new_chat_member.user.id == me.id:
         group_id = chat_member_updated.chat.id
         if group_id not in APPROVED_GROUPS:
+            # Send message in group with Contact Owner button
             await client.send_message(
                 group_id,
-                "⚠️ Is group me bot use karne ke liye owner se permission lo."
+                "⚠️ Is group me bot use karne ke liye owner se permission lo.",
+                reply_markup=InlineKeyboardMarkup(
+                    [
+                        [InlineKeyboardButton("👤 Contact Owner", url=f"https://t.me/{OWNER_USERNAME}")]
+                    ]
+                )
             )
+            # Send notification in channel
             await client.send_message(
-                CHANNEL_ID,  # <-- OWNER_ID ki jagah ab CHANNEL_ID hai
-                f"🔔 Bot ko add kiya gaya hai group: {chat_member_updated.chat.title} ({group_id})\nApprove karne ke liye: <code> /approve {group_id} </code>"
+                CHANNEL_ID,
+                f"🔔 Bot ko add kiya gaya hai group: {chat_member_updated.chat.title} ({group_id})\nApprove karne ke liye: /approve {group_id}"
             )
 
 @Client.on_message(filters.group)
@@ -37,5 +45,5 @@ async def approve_group(client, message):
         APPROVED_GROUPS.add(group_id)
         await message.reply("Group approved!")
         await client.send_message(group_id, "✅ Owner ne approval de diya hai, ab bot use kar sakte ho.")
-    except:
+    except Exception:
         await message.reply("❌ Galat group ID.")
