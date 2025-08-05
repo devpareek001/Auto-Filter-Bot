@@ -10,6 +10,9 @@ from database.ia_filterdb import save_file
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from utils import temp, get_readable_time
 from math import ceil
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ChatMemberUpdated
+from info import OWNER_ID, LOG_CHANNEL, OWNER_USERNAME
+from database.users_chats_db import is_group_approved, is_control_enabled, approve_group
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -254,3 +257,51 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
                 f"❌ Error: <code>{e}</code>",
                 reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('Close', callback_data='close_data')]])
             )
+
+    
+@app.on_chat_member_updated(filters.group)
+async def bot_added_handler(client, chat_member: ChatMemberUpdated):
+    new = chat_member.new_chat_member
+    old = chat_member.old_chat_member
+
+    if new.status in ["member", "administrator"] and old.status == "left":
+        chat = chat_member.chat
+        added_by = chat_member.from_user
+        auto_approved = False
+
+        if added_by.id == OWNER_ID:
+            await approve_group(chat.id)
+            auto_approved = True
+
+        text = (
+            f"🆕 **Bot added to new group**\n"
+            f"👥 Group: {chat.title} (`{chat.id}`)\n"
+            f"👤 Added by: [{added_by.first_name}](tg://user?id={added_by.id}) (`{added_by.id}`)\n"
+            f"{'✅ Auto-approved (Owner added the bot)' if auto_approved else '❌ Not approved yet!'}"
+        )
+
+        try:
+            await client.send_message(LOG_CHANNEL, text)
+        except:
+            pass
+
+@app.on_message(filters.group)
+async def check_group_access(client, message):
+    if not await is_control_enabled():
+        return
+
+    if message.from_user and message.from_user.id == OWNER_ID:
+        return
+
+    if not await is_group_approved(message.chat.id):
+        try:
+            button = InlineKeyboardMarkup([
+                [InlineKeyboardButton("📬 Contact Owner", url=f"https://t.me/{OWNER_USERNAME}")]
+            ])
+            await message.reply(
+                "❌ This group is not approved to use this bot.\nPlease contact the owner for approval.",
+                reply_markup=button
+            )
+        except:
+            pass
+        return
