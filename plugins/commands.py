@@ -20,7 +20,7 @@ from database.ia_filterdb import *
 from database.users_chats_db import db
 from info import *
 from utils import *
-from SilentXBotz import app
+from Lucia.Bot.clients import app
 from pyrogram import filters
 from info import OWNER_ID
 from database.users_chats_db import (
