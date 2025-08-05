@@ -11,7 +11,6 @@ from database.refer import referdb
 from pyrogram.errors.exceptions.bad_request_400 import MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty
 from Script import script
 import pyrogram
-from bot import Bot
 from info import *
 from helpers.allowlist import is_group_allowed
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, InputMediaPhoto, WebAppInfo
@@ -2220,12 +2219,3 @@ async def advantage_spell_chok(client, message):
         await message.delete()
     except:
         pass
-
-@Bot.on_message(filters.group)
-async def group_handler(client, message):
-    if ALLOWED_GROUPS_ONLY:
-        allowed = is_group_allowed(message.chat.id)
-        if not allowed:
-            return await message.reply(script.DENIED_GROUP_TEXT)
-
-    # 🟢 Continue with your original logic here (search, filter, etc.)
