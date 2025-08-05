@@ -4,6 +4,7 @@ from datetime import timedelta
 import time, datetime, pytz
 from pymongo.errors import DuplicateKeyError
 from pymongo import MongoClient
+from motor.motor_asyncio import AsyncIOMotorClient
 
 class Database:    
     def __init__(self, uri, database_name):
@@ -402,7 +403,7 @@ class Database:
         else:
             return []
 
-    
+    # ✅ Your original code
 async def pm_search_status(self, bot_id):
     return await self.get_bot_setting(bot_id, 'PM_SEARCH', PM_SEARCH)
 
@@ -415,39 +416,35 @@ async def movie_update_status(self, bot_id):
 async def update_movie_update_status(self, bot_id, enable):
     await self.update_bot_setting(bot_id, 'MOVIE_UPDATE_NOTIFICATION', enable)
 
-
-# ✅ Your database instances (unchanged)
 db = Database(DATABASE_URI, DATABASE_NAME)    
 db2 = Database(DATABASE_URI2, DATABASE_NAME)
-#
 
-# ✅ Group Approval System Code (NEW - paste below existing code)
-group_control = db.group_control
-control_flag = db.control_flag
 
-# ✅ Check if a group is approved
+
+client = AsyncIOMotorClient(DATABASE_URI)
+mongo_db = client[DATABASE_NAME]
+
+group_control = mongo_db.group_control
+control_flag = mongo_db.control_flag
+
+# ✅ Functions
 async def is_group_approved(chat_id: int) -> bool:
     return await group_control.find_one({"chat_id": chat_id}) is not None
 
-# ✅ Approve a group
 async def approve_group(chat_id: int):
     if not await is_group_approved(chat_id):
         await group_control.insert_one({"chat_id": chat_id})
 
-# ✅ Unapprove a group
 async def unapprove_group(chat_id: int):
     await group_control.delete_one({"chat_id": chat_id})
 
-# ✅ Get all approved groups
 async def get_all_approved_groups() -> list:
     groups = await group_control.find().to_list(length=100)
     return [g["chat_id"] for g in groups]
 
-# ✅ Check if group control is enabled
 async def is_control_enabled() -> bool:
     data = await control_flag.find_one({"_id": "control"})
     return data.get("enabled", True) if data else True
 
-# ✅ Toggle group control ON or OFF
 async def set_control_enabled(status: bool):
     await control_flag.update_one({"_id": "control"}, {"$set": {"enabled": status}}, upsert=True)
