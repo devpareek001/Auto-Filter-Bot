@@ -1,6 +1,5 @@
 from pyrogram import filters
 from pyrogram.types import Message
-from bot import Bot
 from helpers.allowlist import save_allowed_group
 
 OWNER_ID = 123456789  # <== ⚠️ Replace this with your real Telegram ID
