@@ -2220,7 +2220,11 @@ async def advantage_spell_chok(client, message):
     except:
         pass
 
-@Bot.on_message(filters.command("id") & filters.group)
-async def group_id(client, message):
-    await message.reply_text(f"👥 This group's ID is:\n`{message.chat.id}`")
-	
+@Bot.on_message(filters.group)
+async def group_handler(client, message):
+    if ALLOWED_GROUPS_ONLY:
+        allowed = is_group_allowed(message.chat.id)
+        if not allowed:
+            return await message.reply(script.DENIED_GROUP_TEXT)
+
+    # 🟢 Continue with your original logic here (search, filter, etc.)
