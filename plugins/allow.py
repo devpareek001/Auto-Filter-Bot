@@ -1,8 +1,9 @@
 from pyrogram import filters
 from pyrogram.types import Message
 from helpers.allowlist import save_allowed_group
+from bot import Bot  # ✅ Add this import
 
-OWNER_ID = 123456789  # <== ⚠️ Replace this with your real Telegram ID
+OWNER_ID = 6914788581 # <== ⚠️ Replace this with your real Telegram ID
 
 @Bot.on_message(filters.command("allow") & filters.private)
 async def allow_group(client, message: Message):
