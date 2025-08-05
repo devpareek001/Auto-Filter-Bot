@@ -1,5 +1,5 @@
 from pyrogram import Client, filters
-from info import ENABLE_GROUP_APPROVAL, OWNER_ID, APPROVED_GROUPS
+from info import ENABLE_GROUP_APPROVAL, OWNER_ID, APPROVED_GROUPS, CHANNEL_ID
 
 @Client.on_chat_member_updated()
 async def group_add_check(client, chat_member_updated):
@@ -15,8 +15,8 @@ async def group_add_check(client, chat_member_updated):
                 "⚠️ Is group me bot use karne ke liye owner se permission lo."
             )
             await client.send_message(
-                OWNER_ID,
-                f"🔔 Bot ko add kiya gaya hai group: {chat_member_updated.chat.title} ({group_id})\nApprove karne ke liye: /approve {group_id}"
+                CHANNEL_ID,  # <-- OWNER_ID ki jagah ab CHANNEL_ID hai
+                f"🔔 Bot ko add kiya gaya hai group: {chat_member_updated.chat.title} ({group_id})\nApprove karne ke liye: <code> /approve {group_id} </code>"
             )
 
 @Client.on_message(filters.group)
