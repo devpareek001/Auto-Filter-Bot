@@ -1,9 +1,9 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from info import ENABLE_GROUP_APPROVAL, OWNER_ID, CHANNEL_ID, OWNER_USERNAME
-from data.access import get_approved_groups, approve_group_id  # ✅ import from data
+from data.access import get_approved_groups, approve_group_id  # ✅ imported from data
 
-# When bot is added to group
+# When bot is added to a group
 @Client.on_chat_member_updated()
 async def group_add_check(client, chat_member_updated):
     if not ENABLE_GROUP_APPROVAL:
@@ -16,7 +16,7 @@ async def group_add_check(client, chat_member_updated):
         if group_id not in approved:
             await client.send_message(
                 group_id,
-                "⚠️ इस ग्रुप में बॉट का इस्तेमाल करने के लिए ओनर से परमिशन लो।",
+                "⚠️ इस ग्रुप में बॉट का इस्तेमाल करने के लिए Owner से परमिशन लो।",
                 reply_markup=InlineKeyboardMarkup(
                     [[InlineKeyboardButton("👤 Contact Owner", url=f"https://t.me/{OWNER_USERNAME}")]]
                 )
@@ -26,16 +26,16 @@ async def group_add_check(client, chat_member_updated):
                 f"📢 Bot को add किया गया है group: {chat_member_updated.chat.title} (`{group_id}`)\nApprove करने के लिए: `/approve {group_id}`"
             )
 
-# Block bot in unapproved groups
+# Allow bot only in approved groups
 @Client.on_message(filters.group)
 async def block_unapproved_groups(client, message):
-    if not ENABLE_GROUP_APPROVAL:
-        return
-    approved = get_approved_groups()
-    if message.chat.id not in approved:
-        return  # silence
+    if ENABLE_GROUP_APPROVAL:
+        approved = get_approved_groups()  # ✅ हर बार नया data load होगा
+        if message.chat.id not in approved:
+            return  # 🔇 ignore message completely
+    await client.process_messages(message)  # ✅ बाकी filters को allow करो
 
-# /approve command (only owner)
+# /approve command (Owner only)
 @Client.on_message(filters.private & filters.command("approve"))
 async def approve_group(client, message):
     if message.from_user.id != OWNER_ID:
