@@ -1,9 +1,9 @@
-from pyrogram import filters
+from pyrogram import Client, filters
 from pyrogram.types import Message
 from helpers.allowlist import save_allowed_group
-from bot import Bot  # ✅ Add this import
+from info import OWNER_ID  # assuming OWNER_ID is in info.py
 
-OWNER_ID = 6914788581 # <== ⚠️ Replace this with your real Telegram ID
+Bot = Client("SilentXBotz")  # <- Add your bot session name if needed
 
 @Bot.on_message(filters.command("allow") & filters.private)
 async def allow_group(client, message: Message):
