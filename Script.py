@@ -361,3 +361,4 @@ Requested by : {message.from_user.mention}</b>"""
 
 ‼️ <b>ᴍᴜꜱᴛ ꜱᴇɴᴅ ꜱᴄʀᴇᴇɴꜱʜᴏᴛ ᴀꜰᴛᴇʀ ᴅᴏɴᴀᴛɪɴɢ.</b>
 """
+    DENIED_GROUP_TEXT = "❌ This group is not allowed to use this bot.\n\nContact admin to allow it using `/allow <group_id>`."
