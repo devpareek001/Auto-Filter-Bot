@@ -51,11 +51,11 @@ COLLECTION_NAME = environ.get('COLLECTION_NAME', 'SilentXBotz_files')
 MULTIPLE_DB = is_enabled(os.environ.get('MULTIPLE_DB', "True"), False) # Type True For Turn On MULTIPLE DB FUNTION 
 DATABASE_URI2 = environ.get('DATABASE_URI2', "mongodb+srv://Demo22:Demo22@cluster0.pj7etfj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 
-ENABLE_GROUP_APPROVAL = os.environ.get("ENABLE_GROUP_APPROVAL", "False") == "True"
-OWNER_ID = int(os.environ.get("OWNER_ID", "6914788581"))  # Apna Telegram user ID daalein
-OWNER_USERNAME = os.environ.get("OWNER_USERNAME", "https://t.me/L_uciBot")  # Apna username bina @ ke
-APPROVED_GROUPS = set()
-CHANNEL_ID = int(os.environ.get("CHANNEL_ID", "-1002418666887"))  # <-- Apne channel ka default id ya blank chhod sakte hain
+
+OWNER_USERNAME = os.environ.get("OWNER_USERNAME", "https://t.me/L_uciBot")
+OWNER_ID = int(os.environ.get("OWNER_ID", "6914788581"))
+CHANNEL_ID = int(os.environ.get("CHANNEL_ID", "-1002418666887"))
+ENABLE_GROUP_APPROVAL = os.environ.get("ENABLE_GROUP_APPROVAL", "True").lower() == "true"
 
 GRP_LNK = environ.get('GRP_LNK', 'https://t.me/+TGqBUP3rvd0xN2M1')
 CHNL_LNK = environ.get('CHNL_LNK', 'https://t.me/Hollywood_Movies_2025_hd')
