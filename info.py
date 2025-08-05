@@ -53,7 +53,8 @@ DATABASE_URI2 = environ.get('DATABASE_URI2', "mongodb+srv://Demo22:Demo22@cluste
 
 # False if you want allow others to use this bot by dev
 ALLOWED_GROUPS_ONLY = os.environ.get("ALLOWED_GROUPS_ONLY", "True").lower() == "true"
-#links
+OWNER_ID = int(os.environ.get("OWNER_ID", "6914788581"))
+#OWNER_ID = int(os.environ.get("OWNER_ID", "6914788581"))links
 GRP_LNK = environ.get('GRP_LNK', 'https://t.me/+TGqBUP3rvd0xN2M1')
 CHNL_LNK = environ.get('CHNL_LNK', 'https://t.me/Hollywood_Movies_2025_hd')
 OWNER_LNK = environ.get('OWNER_LNK', 'https://t.me/L_uciBot')
