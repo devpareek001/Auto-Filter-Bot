@@ -54,7 +54,7 @@ DATABASE_URI2 = environ.get('DATABASE_URI2', "mongodb+srv://Demo22:Demo22@cluste
 ENABLE_GROUP_APPROVAL = os.environ.get("ENABLE_GROUP_APPROVAL", "True") == "True"
 OWNER_ID = int(os.environ.get("OWNER_ID", "6914788581"))  # Apna Telegram user ID daalein
 APPROVED_GROUPS = set()
-
+CHANNEL_ID = int(os.environ.get("CHANNEL_ID", "-1002418666887"))  # <-- Apne channel ka default id ya blank chhod sakte hain
 
 GRP_LNK = environ.get('GRP_LNK', 'https://t.me/+TGqBUP3rvd0xN2M1')
 CHNL_LNK = environ.get('CHNL_LNK', 'https://t.me/Hollywood_Movies_2025_hd')
