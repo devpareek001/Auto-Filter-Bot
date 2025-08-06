@@ -56,7 +56,7 @@ DATABASE_URI2 = environ.get('DATABASE_URI2', "mongodb+srv://Demo22:Demo22@cluste
 
 OWNER_ID = 6914788581  # 🔁 Replace with your Telegram user ID
 OWNER_USERNAME = "https://t.me/Morning006"  # 🔁 Replace without @
-LOG_CHANNEL = -1002418666887  # 🔁 Replace with your log channel ID
+LOGS_CHANNEL = -1002418666887  # 🔁 Replace with your log channel ID
 
 GRP_LNK = environ.get('GRP_LNK', 'https://t.me/+TGqBUP3rvd0xN2M1')
 CHNL_LNK = environ.get('CHNL_LNK', 'https://t.me/Hollywood_Movies_2025_hd')
