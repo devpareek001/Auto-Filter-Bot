@@ -10,11 +10,6 @@ from database.ia_filterdb import save_file
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from utils import temp, get_readable_time
 from math import ceil
-from Lucia.Bot.clients import SilentX  # Make sure this import exists
-from pyrogram import filters
-from pyrogram.types import ChatMemberUpdated, InlineKeyboardMarkup, InlineKeyboardButton
-from info import OWNER_ID, OWNER_USERNAME, LOGS_CHANNEL
-from database.users_chats_db import approve_group, is_control_enabled, is_group_approved
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -261,25 +256,3 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
             )
 
     
-@SilentX.on_chat_member_updated(filters.group)
-async def bot_added_handler(client, chat_member: ChatMemberUpdated):
-    new = chat_member.new_chat_member
-    old = chat_member.old_chat_member
-
-    if new.status in ["member", "administrator"] and old.status == "left":
-        chat = chat_member.chat
-        added_by = chat_member.from_user
-
-        print(f"Bot added to group: {chat.id} by {added_by.id}")  # Debug
-
-        text = (
-            f"🆕 **Bot added to a new group**\n"
-            f"👥 Group: {chat.title} (`{chat.id}`)\n"
-            f"👤 Added by: [{added_by.first_name}](tg://user?id={added_by.id}) (`{added_by.id}`)\n"
-            f"❌ Not approved yet! Please approve manually using /approve {chat.id}"
-        )
-
-        try:
-            await client.send_message(LOGS_CHANNEL, text)
-        except Exception as e:
-            print(f"[SEND ERROR] {e}")
