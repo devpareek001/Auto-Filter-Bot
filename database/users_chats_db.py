@@ -5,7 +5,6 @@ import time, datetime, pytz
 from pymongo.errors import DuplicateKeyError
 from pymongo import MongoClient
 
-
 class Database:    
     def __init__(self, uri, database_name):
         self._client = motor.motor_asyncio.AsyncIOMotorClient(uri)
@@ -403,18 +402,18 @@ class Database:
         else:
             return []
 
-    # ✅ Your original code
-async def pm_search_status(self, bot_id):
-    return await self.get_bot_setting(bot_id, 'PM_SEARCH', PM_SEARCH)
+    async def pm_search_status(self, bot_id):
+        return await self.get_bot_setting(bot_id, 'PM_SEARCH', PM_SEARCH)
 
-async def update_pm_search_status(self, bot_id, enable):
-    await self.update_bot_setting(bot_id, 'PM_SEARCH', enable)
+    async def update_pm_search_status(self, bot_id, enable):
+        await self.update_bot_setting(bot_id, 'PM_SEARCH', enable)
 
-async def movie_update_status(self, bot_id):
-    return await self.get_bot_setting(bot_id, 'MOVIE_UPDATE_NOTIFICATION', MOVIE_UPDATE_NOTIFICATION)
+    async def movie_update_status(self, bot_id):
+        return await self.get_bot_setting(bot_id, 'MOVIE_UPDATE_NOTIFICATION', MOVIE_UPDATE_NOTIFICATION)
 
-async def update_movie_update_status(self, bot_id, enable):
-    await self.update_bot_setting(bot_id, 'MOVIE_UPDATE_NOTIFICATION', enable)
+    async def update_movie_update_status(self, bot_id, enable):
+        await self.update_bot_setting(bot_id, 'MOVIE_UPDATE_NOTIFICATION', enable)
 
+        
 db = Database(DATABASE_URI, DATABASE_NAME)    
-db2 = Database(DATABASE_URI2, DATABASE_NAME)
+db2 = Database(DATABASE_URI2, DATABASE_NAME)#dev
