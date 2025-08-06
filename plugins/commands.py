@@ -20,8 +20,7 @@ from database.ia_filterdb import *
 from database.users_chats_db import db
 from info import *
 from utils import *
-from Lucia.Bot.clients import SilentX  # ✅ Correct
-from pyrogram import filters
+from Lucia.Bot.clients import SilentX
 from info import OWNER_ID
 from database.users_chats_db import (
     approve_group, unapprove_group, get_all_approved_groups,
@@ -1038,40 +1037,44 @@ async def reset_all_settings(client, message):
         print(f"Error Processing Reset All Settings Command: {str(e)}")
         await message.reply("<b>ᴇʀʀᴏʀ 🚫.oᴄᴄᴜʀʀᴇᴅ ᴡʜɪʟᴇ ᴅᴇʟᴇᴛɪɴɢ ɢʀᴏᴜᴘ ꜱᴇᴛᴛɪɴɢꜱ! ᴘʟᴇᴀꜱᴇ ᴛʀʏ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ.</b>", quote=True)
         
-
-@app.on_message(filters.command("approve") & filters.user(OWNER_ID))
+# ✅ Approve Group Command
+@SilentX.on_message(filters.command("approve") & filters.user(OWNER_ID))
 async def approve_group_cmd(client, message):
     if len(message.command) < 2:
-        return await message.reply("Usage: /approve <group_id>")
+        return await message.reply("📌 Usage: <code>/approve &lt;group_id&gt;</code>")
     try:
         group_id = int(message.command[1])
         await approve_group(group_id)
-        await message.reply(f"✅ Group {group_id} approved.")
-    except:
-        await message.reply("❌ Invalid group ID.")
+        await message.reply(f"✅ Group <code>{group_id}</code> approved.")
+    except Exception as e:
+        await message.reply(f"❌ Invalid group ID.\n\n<code>{e}</code>")
 
-@app.on_message(filters.command("unapprove") & filters.user(OWNER_ID))
+# ❌ Unapprove Group Command
+@SilentX.on_message(filters.command("unapprove") & filters.user(OWNER_ID))
 async def unapprove_group_cmd(client, message):
     if len(message.command) < 2:
-        return await message.reply("Usage: /unapprove <group_id>")
+        return await message.reply("📌 Usage: <code>/unapprove &lt;group_id&gt;</code>")
     try:
         group_id = int(message.command[1])
         await unapprove_group(group_id)
-        await message.reply(f"❌ Group {group_id} unapproved.")
-    except:
-        await message.reply("❌ Invalid group ID.")
+        await message.reply(f"❌ Group <code>{group_id}</code> unapproved.")
+    except Exception as e:
+        await message.reply(f"❌ Invalid group ID.\n\n<code>{e}</code>")
 
-@app.on_message(filters.command("toggle_group_control") & filters.user(OWNER_ID))
+# 🔄 Toggle Group Control (on/off)
+@SilentX.on_message(filters.command("toggle_group_control") & filters.user(OWNER_ID))
 async def toggle_control_cmd(client, message):
     if len(message.command) < 2 or message.command[1].lower() not in ["on", "off"]:
-        return await message.reply("Usage: /toggle_group_control on/off")
+        return await message.reply("📌 Usage: <code>/toggle_group_control on/off</code>")
     status = message.command[1].lower() == "on"
     await set_control_enabled(status)
-    await message.reply(f"🔄 Group control turned {'on' if status else 'off'}.")
+    await message.reply(f"🔄 Group control turned {'ON' if status else 'OFF'}.")
 
-@app.on_message(filters.command("approved_groups") & filters.user(OWNER_ID))
+# 📃 List Approved Groups
+@SilentX.on_message(filters.command("approved_groups") & filters.user(OWNER_ID))
 async def list_approved_groups_cmd(client, message):
     groups = await get_all_approved_groups()
     if not groups:
         return await message.reply("⚠️ No approved groups.")
-    await message.reply("✅ Approved Groups:\n" + "\n".join([str(g) for g in groups]))
+    group_list = "\n".join([f"<code>{g}</code>" for g in groups])
+    await message.reply(f"✅ Approved Groups:\n\n{group_list}")
