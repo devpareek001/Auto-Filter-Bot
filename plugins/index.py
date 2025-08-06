@@ -10,9 +10,11 @@ from database.ia_filterdb import save_file
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from utils import temp, get_readable_time
 from math import ceil
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ChatMemberUpdated
-from info import OWNER_ID, LOG_CHANNEL, OWNER_USERNAME
-from database.users_chats_db import is_group_approved, is_control_enabled, approve_group
+from Lucia.Bot.clients import SilentX  # Make sure this import exists
+from pyrogram import filters
+from pyrogram.types import ChatMemberUpdated, InlineKeyboardMarkup, InlineKeyboardButton
+from info import OWNER_ID, OWNER_USERNAME, LOG_CHANNEL
+from database.users_chats_db import approve_group, is_control_enabled, is_group_approved
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -259,7 +261,8 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
             )
 
     
-@app.on_chat_member_updated(filters.group)
+
+@SilentX.on_chat_member_updated(filters.group)
 async def bot_added_handler(client, chat_member: ChatMemberUpdated):
     new = chat_member.new_chat_member
     old = chat_member.old_chat_member
@@ -282,10 +285,11 @@ async def bot_added_handler(client, chat_member: ChatMemberUpdated):
 
         try:
             await client.send_message(LOG_CHANNEL, text)
-        except:
-            pass
+        except Exception as e:
+            print(f"[LOG_CHANNEL ERROR] {e}")
 
-@app.on_message(filters.group)
+
+@SilentX.on_message(filters.group)
 async def check_group_access(client, message):
     if not await is_control_enabled():
         return
@@ -302,6 +306,5 @@ async def check_group_access(client, message):
                 "❌ This group is not approved to use this bot.\nPlease contact the owner for approval.",
                 reply_markup=button
             )
-        except:
-            pass
-        return
+        except Exception as e:
+            print(f"[UNAPPROVED GROUP ERROR] {e}")
