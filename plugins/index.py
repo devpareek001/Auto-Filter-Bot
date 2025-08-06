@@ -13,7 +13,7 @@ from math import ceil
 from Lucia.Bot.clients import SilentX  # Make sure this import exists
 from pyrogram import filters
 from pyrogram.types import ChatMemberUpdated, InlineKeyboardMarkup, InlineKeyboardButton
-from info import OWNER_ID, OWNER_USERNAME, LOG_CHANNEL
+from info import OWNER_ID, OWNER_USERNAME, LOGS_CHANNEL
 from database.users_chats_db import approve_group, is_control_enabled, is_group_approved
 
 logger = logging.getLogger(__name__)
@@ -272,6 +272,8 @@ async def bot_added_handler(client, chat_member: ChatMemberUpdated):
         added_by = chat_member.from_user
         auto_approved = False
 
+        print(f"Bot added to group: {chat.id} by {added_by.id}")  # ✅ Debug
+
         if added_by.id == OWNER_ID:
             await approve_group(chat.id)
             auto_approved = True
@@ -285,26 +287,7 @@ async def bot_added_handler(client, chat_member: ChatMemberUpdated):
 
         try:
             await client.send_message(LOG_CHANNEL, text)
+            if auto_approved:
+                await client.send_message(chat.id, "✅ This group has been auto-approved and is ready to use!")
         except Exception as e:
-            print(f"[LOG_CHANNEL ERROR] {e}")
-
-
-@SilentX.on_message(filters.group)
-async def check_group_access(client, message):
-    if not await is_control_enabled():
-        return
-
-    if message.from_user and message.from_user.id == OWNER_ID:
-        return
-
-    if not await is_group_approved(message.chat.id):
-        try:
-            button = InlineKeyboardMarkup([
-                [InlineKeyboardButton("📬 Contact Owner", url=f"https://t.me/{OWNER_USERNAME}")]
-            ])
-            await message.reply(
-                "❌ This group is not approved to use this bot.\nPlease contact the owner for approval.",
-                reply_markup=button
-            )
-        except Exception as e:
-            print(f"[UNAPPROVED GROUP ERROR] {e}")
+            print(f"[SEND ERROR] {e}")
