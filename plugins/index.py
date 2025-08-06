@@ -261,7 +261,6 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
             )
 
     
-
 @SilentX.on_chat_member_updated(filters.group)
 async def bot_added_handler(client, chat_member: ChatMemberUpdated):
     new = chat_member.new_chat_member
@@ -270,24 +269,17 @@ async def bot_added_handler(client, chat_member: ChatMemberUpdated):
     if new.status in ["member", "administrator"] and old.status == "left":
         chat = chat_member.chat
         added_by = chat_member.from_user
-        auto_approved = False
 
-        print(f"Bot added to group: {chat.id} by {added_by.id}")  # ✅ Debug
-
-        if added_by.id == OWNER_ID:
-            await approve_group(chat.id)
-            auto_approved = True
+        print(f"Bot added to group: {chat.id} by {added_by.id}")  # Debug
 
         text = (
-            f"🆕 **Bot added to new group**\n"
+            f"🆕 **Bot added to a new group**\n"
             f"👥 Group: {chat.title} (`{chat.id}`)\n"
             f"👤 Added by: [{added_by.first_name}](tg://user?id={added_by.id}) (`{added_by.id}`)\n"
-            f"{'✅ Auto-approved (Owner added the bot)' if auto_approved else '❌ Not approved yet!'}"
+            f"❌ Not approved yet! Please approve manually using /approve {chat.id}"
         )
 
         try:
-            await client.send_message(LOG_CHANNEL, text)
-            if auto_approved:
-                await client.send_message(chat.id, "✅ This group has been auto-approved and is ready to use!")
+            await client.send_message(LOGS_CHANNEL, text)
         except Exception as e:
             print(f"[SEND ERROR] {e}")
