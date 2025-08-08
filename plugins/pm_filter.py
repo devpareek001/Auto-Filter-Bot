@@ -1501,23 +1501,31 @@ async def cb_handler(client: Client, query: CallbackQuery):
             print(e)
                     
     elif query.data == "about":
-        buttons = [[
-            InlineKeyboardButton('🤖 Uᴩᴅᴀᴛᴇs 😜', url=UPDATE_CHANNEL_LNK)],
+        buttons = [
+        [
+            InlineKeyboardButton('🤖 Uᴩᴅᴀᴛᴇs 😜', url=UPDATE_CHANNEL_LNK),
             InlineKeyboardButton('♥️ Sʜᴀʀᴇ Mᴇ 💫', url=f"https://t.me/share/url?url=t.me/{temp.U_NAME}")
-        ], [
+        ],
+        [
             InlineKeyboardButton('🔭 Sᴛᴀᴛs 📊', callback_data='stats'),
             InlineKeyboardButton('📞 Cᴏɴᴛᴀᴄᴛ 📟', callback_data='contact')
-        ], [
+        ],
+        [
             InlineKeyboardButton('😅 Sᴏᴜʀᴄᴇ Cᴏᴅᴇ 😊', callback_data='source')
-        ], [
+        ],
+        [
             InlineKeyboardButton('😜 Hᴏᴡ Tᴏ Dᴏᴡɴʟᴏᴀᴅ Fɪʟᴇs Fʀᴏᴍ Mᴇ 😜', callback_data='info')
-        ], [
+        ],
+        [
             InlineKeyboardButton('👋 Exᴛʀᴀ Fᴇᴀᴛᴜʀᴇs 👋', callback_data='mods')
-        ], [
+        ],
+        [
             InlineKeyboardButton('📦 Cʜᴇᴄᴋ Pɪɴɢ 📡', callback_data='pongd')
-        ], [
+        ],
+        [
             InlineKeyboardButton('‹‹‹ Bᴀᴄᴋ', callback_data='start')
-        ]]
+        ]
+		    ]
         reply_markup = InlineKeyboardMarkup(buttons)
 
         media = InputMediaPhoto(
