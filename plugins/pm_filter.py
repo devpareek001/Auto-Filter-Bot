@@ -1540,7 +1540,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         )
         
     elif query.data == "mods":
-    buttons = [   # ✅ Proper indent
+    buttons = [  
         [InlineKeyboardButton('🖼️ Tᴇʟᴇɢʀᴀᴘʜ 🔭', callback_data='tele')],
         [InlineKeyboardButton('🗿 Cʜᴇᴄᴋ Pɪɴɢ ✏️', callback_data='pong')],
         [InlineKeyboardButton('🤙 Sʜᴀʀᴇ Tᴇxᴛ 🤙', callback_data='share')],
