@@ -1540,25 +1540,23 @@ async def cb_handler(client: Client, query: CallbackQuery):
         )
         
     elif query.data == "mods":
-        buttons = [[
-            InlineKeyboardButton('🖼️ Tᴇʟᴇɢʀᴀᴘʜ 🔭', callback_data='tele')
-        ],[
-            InlineKeyboardButton('🗿 Cʜᴇᴄᴋ Pɪɴɢ ✏️', callback_data='pong')
-        ],[
-            InlineKeyboardButton('🤙 Sʜᴀʀᴇ Tᴇxᴛ 🤙', callback_data='share')
-        ],[
-            InlineKeyboardButton('🧑‍💻 Cᴀʀʙᴏɴ Gᴇɴᴇʀᴀᴛᴏʀ ✴️', callback_data='carbon')
-        ],[ 
-            InlineKeyboardButton('🙌 Fᴏɴᴛ Gᴇɴᴇʀᴀᴛᴏʀ 📝', callback_data='font')
-        ],[  
-            InlineKeyboardButton("▶️ Yᴛ Vɪᴅᴇᴏ Dᴏᴡɴʟᴀᴅᴇʀ 🎦", callback_data='video')
-        ],[
-            InlineKeyboardButton('🔭 Sᴛᴀᴛs 📊', callback_data='stats')
-        ],[
-            InlineKeyboardButton('😊 Sᴏᴜʀᴄᴇ Cᴏᴅᴇ ☺', url='')
-        ],[
-            InlineKeyboardButton('‹‹‹ Bᴀᴄᴋ', callback_data='about')
-        ]]       
+    buttons = [
+        [InlineKeyboardButton('🖼️ Tᴇʟᴇɢʀᴀᴘʜ 🔭', callback_data='tele')],
+        [InlineKeyboardButton('🗿 Cʜᴇᴄᴋ Pɪɴɢ ✏️', callback_data='pong')],
+        [InlineKeyboardButton('🤙 Sʜᴀʀᴇ Tᴇxᴛ 🤙', callback_data='share')],
+        [InlineKeyboardButton('🧑‍💻 Cᴀʀʙᴏɴ Gᴇɴᴇʀᴀᴛᴏʀ ✴️', callback_data='carbon')],
+        [InlineKeyboardButton('🙌 Fᴏɴᴛ Gᴇɴᴇʀᴀᴛᴏʀ 📝', callback_data='font')],
+        [InlineKeyboardButton('▶️ Yᴛ Vɪᴅᴇᴏ Dᴏᴡɴʟᴏᴀᴅᴇʀ 🎦', callback_data='video')],
+        [InlineKeyboardButton('🔭 Sᴛᴀᴛs 📊', callback_data='stats')],
+        [InlineKeyboardButton('😊 Sᴏᴜʀᴄᴇ Cᴏᴅᴇ ☺', callback_data='source')],
+        [InlineKeyboardButton('‹‹‹ Bᴀᴄᴋ', callback_data='about')]
+    ]
+
+    reply_markup = InlineKeyboardMarkup(buttons)
+    await query.message.edit_text(
+        text="**🔧 Mᴏᴅᴜʟᴇs Mᴇɴᴜ**",
+        reply_markup=reply_markup
+	)       
         reply_markup = InlineKeyboardMarkup(buttons)
         await query.message.edit_text(
             text=script.MODS_TXT,
