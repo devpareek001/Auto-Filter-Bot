@@ -91,16 +91,16 @@ async def start(client, message):
     if len(message.command) != 2:
         silenxbotz=await message.reply_sticker("CAACAgQAAxkBAAKzuGh-GKMMaPaSe4ewHm1CA47XAAEC5wAC4QMAAipyxAwmIqzr_aaU7zYE")
         buttons = [[
-                    InlineKeyboardButton('☆ 𝔄ᴅᴅ 𝔐ᴇ 𝔗ᴏ 𝔜ᴏᴜʀ 𝔊ʀᴏᴜᴘ ☆', url=f'http://telegram.me/{temp.U_NAME}?startgroup=true')
+                    InlineKeyboardButton('➕ Aᴅᴅ Mᴇ Tᴏ Yᴏᴜʀ Gʀᴏᴜᴘ ➕', url=f"https://t.me/{temp.U_NAME}?startgroup=true")
                 ],[
-                    InlineKeyboardButton('𝙼ᴏ𝚜ᴛ 𝚂ᴇᴀʀᴄʜ 🔍', callback_data="topsearch"),
-                    InlineKeyboardButton('𝔓ʀᴇᴍɪᴜᴍ 🎫', callback_data="premium"),
+                    InlineKeyboardButton('💥 Mᴏᴠɪᴇ Uᴘᴅᴀᴛᴇs 💥', url=UPDATE_CHANNEL_LNK)],
+                    InlineKeyboardButton('🔎 Sᴇᴀʀᴄʜ Gʀᴏᴜᴘ 🔍', url='')
                 ],[
-                    InlineKeyboardButton('ℋᴇʟᴘ ⚙️', callback_data='help'),
-                    InlineKeyboardButton('𝔄ʙᴏᴜᴛ 💌', callback_data='about')
+                    InlineKeyboardButton('😅 Sᴏᴜʀᴄᴇ Cᴏᴅᴇ 😊', callback_data='sources')
                 ],[
-                    InlineKeyboardButton('ᴇᴀʀɴ ᴍᴏɴᴇʏ 🤑', callback_data="earn"), 
-                    InlineKeyboardButton("🍁 𝚂𝚞𝚙𝚙𝚘𝚛𝚝", callback_data="show_channels")
+                    InlineKeyboardButton('💌 Aʙᴏᴜᴛ Aɴᴅ Iɴғᴏ 💌', callback_data= 'about')
+                ],[
+                    InlineKeyboardButton('❌ Cʟᴏꜱᴇ ❌', callback_data='close_data')
                 ]]
         reply_markup = InlineKeyboardMarkup(buttons)
         await asyncio.sleep(1)
