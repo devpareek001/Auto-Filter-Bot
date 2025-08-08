@@ -91,7 +91,7 @@ async def start(client, message):
     if len(message.command) != 2:
         silenxbotz=await message.reply_sticker("CAACAgQAAxkBAAKzuGh-GKMMaPaSe4ewHm1CA47XAAEC5wAC4QMAAipyxAwmIqzr_aaU7zYE")
         buttons = [[
-                    InlineKeyboardButton('➕ Aᴅᴅ Mᴇ Tᴏ Yᴏᴜʀ Gʀᴏᴜᴘ ➕', url=f"https://t.me/{temp.U_NAME}?startgroup=true")
+                    InlineKeyboardButton('➕ Aᴅᴅ Mᴇ Tᴏ Yᴏᴜʀ Gʀᴏᴜᴘ ➕', url=f"http://telegram.me/{temp.U_NAME}?startgroup=true")
                 ],[
                     InlineKeyboardButton('💥 Mᴏᴠɪᴇ Uᴘᴅᴀᴛᴇs 💥', url=UPDATE_CHANNEL_LNK),
                     InlineKeyboardButton('🔎 Sᴇᴀʀᴄʜ Gʀᴏᴜᴘ 🔍', url='')
