@@ -415,3 +415,12 @@ Requested by : {message.from_user.mention}</b>"""
 <b>Aɴᴅ Bᴏᴛ Wɪʟʟ Sᴇɴᴅ Yᴏᴜ Asᴋᴇᴅ Fɪʟᴇ</b>
 
 <b>Hᴏᴡ Tᴏ Oᴩᴇɴ Bᴏᴛ Sᴇɴᴅᴇᴅ Fɪʟᴇ Lɪɴᴋ. » <a href=https://t.me/Sharath_Links/13>ᴛᴜᴛᴏʀɪᴀʟ</a>.﹤/b>"""
+
+    STATUS_TXT = """<b><u>Cᴜʀʀᴇɴᴛ Dᴀᴛᴀʙᴀsᴇ Sᴛᴀᴛᴜs</b></u>
+    
+<b>📑 ғɪʟᴇs sᴀᴠᴇᴅ: <code>{}</code>
+👩🏻‍💻 ᴜsᴇʀs: <code>{}</code>
+👥 ɢʀᴏᴜᴘs: <code>{}</code>
+🗂️ ᴏᴄᴄᴜᴘɪᴇᴅ: <code>{}</code>
+🗄️ ғʀᴇᴇ sᴛᴏʀᴀɢᴇ: <code>{}</code></b>
+"""
