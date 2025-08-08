@@ -13,6 +13,10 @@ pytz
 aiohttp
 opencv-python-headless==4.8.1.78
 python-dotenv==0.21.1
+telegraph==2.2.0
+youtube-search-python
+youtube-search
+yt-dlp==2023.2.17
 speedtest
 humanize
 Pillow
