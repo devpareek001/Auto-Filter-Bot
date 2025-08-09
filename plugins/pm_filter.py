@@ -1518,34 +1518,24 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await query.message.edit_media(
             media=media,
             reply_markup=reply_markup
-		)
-    
-    elif query.data == "DMCA":
-        btn = [[
-            InlineKeyboardButton("⇋ ʙᴀᴄᴋ ⇋", callback_data="start")
+        )
+        
+        
+    elif query.data == "source":
+        buttons = [[
+            InlineKeyboardButton('Cᴏɴᴛᴀᴄᴛ Oᴡɴᴇʀ 😚', url=OWNER_LNK),
+            InlineKeyboardButton('⇋ ʙᴀᴄᴋ ⇋', callback_data='start')
         ]]
-        reply_markup = InlineKeyboardMarkup(btn)
-        await query.message.edit_text(
-            text=(script.DMCA_TXT),
-            reply_markup=reply_markup,
-            parse_mode=enums.ParseMode.HTML
-		) 
-    
-	elif query.data == "source":
-        buttons = [
-            [InlineKeyboardButton('Cᴏɴᴛᴀᴄᴛ Oᴡɴᴇʀ 😚', url=OWNER_LNK)],
-            [InlineKeyboardButton('⇋ ʙᴀᴄᴋ ⇋', callback_data='start')]
-        ]
         reply_markup = InlineKeyboardMarkup(buttons)
         await query.message.edit_text(
             text=script.SOURCE_TXT,
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
-	    )
+        )
 
     elif query.data == "donate":
         buttons = [[
-            InlineKeyboardButton('🐻‍❄️ Sᴇɴᴅ Dᴏɴᴀᴛᴇ Sᴄʀᴇᴇɴꜱʜᴏᴛ Hᴇʀᴇ', url=OWNER_LNK),
+            InlineKeyboardButton('🐻‍❄️ Sᴇɴᴅ Dᴏɴᴀᴛᴇ Sᴄʀᴇᴇɴꜱʜᴏᴛ Hᴇʀᴇ', url="https://t.me/FilmeyWorldSupport"),
         ], [
             InlineKeyboardButton("⬅️ Back", callback_data="about")
         ]]
@@ -1555,12 +1545,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             media=DONATE_IMG,
             caption=script.DONATE_TXT,
             parse_mode=enums.ParseMode.HTML
-        )
-
-        await query.message.edit_media(
-            media=media,
-            reply_markup=reply_markup
-        )
+		)
 
     
     elif query.data == "ref_point":
@@ -1577,8 +1562,18 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 reply_markup=reply_markup,
                 parse_mode=enums.ParseMode.HTML 
             )
-
-    elif query.data.startswith("grp_pm"):
+    elif query.data == "DMCA":
+        btn = [[
+            InlineKeyboardButton("⇋ ʙᴀᴄᴋ ⇋", callback_data="start")
+        ]]
+        reply_markup = InlineKeyboardMarkup(btn)
+        await query.message.edit_text(
+            text=(script.DMCA_TXT),
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+		)
+    
+	elif query.data.startswith("grp_pm"):
         _, grp_id = query.data.split("#")
         user_id = query.from_user.id if query.from_user else None
         if not await is_check_admin(client, int(grp_id), user_id):
