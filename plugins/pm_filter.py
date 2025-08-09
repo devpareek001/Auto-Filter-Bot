@@ -1521,6 +1521,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         )
         
         
+    
     elif query.data == "source":
         buttons = [[
             InlineKeyboardButton('Cᴏɴᴛᴀᴄᴛ Oᴡɴᴇʀ 😚', url=OWNER_LNK),
@@ -1545,33 +1546,32 @@ async def cb_handler(client: Client, query: CallbackQuery):
             media=DONATE_IMG,
             caption=script.DONATE_TXT,
             parse_mode=enums.ParseMode.HTML
-		)
+        )
 
-    
     elif query.data == "ref_point":
-            await query.answer(f'You Have: {referdb.get_refer_points(query.from_user.id)} Refferal points.', show_alert=True)
-    
-    
+        await query.answer(f'You Have: {referdb.get_refer_points(query.from_user.id)} Refferal points.', show_alert=True)
+
     elif query.data == "help":
-            btn = [[
-                    InlineKeyboardButton("⇋ ʙᴀᴄᴋ ⇋", callback_data="start")
-                  ]]
-            reply_markup = InlineKeyboardMarkup(btn)
-            await query.message.edit_text(
-                text=(script.HELP_TXT),
-                reply_markup=reply_markup,
-                parse_mode=enums.ParseMode.HTML 
-            )
+        btn = [[
+            InlineKeyboardButton("⇋ ʙᴀᴄᴋ ⇋", callback_data="start")
+        ]]
+        reply_markup = InlineKeyboardMarkup(btn)
+        await query.message.edit_text(
+            text=script.HELP_TXT,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )
+
     elif query.data == "DMCA":
         btn = [[
             InlineKeyboardButton("⇋ ʙᴀᴄᴋ ⇋", callback_data="start")
         ]]
         reply_markup = InlineKeyboardMarkup(btn)
         await query.message.edit_text(
-            text=(script.DMCA_TXT),
+            text=script.DMCA_TXT,
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
-		)
+	    )
     
 	elif query.data.startswith("grp_pm"):
         _, grp_id = query.data.split("#")
