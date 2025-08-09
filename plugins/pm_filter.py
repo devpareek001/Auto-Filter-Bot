@@ -1519,18 +1519,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
             media=media,
             reply_markup=reply_markup
 		)
-        
-        
-    elif query.data == "font":
-        buttons = [[
-            InlineKeyboardButton('‹‹‹ Bᴀᴄᴋ', callback_data='mods')
-        ]]
-        reply_markup = InlineKeyboardMarkup(buttons)
-        await query.message.edit_text(
-            text=script.FONT_TXT,
-            reply_markup=reply_markup,
-            parse_mode=enums.ParseMode.HTML
-       )
     
     elif query.data == "DMCA":
         btn = [[
