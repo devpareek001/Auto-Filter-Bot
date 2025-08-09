@@ -1404,27 +1404,36 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     elif query.data == "premium":
         try:
+        # Buttons for premium section
             btn = [[
                 InlineKeyboardButton('🧧 ʙᴜʏ ᴘʀᴇᴍɪᴜᴍ 🧧', callback_data='buy'),
             ],[
                 InlineKeyboardButton('👥 ʀᴇꜰᴇʀ ꜰʀɪᴇɴᴅꜱ', callback_data='reffff'),
                 InlineKeyboardButton('🈚 ꜰʀᴇᴇ ᴛʀɪᴀʟ', callback_data='give_trial')
-            ],[            
+            ],[
                 InlineKeyboardButton('⇋ ʙᴀᴄᴋ ᴛᴏ ʜᴏᴍᴇ ⇋', callback_data='start')
             ]]
-            reply_markup = InlineKeyboardMarkup(btn)                        
-            await client.edit_message_media(                
-                query.message.chat.id, 
-                query.message.id, 
-                InputMediaPhoto(random.choice(PICS))                       
-            )
+            reply_markup = InlineKeyboardMarkup(btn)
+
+        # Try editing media (photo), if message has media
+            try:
+                await client.edit_message_media(                
+                    chat_id=query.message.chat.id,
+                    message_id=query.message.id,
+                    media=InputMediaPhoto(random.choice(PICS))
+                )
+            except Exception as e:
+                print("Media update skipped:", e)
+
+        # Always update text
             await query.message.edit_text(
                 text=script.BPREMIUM_TXT,
                 reply_markup=reply_markup,
                 parse_mode=enums.ParseMode.HTML
             )
+
         except Exception as e:
-            print(e)
+            print("Error in premium handler:", e)
 
     elif query.data == "buy":
         try:
@@ -1447,7 +1456,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
     elif query.data == "upi":
         try:
             btn = [[ 
-                InlineKeyboardButton('📱 ꜱᴇɴᴅ  ᴘᴀʏᴍᴇɴᴛ ꜱᴄʀᴇᴇɴꜱʜᴏᴛ', url=OWNER_LNK),
+                InlineKeyboardButton('📱 ꜱᴇɴᴅ  ᴘᴀʏᴍᴇɴᴛ ꜱᴄʀᴇᴇɴꜱʜᴏᴛ', url="https://t.me/+LaNL0NX94NMwNDk9"),
             ],[
                 InlineKeyboardButton('🚫 ᴄʟᴏꜱᴇ 🚫', callback_data='close_data')
             ]]
@@ -1502,9 +1511,9 @@ async def cb_handler(client: Client, query: CallbackQuery):
         buttons = [[
             InlineKeyboardButton('💖 𝙳𝚘𝚗𝚊𝚝𝚎', callback_data='donate'),
             InlineKeyboardButton('🎁 𝚂𝚘𝚞𝚛𝚌𝚎', callback_data='source')
-	    ],[
-	        InlineKeyboardButton('❗ Dɪsᴄʟᴀɪᴍᴇʀ ❗', callback_data='DMCA')
-	    ],[
+	],[
+	    InlineKeyboardButton('❗ Dɪsᴄʟᴀɪᴍᴇʀ ❗', callback_data='DMCA')
+	],[
             InlineKeyboardButton('⇋ ʙᴀᴄᴋ ᴛᴏ ʜᴏᴍᴇ ⇋', callback_data='start')
         ]]
         reply_markup = InlineKeyboardMarkup(buttons)
@@ -1521,7 +1530,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
         )
         
         
-    
     elif query.data == "source":
         buttons = [[
             InlineKeyboardButton('Cᴏɴᴛᴀᴄᴛ Oᴡɴᴇʀ 😚', url=OWNER_LNK),
@@ -1548,16 +1556,23 @@ async def cb_handler(client: Client, query: CallbackQuery):
             parse_mode=enums.ParseMode.HTML
         )
 
-    elif query.data == "ref_point":
-        await query.answer(f'You Have: {referdb.get_refer_points(query.from_user.id)} Refferal points.', show_alert=True)
+        await query.message.edit_media(
+            media=media,
+            reply_markup=reply_markup
+        )
 
+    
+    elif query.data == "ref_point":
+            await query.answer(f'You Have: {referdb.get_refer_points(query.from_user.id)} Refferal points.', show_alert=True)
+    
+    
     elif query.data == "help":
         btn = [[
             InlineKeyboardButton("⇋ ʙᴀᴄᴋ ⇋", callback_data="start")
         ]]
         reply_markup = InlineKeyboardMarkup(btn)
         await query.message.edit_text(
-            text=script.HELP_TXT,
+            text=(script.HELP_TXT),
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
@@ -1568,12 +1583,12 @@ async def cb_handler(client: Client, query: CallbackQuery):
         ]]
         reply_markup = InlineKeyboardMarkup(btn)
         await query.message.edit_text(
-            text=script.DMCA_TXT,
+            text=(script.DMCA_TXT),
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
-	    )
-    
-	elif query.data.startswith("grp_pm"):
+	)
+
+    elif query.data.startswith("grp_pm"):
         _, grp_id = query.data.split("#")
         user_id = query.from_user.id if query.from_user else None
         if not await is_check_admin(client, int(grp_id), user_id):
@@ -1581,6 +1596,12 @@ async def cb_handler(client: Client, query: CallbackQuery):
         btn = await group_setting_buttons(int(grp_id)) 
         silentx = await client.get_chat(int(grp_id))
         await query.message.edit(text=f"ᴄʜᴀɴɢᴇ ʏᴏᴜʀ ɢʀᴏᴜᴘ ꜱᴇᴛᴛɪɴɢꜱ ✅\nɢʀᴏᴜᴘ ɴᴀᴍᴇ - '{silentx.title}'</b>⚙", reply_markup=InlineKeyboardMarkup(btn))
+
+    elif query.data.startswith("verification_setgs"):
+        _, grp_id = query.data.split("#")
+        user_id = query.from_user.id if query.from_user else None
+        if not await is_check_admin(client, int(grp_id), user_id):
+            return await query.answer("<b>ɴᴇᴇᴅ ᴛᴏ ʙᴇ ᴀᴅᴍɪɴ ᴛᴏ ᴜꜱᴇ ᴛʜɪꜱ ✅.</b>", show_alert=True)
 
     elif query.data.startswith("verification_setgs"):
         _, grp_id = query.data.split("#")
