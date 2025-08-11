@@ -34,6 +34,7 @@ ADMINS = [int(admin) if id_pattern.search(admin) else admin for admin in environ
 CHANNELS = [int(ch) if id_pattern.search(ch) else ch for ch in environ.get('CHANNELS', '-1002269913541').split()]
 LOG_CHANNEL = int(environ.get('LOG_CHANNEL', '-1002245108673'))  
 BIN_CHANNEL = int(environ.get('BIN_CHANNEL', '-1002245108673'))  
+LAZY_GROUP_LOGS = int(environ.get('LAZY_GROUP_LOGS', '-1002245108673'))
 MOVIE_UPDATE_CHANNEL = int(environ.get('MOVIE_UPDATE_CHANNEL', '-1002611312335'))  
 PREMIUM_LOGS = int(environ.get('PREMIUM_LOGS', '-1002245108673')) 
 auth_grp = environ.get('AUTH_GROUP')
