@@ -2281,7 +2281,7 @@ async def advantage_spell_chok(client, message):
             reply_markup = InlineKeyboardMarkup(btn)
             ms = await query.edit_message_text(f"**🍁 Chat successfully verified 🧡**\n\n**Chat ID**: {chatID}\n**Chat Title**:{chatTitle}", reply_markup=reply_markup)
         except Exception as e:
-            await query.message.edit_text(f"Got a Lazy error:\n{e}"
+            await query.message.edit_text(f"Got a Lazy error:\n{e}")
             logger.error(f"Please solve this Error Lazy Bro : {e}")
     # ban group
     elif query.data.startswith("bangrpchat"):
@@ -2301,7 +2301,7 @@ async def advantage_spell_chok(client, message):
             reply_markup = InlineKeyboardMarkup(btn)
             ms = await query.edit_message_text(f"**chat successfully disabled** ✅\n\n**Chat ID**: {chatID}\n\n**Chat Title**:{chatTitle}", reply_markup=reply_markup)
         except Exception as e:
-            await query.message.edit_text(f"Got a Lazy error:\n{e}"
+            await query.message.edit_text(f"Got a Lazy error:\n{e}")
             logger.error(f"Please solve this Error Lazy Bro : {e}")
     #unban group 
     elif query.data.startswith("enablelazychat"):
@@ -2323,5 +2323,5 @@ async def advantage_spell_chok(client, message):
             reply_markup = InlineKeyboardMarkup(btn)
             ms = await query.edit_message_text(f"**chat successfully Enabled** 💞\n\n**Chat ID**: {chatID}\n\n**Chat Title**:{chatTitle}", reply_markup=reply_markup)
         except Exception as e:
-            await query.message.edit_text(f"Got a Lazy error:\n{e}"
+            await query.message.edit_text(f"Got a Lazy error:\n{e}")
             logger.error(f"Please solve this Error Lazy Bro : {e}")
