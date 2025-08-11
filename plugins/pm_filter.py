@@ -2264,7 +2264,7 @@ async def advantage_spell_chok(client, message):
     except:
         pass
 
-    elif query.data.startswith("verify_lazy_group"):
+    if query.data.startswith("verify_lazy_group"):
         _, chatTitle, chatID = query.data.split(":")
         print(f"Debug: query.data={query.data}, chatID={chatID}, chatTitle={chatTitle}")
         try:
