@@ -58,30 +58,30 @@ async def give_filter(client, message):
             logger.error(f"Chat Not verified : {e}")
 
 
-#@Client.on_message(filters.group & filters.text & filters.incoming)
-#async def give_filter(client, message):
-    #if EMOJI_MODE:
-        #try:
-            #await message.react(emoji=random.choice(REACTIONS))
-        #except Exception:
-            #pass
-    #await silentdb.update_top_messages(message.from_user.id, message.text)
-    #if message.chat.id != SUPPORT_CHAT_ID:
-        #settings = await get_settings(message.chat.id)
-        #if settings['auto_ffilter']:
-            #if re.search(r'https?://\S+|www\.\S+|t\.me/\S+', message.text):
-                #if await is_check_admin(client, message.chat.id, message.from_user.id):
-                    #return
-                #return await message.delete()   
-            #await auto_filter(client, message)
-    #else:
-        #search = message.text
-        #temp_files, temp_offset, total_results = await get_search_results(chat_id=message.chat.id, query=search.lower(), offset=0, filter=True)
-        #if total_results == 0:
-            #return
-        #else:
-            #return await message.reply_text(f"<b>Hᴇʏ {message.from_user.mention},\n\nʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴀᴠᴀɪʟᴀʙʟᴇ ✅\n\n📂 ꜰɪʟᴇꜱ ꜰᴏᴜɴᴅ : {str(total_results)}\n🔍 ꜱᴇᴀʀᴄʜ :</b> <code>{search}</code>\n\n<b>‼️ ᴛʜɪs ɪs ᴀ <u>sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ</u> sᴏ ᴛʜᴀᴛ ʏᴏᴜ ᴄᴀɴ'ᴛ ɢᴇᴛ ғɪʟᴇs ғʀᴏᴍ ʜᴇʀᴇ...\n\n📝 ꜱᴇᴀʀᴄʜ ʜᴇʀᴇ : 👇</b>",   
-            #reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔍 ᴊᴏɪɴ ᴀɴᴅ ꜱᴇᴀʀᴄʜ ʜᴇʀᴇ 🔎", url=GRP_LNK)]]))
+@Client.on_message(filters.group & filters.text & filters.incoming)
+async def give_filter(client, message):
+    if EMOJI_MODE:
+        try:
+            await message.react(emoji=random.choice(REACTIONS))
+        except Exception:
+            pass
+    await silentdb.update_top_messages(message.from_user.id, message.text)
+    if message.chat.id != SUPPORT_CHAT_ID:
+        settings = await get_settings(message.chat.id)
+        if settings['auto_ffilter']:
+            if re.search(r'https?://\S+|www\.\S+|t\.me/\S+', message.text):
+                if await is_check_admin(client, message.chat.id, message.from_user.id):
+                    return
+                return await message.delete()   
+            await auto_filter(client, message)
+    else:
+        search = message.text
+        temp_files, temp_offset, total_results = await get_search_results(chat_id=message.chat.id, query=search.lower(), offset=0, filter=True)
+        if total_results == 0:
+            return
+        else:
+            return await message.reply_text(f"<b>Hᴇʏ {message.from_user.mention},\n\nʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴀᴠᴀɪʟᴀʙʟᴇ ✅\n\n📂 ꜰɪʟᴇꜱ ꜰᴏᴜɴᴅ : {str(total_results)}\n🔍 ꜱᴇᴀʀᴄʜ :</b> <code>{search}</code>\n\n<b>‼️ ᴛʜɪs ɪs ᴀ <u>sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ</u> sᴏ ᴛʜᴀᴛ ʏᴏᴜ ᴄᴀɴ'ᴛ ɢᴇᴛ ғɪʟᴇs ғʀᴏᴍ ʜᴇʀᴇ...\n\n📝 ꜱᴇᴀʀᴄʜ ʜᴇʀᴇ : 👇</b>",   
+            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔍 ᴊᴏɪɴ ᴀɴᴅ ꜱᴇᴀʀᴄʜ ʜᴇʀᴇ 🔎", url=GRP_LNK)]]))
 
 
 @Client.on_message(filters.private & filters.text & filters.incoming)
