@@ -1,4 +1,4 @@
-import asyncio#dev
+import asyncio
 import re
 import ast
 import math
@@ -37,25 +37,6 @@ BUTTON = {}
 BUTTONS = {}
 FRESH = {}
 SPELL_CHECK = {}
-
-@Client.on_message(filters.group & filters.text & filters.incoming)
-async def give_filter(client, message):
-    try:
-        chatIDx = message.chat.id
-        lazy_chatIDx = await db.get_chat(int(chatIDx))
-        if lazy_chatIDx['is_lazy_verified']:
-            k = await manual_filters(client, message)
-    except Exception as e:
-        logger.error(f"Chat not verifeid : {e}") 
-
-    if k == False:
-        try:
-            chatID = message.chat.id
-            lazy_chatID = await db.get_chat(int(chatID))
-            if lazy_chatID['is_lazy_verified']:
-                await auto_filter(client, message)
-        except Exception as e:
-            logger.error(f"Chat Not verified : {e}")
 
 
 @Client.on_message(filters.group & filters.text & filters.incoming)
@@ -1396,12 +1377,14 @@ async def cb_handler(client: Client, query: CallbackQuery):
             ],
             [InlineKeyboardButton('⇋ 𝙱𝚊𝚌𝚔 𝚃𝚘 𝙷𝚘𝚖𝚎 ⇋', callback_data='start')]
         ])
-        reply_markup = InlineKeyboardMarkup(buttons)
         await query.message.edit_text(
-            text=script.Channels,
-            reply_markup=reply_markup,
-            parse_mode=enums.ParseMode.HTML
-		)
+            "⚡ ɢʀᴏᴜᴘs & ᴄʜᴀɴɴᴇʟs ɪɴғᴏ ⚡\n\n"
+            "▫ ᴀʟʟ ɴᴇᴡ ᴍᴏᴠɪᴇs & sᴇʀɪᴇs.\n"
+            "▫ ғᴀsᴛᴇsᴛ ʙᴏᴛs ᴀʀᴇ ᴀᴅᴅᴇᴅ.\n"
+            "▫ ғʀᴇᴇ & ᴇᴀsʏ ᴛᴏ ᴜsᴇ.\n"
+            "▫ 2𝟺x𝟽 sᴇʀᴠɪᴄᴇs ᴀᴠᴀɪʟᴀʙʟᴇ.",
+            reply_markup=keyboard
+        )
     
     elif query.data == "give_trial":
         try:
@@ -1423,36 +1406,27 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     elif query.data == "premium":
         try:
-        # Buttons for premium section
             btn = [[
                 InlineKeyboardButton('🧧 ʙᴜʏ ᴘʀᴇᴍɪᴜᴍ 🧧', callback_data='buy'),
             ],[
                 InlineKeyboardButton('👥 ʀᴇꜰᴇʀ ꜰʀɪᴇɴᴅꜱ', callback_data='reffff'),
                 InlineKeyboardButton('🈚 ꜰʀᴇᴇ ᴛʀɪᴀʟ', callback_data='give_trial')
-            ],[
+            ],[            
                 InlineKeyboardButton('⇋ ʙᴀᴄᴋ ᴛᴏ ʜᴏᴍᴇ ⇋', callback_data='start')
             ]]
-            reply_markup = InlineKeyboardMarkup(btn)
-
-        # Try editing media (photo), if message has media
-            try:
-                await client.edit_message_media(                
-                    chat_id=query.message.chat.id,
-                    message_id=query.message.id,
-                    media=InputMediaPhoto(random.choice(PICS))
-                )
-            except Exception as e:
-                print("Media update skipped:", e)
-
-        # Always update text
+            reply_markup = InlineKeyboardMarkup(btn)                        
+            await client.edit_message_media(                
+                query.message.chat.id, 
+                query.message.id, 
+                InputMediaPhoto(random.choice(PICS))                       
+            )
             await query.message.edit_text(
                 text=script.BPREMIUM_TXT,
                 reply_markup=reply_markup,
                 parse_mode=enums.ParseMode.HTML
             )
-
         except Exception as e:
-            print("Error in premium handler:", e)
+            print(e)
 
     elif query.data == "buy":
         try:
@@ -1475,7 +1449,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
     elif query.data == "upi":
         try:
             btn = [[ 
-                InlineKeyboardButton('📱 ꜱᴇɴᴅ  ᴘᴀʏᴍᴇɴᴛ ꜱᴄʀᴇᴇɴꜱʜᴏᴛ', url="https://t.me/+LaNL0NX94NMwNDk9"),
+                InlineKeyboardButton('📱 ꜱᴇɴᴅ  ᴘᴀʏᴍᴇɴᴛ ꜱᴄʀᴇᴇɴꜱʜᴏᴛ', url=OWNER_LNK),
             ],[
                 InlineKeyboardButton('🚫 ᴄʟᴏꜱᴇ 🚫', callback_data='close_data')
             ]]
@@ -1530,9 +1504,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         buttons = [[
             InlineKeyboardButton('💖 𝙳𝚘𝚗𝚊𝚝𝚎', callback_data='donate'),
             InlineKeyboardButton('🎁 𝚂𝚘𝚞𝚛𝚌𝚎', callback_data='source')
-	],[
-	    InlineKeyboardButton('❗ Dɪsᴄʟᴀɪᴍᴇʀ ❗', callback_data='DMCA')
-	],[
+        ],[
             InlineKeyboardButton('⇋ ʙᴀᴄᴋ ᴛᴏ ʜᴏᴍᴇ ⇋', callback_data='start')
         ]]
         reply_markup = InlineKeyboardMarkup(buttons)
@@ -1563,7 +1535,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     elif query.data == "donate":
         buttons = [[
-            InlineKeyboardButton('🐻‍❄️ Sᴇɴᴅ Dᴏɴᴀᴛᴇ Sᴄʀᴇᴇɴꜱʜᴏᴛ Hᴇʀᴇ', url="https://t.me/FilmeyWorldSupport"),
+            InlineKeyboardButton('🐻‍❄️ Sᴇɴᴅ Dᴏɴᴀᴛᴇ Sᴄʀᴇᴇɴꜱʜᴏᴛ Hᴇʀᴇ', url=OWNER_LNK),
         ], [
             InlineKeyboardButton("⬅️ Back", callback_data="about")
         ]]
@@ -1586,26 +1558,15 @@ async def cb_handler(client: Client, query: CallbackQuery):
     
     
     elif query.data == "help":
-        btn = [[
-            InlineKeyboardButton("⇋ ʙᴀᴄᴋ ⇋", callback_data="start")
-        ]]
-        reply_markup = InlineKeyboardMarkup(btn)
-        await query.message.edit_text(
-            text=(script.HELP_TXT),
-            reply_markup=reply_markup,
-            parse_mode=enums.ParseMode.HTML
-        )
-
-    elif query.data == "DMCA":
-        btn = [[
-            InlineKeyboardButton("⇋ ʙᴀᴄᴋ ⇋", callback_data="start")
-        ]]
-        reply_markup = InlineKeyboardMarkup(btn)
-        await query.message.edit_text(
-            text=(script.DMCA_TXT),
-            reply_markup=reply_markup,
-            parse_mode=enums.ParseMode.HTML
-	)
+            btn = [[
+                    InlineKeyboardButton("⇋ ʙᴀᴄᴋ ⇋", callback_data="start")
+                  ]]
+            reply_markup = InlineKeyboardMarkup(btn)
+            await query.message.edit_text(
+                text=(script.HELP_TXT),
+                reply_markup=reply_markup,
+                parse_mode=enums.ParseMode.HTML 
+            )
 
     elif query.data.startswith("grp_pm"):
         _, grp_id = query.data.split("#")
@@ -1615,12 +1576,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
         btn = await group_setting_buttons(int(grp_id)) 
         silentx = await client.get_chat(int(grp_id))
         await query.message.edit(text=f"ᴄʜᴀɴɢᴇ ʏᴏᴜʀ ɢʀᴏᴜᴘ ꜱᴇᴛᴛɪɴɢꜱ ✅\nɢʀᴏᴜᴘ ɴᴀᴍᴇ - '{silentx.title}'</b>⚙", reply_markup=InlineKeyboardMarkup(btn))
-
-    elif query.data.startswith("verification_setgs"):
-        _, grp_id = query.data.split("#")
-        user_id = query.from_user.id if query.from_user else None
-        if not await is_check_admin(client, int(grp_id), user_id):
-            return await query.answer("<b>ɴᴇᴇᴅ ᴛᴏ ʙᴇ ᴀᴅᴍɪɴ ᴛᴏ ᴜꜱᴇ ᴛʜɪꜱ ✅.</b>", show_alert=True)
 
     elif query.data.startswith("verification_setgs"):
         _, grp_id = query.data.split("#")
@@ -2263,65 +2218,3 @@ async def advantage_spell_chok(client, message):
         await message.delete()
     except:
         pass
-
-    if query.data.startswith("verify_lazy_group"):
-        _, chatTitle, chatID = query.data.split(":")
-        print(f"Debug: query.data={query.data}, chatID={chatID}, chatTitle={chatTitle}")
-        try:
-            await client.send_message(chatID, text=f"Hello users !\n From now i will provide you contents 24X7 💘")
-            await db.verify_lazy_chat(int(chatID))
-            temp.LAZY_VERIFIED_CHATS.append(int(chatID))
-            btn = [
-                [
-                InlineKeyboardButton(text=f"🚫 BAN Chat 🤐", callback_data=f"bangrpchat:{chatTitle}:{chatID}")
-            ],[
-                InlineKeyboardButton(text=f"❌ Close ❌", callback_data="close_data")
-            ]
-            ]
-            reply_markup = InlineKeyboardMarkup(btn)
-            ms = await query.edit_message_text(f"**🍁 Chat successfully verified 🧡**\n\n**Chat ID**: {chatID}\n**Chat Title**:{chatTitle}", reply_markup=reply_markup)
-        except Exception as e:
-            await query.message.edit_text(f"Got a Lazy error:\n{e}")
-            logger.error(f"Please solve this Error Lazy Bro : {e}")
-    # ban group
-    elif query.data.startswith("bangrpchat"):
-        _, chatTitle, chatID = query.data.split(":")
-        print(f"Debug: query.data={query.data}, chatID={chatID}, chatTitle={chatTitle}")
-        try:
-            await client.send_message(chatID, text=f"Oops! Sorry, Let's Take a break\nThis is my last and Good Bye message to you all. \n\nContact my admin for more info")
-            await db.disable_chat(int(chatID))
-            temp.BANNED_CHATS.append(int(chatID))
-            btn = [
-                [
-                InlineKeyboardButton(text=f"⚡ Enable Chat 🍁", callback_data=f"enablelazychat:{chatTitle}:{chatID}")
-            ],[
-                InlineKeyboardButton(text=f"❌ Close ❌", callback_data="close_data")
-            ]
-            ]
-            reply_markup = InlineKeyboardMarkup(btn)
-            ms = await query.edit_message_text(f"**chat successfully disabled** ✅\n\n**Chat ID**: {chatID}\n\n**Chat Title**:{chatTitle}", reply_markup=reply_markup)
-        except Exception as e:
-            await query.message.edit_text(f"Got a Lazy error:\n{e}")
-            logger.error(f"Please solve this Error Lazy Bro : {e}")
-    #unban group 
-    elif query.data.startswith("enablelazychat"):
-        _, chatTitle , chatID = query.data.split(":")
-        print(f"Debug: query.data={query.data}, chatID={chatID}, chatTitle={chatTitle}")
-        try:
-            sts = await db.get_chat(int(chatID))
-            if not sts:
-                return await query.answer("Chat Not Found In DB !", show_alert=True)
-            if not sts.get('is_disabled'):
-                return await query.answer('This chat is not yet disabled.', show_alert=True)
-            await db.re_enable_chat(int(chatID))
-            temp.BANNED_CHATS.remove(int(chatID))
-            btn = [[
-                    InlineKeyboardButton(text=f"😜 BAN Again 😂", callback_data=f"bangrpchat:{chatTitle}:{chatID}")
-                ],[
-                    InlineKeyboardButton(text=f"❌ Close ❌", callback_data="close_data")
-            ]]
-            reply_markup = InlineKeyboardMarkup(btn)
-            ms = await query.edit_message_text(f"**chat successfully Enabled** 💞\n\n**Chat ID**: {chatID}\n\n**Chat Title**:{chatTitle}", reply_markup=reply_markup)
-        except Exception as e:
-            await query.message.edit_text(f"Got a Lazy error:\n{e}")
-            logger.error(f"Please solve this Error Lazy Bro : {e}")
