@@ -125,10 +125,9 @@ async def set_skip_number(bot, message):
         await message.reply("Give me a skip number")
 
 def get_progress_bar(percent, length=10):
-    """Creates an emoji-based progress bar."""
     filled = int(length * percent / 100)
     unfilled = length - filled
-    return '🟩' * filled + '⬜️' * unfilled
+    return '█' * filled + '▒' * unfilled
 
 async def index_files_to_db(lst_msg_id, chat, msg, bot):
     total_files = 0
@@ -157,7 +156,7 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
             await msg.edit(
                 f"📊 Indexing Starting......\n"
                 f"💬 Total Messages: <code>{total_messages}</code>\n"
-                f"📋 Total Fetch: <code> {total_fetch}</code>\n"
+                f"💾 Total Fetch: <code> {total_fetch}</code>\n"
                 f"⏰ Elapsed: <code>{get_readable_time(time.time() - start_time)}</code>",
                 reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('Cancel', callback_data='index_cancel')]])
             )
@@ -221,16 +220,17 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
                 eta = (total_fetch - progress) / BATCH_SIZE * avg_batch_time
                 progress_bar = get_progress_bar(int(percentage))
                 await msg.edit(
-                    f"📊 Indexing Progress 📦 Batch {batch + 1}/{batches}\n"
-                    f"{progress_bar} <code>{percentage:.1f}%</code>\n\n"
-                    f"Total Messages: <code>{total_messages}</code>\n"
-                    f"Total Fetched: <code>{total_fetch}</code>\n"
-                    f"Fetched: <code>{current}</code>\n"
-                    f"Saved: <code>{total_files}</code>\n"
-                    f"Duplicates: <code>{duplicate}</code>\n"
-                    f"Deleted: <code>{deleted}</code>\n"
-                    f"Non-Media: <code>{no_media + unsupported}</code> (Unsupported: <code>{unsupported}</code>)\n"
-                    f"Errors: <code>{errors}</code>\n"
+                    f"📊 Indexing Progress\n"
+                    f"📦 Batch No: {batch + 1}/{batches}\n"
+                    f"{progress_bar} <code>{percentage:.1f}%</code>\n"
+                    f"💬 Total Messages: <code>{total_messages}</code>\n"
+                    f"📥 Total Fetch: <code>{total_fetch}</code>\n"
+                    f"⬇️ Fetched: <code>{current}</code>\n"
+                    f"💾 Saved: <code>{total_files}</code>\n"
+                    f"🔄 Duplicates: <code>{duplicate}</code>\n"
+                    f"🗑️ Deleted: <code>{deleted}</code>\n"
+                    f"📴 Non-Media: <code>{no_media + unsupported}</code> (🚫 Unsupported: <code>{unsupported}</code>)\n"
+                    f"⚠️ Errors: <code>{errors}</code>\n"
                     f"⏱️ Elapsed: <code>{get_readable_time(elapsed)}</code>\n"
                     f"⏰ ETA: <code>{get_readable_time(eta)}</code>",
                     reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('Cancel', callback_data='index_cancel')]])
@@ -238,19 +238,19 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
             elapsed = time.time() - start_time
             await msg.edit(
                 f"✅ Indexing Completed!\n"
-                f"Total Messages: <code>{total_messages}</code>\n"
-                f"Total Fetched: <code>{total_fetch}</code>\n"
-                f"Fetched: <code>{current}</code>\n"
-                f"Saved: <code>{total_files}</code>\n"
-                f"Duplicates: <code>{duplicate}</code>\n"
-                f"Deleted: <code>{deleted}</code>\n"
-                f"Non-Media: <code>{no_media + unsupported}</code> (Unsupported: <code>{unsupported}</code>)\n"
-                f"Errors: <code>{errors}</code>\n"
-                f"⏱️ Elapsed: <code>{get_readable_time(elapsed)}</code>",
+                f"💬 Total Message: <code>{total_messages}</code>a\n" 
+                f"📥 Total Fetch: <code>{total_fetch}</code>\n"
+                f"⬇️ Fetched: <code>{current}</code>\n"
+                f"💾 Saved: <code>{total_files}</code>\n"
+                f"🔄 Duplicates: <code>{duplicate}</code>\n"
+                f"🗑️ Deleted: <code>{deleted}</code>\n"
+                f"📴 Non-Media: <code>{no_media + unsupported}</code> (Unsupported: <code>{unsupported}</code>)\n"
+                f"⚠️ Errors: <code>{errors}</code>\n"
+                f"⏰ Elapsed: <code>{get_readable_time(elapsed)}</code>",
                 reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('Close', callback_data='close_data')]])
             )
         except Exception as e:
             await msg.edit(
                 f"❌ Error: <code>{e}</code>",
                 reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('Close', callback_data='close_data')]])
-            )
+                )
