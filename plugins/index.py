@@ -254,5 +254,3 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
                 f"❌ Error: <code>{e}</code>",
                 reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('Close', callback_data='close_data')]])
             )
-
-    
