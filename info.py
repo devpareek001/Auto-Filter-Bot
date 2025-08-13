@@ -30,11 +30,10 @@ SUBSCRIPTION = (environ.get('SUBSCRIPTION', 'https://telegra.ph/file/f983d857f3c
 FSUB_IMG = (environ.get('FSUB_IMG', 'https://i.ibb.co/cShkPjcZ/x.jpg')).split() 
 DONATE_IMG = environ.get("DONATE_IMG", "https://graph.org/file/3768bd857b7991d7bc72e-e9f5779b867af7dc2e.jpg")
 
-ADMINS = [int(admin) if id_pattern.search(admin) else admin for admin in environ.get('ADMINS', '6914788581').split()] 
-CHANNELS = [int(ch) if id_pattern.search(ch) else ch for ch in environ.get('CHANNELS', '-1002269913541').split()]
+ADMINS = [int(admin) if id_pattern.search(admin) else admin for admin in environ.get('ADMINS', '6914788581 1976581598').split()] 
+CHANNELS = [int(ch) if id_pattern.search(ch) else ch for ch in environ.get('CHANNELS', '-1002269913541 -1002693892638').split()]
 LOG_CHANNEL = int(environ.get('LOG_CHANNEL', '-1002245108673'))  
 BIN_CHANNEL = int(environ.get('BIN_CHANNEL', '-1002245108673'))  
-LAZY_GROUP_LOGS = int(environ.get('LAZY_GROUP_LOGS', '-1002245108673'))
 MOVIE_UPDATE_CHANNEL = int(environ.get('MOVIE_UPDATE_CHANNEL', '-1002611312335'))  
 PREMIUM_LOGS = int(environ.get('PREMIUM_LOGS', '-1002245108673')) 
 auth_grp = environ.get('AUTH_GROUP')
@@ -44,14 +43,13 @@ REQST_CHANNEL = int(reqst_channel) if reqst_channel and id_pattern.search(reqst_
 support_chat_id = environ.get('SUPPORT_CHAT_ID', '-1002253933263') 
 SUPPORT_CHAT_ID = int(support_chat_id) if support_chat_id and id_pattern.search(support_chat_id) else None
 
-DATABASE_URI = environ.get('DATABASE_URI', "mongodb+srv://Dev:Dev@cluster0.copmobw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+DATABASE_URI = environ.get('DATABASE_URI', "mongodb+srv://opkatil1:opkatil@cluster0.xjk6jn9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 DATABASE_NAME = environ.get('DATABASE_NAME', "Cluster0")
 COLLECTION_NAME = environ.get('COLLECTION_NAME', 'SilentXBotz_files')
 
 # If MULTIPLE_DB Is True Then Fill DATABASE_URI2 Value Else You Will Get Error.
 MULTIPLE_DB = is_enabled(os.environ.get('MULTIPLE_DB', "True"), False) # Type True For Turn On MULTIPLE DB FUNTION 
 DATABASE_URI2 = environ.get('DATABASE_URI2', "mongodb+srv://Demo22:Demo22@cluster0.pj7etfj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
-
 
 GRP_LNK = environ.get('GRP_LNK', 'https://t.me/+TGqBUP3rvd0xN2M1')
 CHNL_LNK = environ.get('CHNL_LNK', 'https://t.me/Hollywood_Movies_2025_hd')
@@ -60,7 +58,7 @@ UPDATE_CHANNEL_LNK = environ.get('UPDATE_CHANNEL_LNK', 'https://t.me/+WRL4fzzm5S
 
 AUTH_CHANNEL = environ.get("AUTH_CHANNEL", "-1002189976586") # add multiple channels here, separated by single space
 AUTH_CHANNEL = [int(ch) for ch in AUTH_CHANNEL.strip().split()] if AUTH_CHANNEL else []
-AUTH_REQ_CHANNEL = environ.get('AUTH_REQ_CHANNEL', '-1002189976586') # add multiple channels here, separated by single space
+AUTH_REQ_CHANNEL = environ.get('AUTH_REQ_CHANNEL', '') # add multiple channels here, separated by single space
 AUTH_REQ_CHANNEL = [int(ch) for ch in AUTH_REQ_CHANNEL.strip().split()] if AUTH_REQ_CHANNEL else []
 
 IS_VERIFY = is_enabled('IS_VERIFY', False)
