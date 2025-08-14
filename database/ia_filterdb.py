@@ -1,4 +1,3 @@
-import logging
 from struct import pack
 import re
 import base64
@@ -12,9 +11,8 @@ from info import *
 from utils import get_settings, save_group_settings
 from collections import defaultdict
 from datetime import datetime, timedelta
+from logging_helper import LOGGER
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
 
 _db_stats_cache_primary = {
     "timestamp": None,
@@ -74,30 +72,28 @@ async def check_db_size(db, cache):
         cache["timestamp"] = now
         return db_size_mb
     except Exception as e:
-        print(f"Error Checking Database Size: {e}")
+        LOGGER.error(f"Error Checking Database Size: {e}")
         return 0 
-
+    
 async def save_file(media):
     file_id, file_ref = unpack_new_file_id(media.file_id)
-    file_name = re.sub(r"@\w+|(_|\-|\.|\+|\#|\$|%|\^|&|\*|\(|\)|!|~|`|,|;|:|\"|\'|\?|/|<|>|\[|\]|\{|\}|=|\||\\)", " ", str(media.file_name))
-    file_name = re.sub(r"\s+", " ", file_name)    
-    
+    file_name = re.sub(r"[_\-\.#+$%^&*()!~`,;:\"'?/<>\[\]{}=|\\]", " ", str(media.file_name))
+    file_name = re.sub(r"\s+", " ", file_name).strip()    
     primary_db_size = await check_db_size(db, _db_stats_cache_primary)
-    print(f"Primary DB Size - {primary_db_size} And Multiple Db - {MULTIPLE_DB}")
     use_secondary = False
     saveMedia = Media
     exists_in_primary = await Media.count_documents({'file_id': file_id}, limit=1)
     if exists_in_primary:
-        print(f'{file_name} Is Already Saved In Primary Database!')
+        LOGGER.info(f'{file_name} Is Already Saved In Primary Database!')
         return False, 0
         
-    if MULTIPLE_DB and primary_db_size >= 300:
-        print("Primary Database Is Low On Space. Switching To Secondary DB.")
+    if MULTIPLE_DB and primary_db_size >= DB_CHANGE_LIMIT:
+        LOGGER.info("Primary Database Is Low On Space. Switching To Secondary DB.")
         saveMedia = Media2
         use_secondary = True
         exists_in_secondary = await Media2.count_documents({'file_id': file_id}, limit=1)
         if exists_in_secondary:
-            print(f'{file_name} Is Already Saved In Secondary Database!')
+            LOGGER.info(f'{file_name} Is Already Saved In Secondary Database!')
             return False, 0
             
     try:
@@ -111,17 +107,18 @@ async def save_file(media):
             caption=media.caption.html if media.caption else None,
         )
     except ValidationError as e:
-        print(f'Validation Error While Saving File: {e}')
+        LOGGER.error(f'Validation Error While Saving File: {e}')
         return False, 2
     else:
         try:
             await file.commit()
         except DuplicateKeyError:
-            print(f'{file_name} Is Already Saved In {"Secondary" if use_secondary else "Primary"} Database')
+            LOGGER.error(f'{file_name} Is Already Saved In {"Secondary" if use_secondary else "Primary"} Database')
             return False, 0
         else:
-            print(f'{file_name} Saved Successfully In {"Secondary" if use_secondary else "Primary"} Database')
+            LOGGER.info(f'{file_name} Saved Successfully In {"Secondary" if use_secondary else "Primary"} Database')
             return True, 1
+            
 
 async def get_search_results(chat_id, query, file_type=None, max_results=10, offset=0, filter=False):
     if chat_id is not None:
@@ -137,9 +134,9 @@ async def get_search_results(chat_id, query, file_type=None, max_results=10, off
     if not query:
         raw_pattern = '.'
     elif ' ' not in query:
-        raw_pattern = r'(\b|[\.\+\-_])' + query + r'(\b|[\.\+\-_])'
+        raw_pattern = r"(\b|[\.\+\-_])" + query + r"(\b|[\.\+\-_])"
     else:
-        raw_pattern = query.replace(' ', r'.*[\s\.\+\-_()]')
+        raw_pattern = query.replace(" ", r".*[\s\.\+\-_()\[\]]")
 
     try:
         regex = re.compile(raw_pattern, flags=re.IGNORECASE)
@@ -176,9 +173,9 @@ async def get_bad_files(query, file_type=None):
     if not query:
         raw_pattern = '.'
     elif ' ' not in query:
-        raw_pattern = r'(\b|[\.\+\-_])' + query + r'(\b|[\.\+\-_])'
+        raw_pattern = r"(\b|[\.\+\-_])" + query + r"(\b|[\.\+\-_])"
     else:
-        raw_pattern = query.replace(' ', r'.*[\s\.\+\-_()]')
+        raw_pattern = query.replace(" ", r".*[\s\.\+\-_()]")
     try:
         regex = re.compile(raw_pattern, flags=re.IGNORECASE)
     except:
@@ -245,7 +242,7 @@ async def siletxbotz_fetch_media(limit: int) -> List[dict]:
     try:
         if MULTIPLE_DB:
             db_size = await check_db_size(Media)
-            if db_size > 407:
+            if db_size > DB_CHANGE_LIMIT:
                 cursor = Media2.find().sort("$natural", -1).limit(limit)
                 files = await cursor.to_list(length=limit)
                 return files
@@ -253,7 +250,7 @@ async def siletxbotz_fetch_media(limit: int) -> List[dict]:
         files = await cursor.to_list(length=limit)
         return files
     except Exception as e:
-        logger.error(f"Error in siletxbotz_fetch_media: {e}")
+        LOGGER.error(f"Error in siletxbotz_fetch_media: {e}")
         return []
 
 async def silentxbotz_clean_title(filename: str, is_series: bool = False) -> str:
@@ -271,7 +268,7 @@ async def silentxbotz_clean_title(filename: str, is_series: bool = False) -> str
                 return f"{title} S{int(season):02}"
         return re.sub(r"[._\-\[\]@()]+", " ", filename).strip().title()
     except Exception as e:
-        logger.error(f"Error in truncate_title: {e}")
+        LOGGER.error(f"Error in truncate_title: {e}")
         return filename
         
 async def siletxbotz_get_movies(limit: int = 20) -> List[str]:
@@ -289,7 +286,7 @@ async def siletxbotz_get_movies(limit: int = 20) -> List[str]:
                 break
         return sorted(list(results))[:limit]
     except Exception as e:
-        logger.error(f"Error in siletxbotz_get_movies: {e}")
+        LOGGER.error(f"Error in siletxbotz_get_movies: {e}")
         return []
 
 async def siletxbotz_get_series(limit: int = 30) -> Dict[str, List[int]]:
@@ -311,5 +308,5 @@ async def siletxbotz_get_series(limit: int = 30) -> Dict[str, List[int]]:
                 grouped[title].append(season)
         return {title: sorted(set(seasons))[:10] for title, seasons in grouped.items() if seasons}
     except Exception as e:
-        logger.error(f"Error in siletxbotz_get_series: {e}")
+        LOGGER.error(f"Error in siletxbotz_get_series: {e}")
         return []
