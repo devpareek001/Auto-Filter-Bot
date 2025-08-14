@@ -81,9 +81,7 @@ async def start(client, message):
         await dlt.delete()
         return         
     if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
-        silenxbotz=await message.reply_sticker("CAACAgEAAxkBAAENpaZnl898tVVOj-69IH89gx-8ee-CCAACWwIAAu8vQEXX2jgCrI2F-jYE")
-        await asyncio.sleep(5)
-        await silenxbotz.delete()
+        
         if not await db.get_chat(message.chat.id):
             total=await client.get_chat_members_count(message.chat.id)
             await client.send_message(LOG_CHANNEL, script.LOG_TEXT_G.format(message.chat.title, message.chat.id, total, "Unknown"))       
@@ -103,8 +101,8 @@ async def start(client, message):
                     InlineKeyboardButton('ℋᴇʟᴘ ⚙️', callback_data='help'),
                     InlineKeyboardButton('𝔄ʙᴏᴜᴛ 💌', callback_data='about')
                 ],[
-                    InlineKeyboardButton('ᴇᴀʀɴ ᴍᴏɴᴇʏ 🤑', callback_data="earn"),
-                    InlineKeyboardButton("𝚂𝚞𝚙𝚙𝚘𝚛𝚝 🍁", callback_data="show_channels")
+                    InlineKeyboardButton('ᴇᴀʀɴ ᴍᴏɴᴇʏ 🤑', callback_data="earn"), 
+                    InlineKeyboardButton("🍁 𝚂𝚞𝚙𝚙𝚘𝚛𝚝", callback_data="show_channels")
                 ]]
         reply_markup = InlineKeyboardMarkup(buttons)
         await asyncio.sleep(1)
