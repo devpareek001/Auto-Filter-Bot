@@ -1,4 +1,3 @@
-import logging
 from pyrogram.errors import InputUserDeactivated, UserNotParticipant, FloodWait, UserIsBlocked, PeerIdInvalid
 from info import  *
 from imdb import Cinemagoer 
@@ -22,9 +21,7 @@ import aiohttp
 from shortzy import Shortzy
 import http.client
 import json
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+from logging_helper import LOGGER
 
 BTN_URL_REGEX = re.compile(
     r"(\[([^\[]+?)\]\((buttonurl|buttonalert):(?:/{0,2})(.+?)(:same)?\))"
@@ -44,6 +41,8 @@ class temp(object):
     ME = None
     CURRENT=int(os.environ.get("SKIP", 2))
     CANCEL = False
+    B_USERS_CANCEL = False
+    B_GROUPS_CANCEL = False 
     MELCOW = {}
     U_NAME = None
     B_NAME = None
@@ -63,7 +62,7 @@ async def is_req_subscribed(bot, query, chnl):
     except UserNotParticipant:
         pass
     except Exception as e:
-        print(e)
+        LOGGER.error(e)
     return False
 
 async def is_subscribed(bot, user_id, channel_id):
@@ -84,12 +83,88 @@ async def is_check_admin(bot, chat_id, user_id):
         return member.status in [enums.ChatMemberStatus.ADMINISTRATOR, enums.ChatMemberStatus.OWNER]
     except:
         return False
+    
+async def users_broadcast(user_id, message, is_pin):
+    try:
+        m=await message.copy(chat_id=user_id)
+        if is_pin:
+            await m.pin(both_sides=True)
+        return True, "Success"
+    except FloodWait as e:
+        await asyncio.sleep(e.x)
+        return await users_broadcast(user_id, message)
+    except InputUserDeactivated:
+        await db.delete_user(int(user_id))
+        LOGGER.info(f"{user_id}-Removed from Database, since deleted account.")
+        return False, "Deleted"
+    except UserIsBlocked:
+        LOGGER.info(f"{user_id} -Blocked the bot.")
+        await db.delete_user(user_id)
+        return False, "Blocked"
+    except PeerIdInvalid:
+        await db.delete_user(int(user_id))
+        LOGGER.info(f"{user_id} - PeerIdInvalid")
+        return False, "Error"
+    except Exception as e:
+        return False, "Error"
 
+async def groups_broadcast(chat_id, message, is_pin):
+    try:
+        m = await message.copy(chat_id=chat_id)
+        if is_pin:
+            try:
+                await m.pin()
+            except:
+                pass
+        return "Success"
+    except FloodWait as e:
+        await asyncio.sleep(e.x)
+        return await groups_broadcast(chat_id, message)
+    except Exception as e:
+        await db.delete_chat(chat_id)
+        return "Error"
+
+async def junk_group(chat_id, message):
+    try:
+        kk = await message.copy(chat_id=chat_id)
+        await kk.delete(True)
+        return True, "Succes", 'mm'
+    except FloodWait as e:
+        await asyncio.sleep(e.value)
+        return await junk_group(chat_id, message)
+    except Exception as e:
+        await db.delete_chat(int(chat_id))       
+        LOGGER.info(f"{chat_id} - PeerIdInvalid")
+        return False, "deleted", f'{e}\n\n'
+    
+
+async def clear_junk(user_id, message):
+    try:
+        key = await message.copy(chat_id=user_id)
+        await key.delete(True)
+        return True, "Success"
+    except FloodWait as e:
+        await asyncio.sleep(e.value)
+        return await clear_junk(user_id, message)
+    except InputUserDeactivated:
+        await db.delete_user(int(user_id))
+        LOGGER.info(f"{user_id}-Removed from Database, since deleted account.")
+        return False, "Deleted"
+    except UserIsBlocked:
+        LOGGER.info(f"{user_id} -Blocked the bot.")
+        return False, "Blocked"
+    except PeerIdInvalid:
+        await db.delete_user(int(user_id))
+        LOGGER.info(f"{user_id} - PeerIdInvalid")
+        return False, "Error"
+    except Exception as e:
+        return False, "Error"
+    
 async def get_status(bot_id):
     try:
         return await db.movie_update_status(bot_id) or False  
     except Exception as e:
-        logging.error(f"Error in get_movie_update_status: {e}")
+        LOGGER.error(f"Error in get_movie_update_status: {e}")
         return False  
 
 async def get_poster(query, bulk=False, id=False, file=None):
@@ -257,12 +332,24 @@ def extract_request_content(message_text):
     if match:
         return match.group(1).strip()
     return message_text.strip()
- 
+
 def clean_filename(file_name):
-    file_name = re.sub(r'http\S+', '', re.sub(r'@\w+|#\w+', '', file_name))
-    file_name = re.sub(r"(_|\-|\.|\+)", " ", file_name)
-    file_name = re.sub(r"[(){}\[\]:;'\-!]", "", file_name)
+    prohibitedWords = BAD_WORDS
+    _regex = re.compile('|'.join(map(re.escape, prohibitedWords)))
+    file_name = _regex.sub("", file_name)
+
+    file_name = re.sub(r'[_\-\.\+]', ' ', file_name)
+    file_name = re.sub(r'http\S+|@\w+|#\w+|\[\w+\]|www\.\S+', '', file_name)
+    file_name = re.sub(r'[^\x00-\x7F]+', '', file_name)
+    file_name = re.sub(r'[()\{\}\[\]:;\'\!\?\"]', '', file_name)
+
     return file_name
+
+async def replace_words(string):
+    ignorewords = IGNORE_WORDS
+    pattern = r'\b(?:{})\b'.format('|'.join(map(re.escape, ignorewords)))
+    formatted = re.sub(pattern, '', string)
+    return formatted.replace("-", " ")
 
 def split_list(l, n):
     for i in range(0, len(l), n):
@@ -486,7 +573,7 @@ async def log_error(client, error_message):
             text=f"<b>⚠️ Error Log:</b>\n<code>{error_message}</code>"
         )
     except Exception as e:
-        print(f"Failed to log error: {e}")
+        LOGGER.error(f"Failed to log error: {e}")
 
 
 def get_time(seconds):
