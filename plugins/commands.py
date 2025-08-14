@@ -2,11 +2,11 @@ import os
 import re, sys
 import json
 import base64
-import logging
 import random
 import asyncio
 import time
 import pytz
+from logging_helper import LOGGER
 from .pm_filter import auto_filter 
 from Script import script
 from datetime import datetime
@@ -21,19 +21,21 @@ from database.users_chats_db import db
 from info import *
 from utils import *
 
-logging.basicConfig(level=logging.ERROR)
-logger = logging.getLogger(__name__)
-
 TIMEZONE = "Asia/Kolkata"
 BATCH_FILES = {}
 
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
+    bot_id = client.me.id
     if EMOJI_MODE:
         try:
             await message.react(emoji=random.choice(REACTIONS))
         except Exception:
             pass
+    maintenance_mode = await db.get_maintenance_status(bot_id)
+    if maintenance_mode and message.from_user.id not in ADMINS:
+        await message.reply_text(f"ɪ ᴀᴍ ᴄᴜʀʀᴇɴᴛʟʏ ᴜɴᴅᴇʀ ᴍᴀɪɴᴛᴇɴᴀɴᴄᴇ 🛠️. ɪ ᴡɪʟʟ ʙᴇ ʙᴀᴄᴋ ꜱᴏᴏɴ 🔜", disable_web_page_preview=True)
+        return
     m = message
     if len(m.command) == 2 and m.command[1].startswith(('notcopy', 'sendall')):
         _, userid, verify_id, file_id = m.command[1].split("_", 3)
@@ -79,7 +81,9 @@ async def start(client, message):
         await dlt.delete()
         return         
     if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
-        
+        silenxbotz=await message.reply_sticker("CAACAgEAAxkBAAENpaZnl898tVVOj-69IH89gx-8ee-CCAACWwIAAu8vQEXX2jgCrI2F-jYE")
+        await asyncio.sleep(5)
+        await silenxbotz.delete()
         if not await db.get_chat(message.chat.id):
             total=await client.get_chat_members_count(message.chat.id)
             await client.send_message(LOG_CHANNEL, script.LOG_TEXT_G.format(message.chat.title, message.chat.id, total, "Unknown"))       
@@ -176,29 +180,33 @@ async def start(client, message):
         fsub_id_list = fsub_id_list + AUTH_REQ_CHANNEL if AUTH_REQ_CHANNEL else fsub_id_list
         
         if fsub_id_list:
-            fsub_ids = [] # for check duplicate
+            fsub_ids = []
             for chnl in fsub_id_list:
                 if chnl not in fsub_ids:
                     fsub_ids.append(chnl)
                 else:
                     continue
+                try:
+                    channel_name = (await client.get_chat(chnl)).title or f"Update Channel"
+                except Exception:
+                    channel_name = f"Update Channel"
                 if AUTH_REQ_CHANNEL and chnl in AUTH_REQ_CHANNEL and not await is_req_subscribed(client, message, chnl):
                     try:
                         invite_link = await client.create_chat_invite_link(chnl, creates_join_request=True)
                     except ChatAdminRequired:
-                        print("Bot Ko AUTH_CHANNEL Per Admin Bana Bhai Pahile 🤧")
+                        LOGGER.error("Bot Ko AUTH_CHANNEL Per Admin Bana Bhai Pahile 🤧")
                         return
                     btn.append([
-                        InlineKeyboardButton(f"⛔️ ᴊᴏɪɴ ɴᴏᴡ channel {i}⛔️", url=invite_link.invite_link)
+                        InlineKeyboardButton(f"⛔️ {i}. {channel_name} ⛔️", url=invite_link.invite_link)
                     ])
                 elif chnl not in AUTH_REQ_CHANNEL and not await is_subscribed(client, message.from_user.id, chnl):
                     try:
                         invite_link = await client.create_chat_invite_link(chnl)
                     except ChatAdminRequired:
-                        print("Bot Ko AUTH_CHANNEL Per Admin Bana Bhai Pahile 🤧")
+                        LOGGER.error("Bot Ko AUTH_CHANNEL Per Admin Bana Bhai Pahile 🤧")
                         return
                     btn.append([
-                        InlineKeyboardButton(f"⛔️ ᴊᴏɪɴ ɴᴏᴡ channel {i}⛔️", url=invite_link.invite_link)
+                        InlineKeyboardButton(f"⛔️ {i}. {channel_name} ⛔️", url=invite_link.invite_link)
                     ])
                 i += 1
 
@@ -215,7 +223,7 @@ async def start(client, message):
                 return
     except Exception as e:
         await log_error(client, f"Got Error In Force Subscription Function.\n\n Error - {e}")
-        print(f"Error In Fsub :- {e}")
+        LOGGER.error(f"Error In Fsub :- {e}")
         
     user_id = m.from_user.id
     if not await db.has_premium_access(user_id):
@@ -259,7 +267,7 @@ async def start(client, message):
                 return
         except Exception as e:
             await log_error(client, f"Got Error In Verification Funtion.\n\n Error - {e}")
-            print(f"Error In Verification - {e}")
+            LOGGER.error(f"Error In Verification - {e}")
             pass
     
     if data.startswith("allfiles"):
@@ -271,7 +279,7 @@ async def start(client, message):
             file_id = file.file_id
             files_ = await get_file_details(file_id)
             files1 = files_[0]
-            title = ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), files1.file_name.split()))
+            title = clean_filename(files1.file_name) 
             size = get_size(files1.file_size)
             f_caption = files1.caption
             settings = await get_settings(int(grp_id))
@@ -283,15 +291,15 @@ async def start(client, message):
                     logger.exception(e)
                     f_caption = f_caption
             if f_caption is None:
-                f_caption = f"{' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), files1.file_name.split()))}"
+                f_caption = clean_filename(files1.file_name) 
             if STREAM_MODE:
                 btn = [
-                    [InlineKeyboardButton('❍─𓆩〭〬👒𝖦𝖾𝗇𝖾𝗋𝖺𝗍𝖾 𝖲𝗍𝗋𝖾𝗆𝗂𝗇𝗀 𝖫𝗂𝗇𝗄🤍᪳𝆺𝅥⎯', callback_data=f'streamfile:{file_id}')],
-                    [InlineKeyboardButton('❍─𓆩〭〬👒𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅🤍᪳𝆺𝅥⎯', url=UPDATE_CHANNEL_LNK)]  
+                    [InlineKeyboardButton('𝖦𝖾𝗇𝖾𝗋𝖺𝗍𝖾 𝖲𝗍𝗋𝖾𝗆𝗂𝗇𝗀 𝖫𝗂𝗇𝗄', callback_data=f'streamfile:{file_id}')],
+                    [InlineKeyboardButton('𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅', url=UPDATE_CHANNEL_LNK)]  
                 ]
             else:
                 btn = [
-                    [InlineKeyboardButton('❍─𓆩〭〬👒𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅🤍᪳𝆺𝅥⎯', url=UPDATE_CHANNEL_LNK)]
+                    [InlineKeyboardButton('𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅', url=UPDATE_CHANNEL_LNK)]
                 ]
             msg = await client.send_cached_media(
                 chat_id=message.from_user.id,
@@ -316,13 +324,13 @@ async def start(client, message):
         try:
             if STREAM_MODE:
                 btn = [
-                    [InlineKeyboardButton('❍─𓆩〭〬👒𝖦𝖾𝗇𝖾𝗋𝖺𝗍𝖾 𝖲𝗍𝗋𝖾𝗆𝗂𝗇𝗀 𝖫𝗂𝗇𝗄🤍᪳𝆺𝅥⎯', callback_data=f'streamfile:{file_id}')],
-                    [InlineKeyboardButton('❍─𓆩〭〬👒𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅🤍᪳𝆺𝅥⎯', url=UPDATE_CHANNEL_LNK)]
+                    [InlineKeyboardButton('𝖦𝖾𝗇𝖾𝗋𝖺𝗍𝖾 𝖲𝗍𝗋𝖾𝗆𝗂𝗇𝗀 𝖫𝗂𝗇𝗄', callback_data=f'streamfile:{file_id}')],
+                    [InlineKeyboardButton('𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅', url=UPDATE_CHANNEL_LNK)]
              
                 ]
             else:
                 btn = [
-                    [InlineKeyboardButton('❍─𓆩〭〬👒𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅🤍᪳𝆺𝅥⎯', url=UPDATE_CHANNEL_LNK)]
+                    [InlineKeyboardButton('𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅', url=UPDATE_CHANNEL_LNK)]
                 ]
             msg = await client.send_cached_media(
                 chat_id=message.from_user.id,
@@ -332,7 +340,7 @@ async def start(client, message):
 
             filetype = msg.media
             file = getattr(msg, filetype.value)
-            title = ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), file.file_name.split()))
+            title = clean_filename(file.file_name)              
             size=get_size(file.file_size)
             f_caption = f"<code>{title}</code>"
             settings = await get_settings(int(grp_id))
@@ -353,7 +361,7 @@ async def start(client, message):
         return await message.reply('ɴᴏ ꜱᴜᴄʜ ꜰɪʟᴇ ᴇxɪꜱᴛꜱ !')
     
     files = files_[0]
-    title = ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), files.file_name.split()))
+    title = clean_filename(files.file_name)
     size = get_size(files.file_size)
     f_caption = files.caption
     settings = await get_settings(int(grp_id))            
@@ -362,19 +370,19 @@ async def start(client, message):
         try:
             f_caption=SILENTX_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
         except Exception as e:
-            logger.exception(e)
+            LOGGER.error(e)
             f_caption = f_caption
 
     if f_caption is None:
-        f_caption = ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), files.file_name.split()))
+        f_caption = clean_filename(files.file_name)
     if STREAM_MODE:
         btn = [
-            [InlineKeyboardButton('❍─𓆩〭〬👒𝖦𝖾𝗇𝖾𝗋𝖺𝗍𝖾 𝖲𝗍𝗋𝖾𝗆𝗂𝗇𝗀 𝖫𝗂𝗇𝗄🤍᪳𝆺𝅥⎯', callback_data=f'streamfile:{file_id}')],
-            [InlineKeyboardButton('❍─𓆩〭〬👒𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅🤍᪳𝆺𝅥⎯', url=UPDATE_CHANNEL_LNK)]
+            [InlineKeyboardButton('𝖦𝖾𝗇𝖾𝗋𝖺𝗍𝖾 𝖲𝗍𝗋𝖾𝗆𝗂𝗇𝗀 𝖫𝗂𝗇𝗄', callback_data=f'streamfile:{file_id}')],
+            [InlineKeyboardButton('𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅', url=UPDATE_CHANNEL_LNK)]
         ]
     else:
         btn = [
-            [InlineKeyboardButton('❍─𓆩〭〬👒𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅🤍᪳𝆺𝅥⎯', url=UPDATE_CHANNEL_LNK)]
+            [InlineKeyboardButton('𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅', url=UPDATE_CHANNEL_LNK)]
         ]
     msg = await client.send_cached_media(
         chat_id=message.from_user.id,
@@ -484,6 +492,11 @@ async def delete_all_index_confirm(bot, message):
 
 @Client.on_message(filters.command('settings'))
 async def settings(client, message):
+    bot_id = client.me.id
+    maintenance_mode = await db.get_maintenance_status(bot_id)
+    if maintenance_mode and message.from_user.id not in ADMINS:
+        await message.reply_text(f"ɪ ᴀᴍ ᴄᴜʀʀᴇɴᴛʟʏ ᴜɴᴅᴇʀ ᴍᴀɪɴᴛᴇɴᴀɴᴄᴇ 🛠️. ɪ ᴡɪʟʟ ʙᴇ ʙᴀᴄᴋ ꜱᴏᴏɴ 🔜", disable_web_page_preview=True)
+        return
     user_id = message.from_user.id if message.from_user else None
     if not user_id:
         return await message.reply(f"ʏᴏᴜ'ʀᴇ ᴀɴᴏɴʏᴍᴏᴜꜱ ᴀᴅᴍɪɴ.")
@@ -517,13 +530,18 @@ async def settings(client, message):
                     InlineKeyboardButton(text=silentx.title, callback_data=f"grp_pm#{silentx.id}")
                 ])
             except Exception as e:
-                print(f"Error In PM Settings Button - {e}")
+                LOGGER.error(f"Error In PM Settings Button - {e}")
                 pass
         await message.reply_text('Here Is Your Connected Groups.', reply_markup=InlineKeyboardMarkup(group_list))
                                                                                                             
 
 @Client.on_message(filters.command('reload'))
 async def connect_group(client, message):
+    bot_id = client.me.id
+    maintenance_mode = await db.get_maintenance_status(bot_id)
+    if maintenance_mode and message.from_user.id not in ADMINS:
+        await message.reply_text(f"ɪ ᴀᴍ ᴄᴜʀʀᴇɴᴛʟʏ ᴜɴᴅᴇʀ ᴍᴀɪɴᴛᴇɴᴀɴᴄᴇ 🛠️. ɪ ᴡɪʟʟ ʙᴇ ʙᴀᴄᴋ ꜱᴏᴏɴ 🔜", disable_web_page_preview=True)
+        return
     user_id = message.from_user.id
     if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
         await db.connect_group(message.chat.id, user_id)
@@ -545,6 +563,11 @@ async def connect_group(client, message):
 
 @Client.on_message((filters.command(["request", "Request"]) | filters.regex("#request") | filters.regex("#Request")) & filters.group)
 async def requests(bot, message):
+    bot_id = client.me.id
+    maintenance_mode = await db.get_maintenance_status(bot_id)
+    if maintenance_mode and message.from_user.id not in ADMINS:
+        await message.reply_text(f"ɪ ᴀᴍ ᴄᴜʀʀᴇɴᴛʟʏ ᴜɴᴅᴇʀ ᴍᴀɪɴᴛᴇɴᴀɴᴄᴇ 🛠️. ɪ ᴡɪʟʟ ʙᴇ ʙᴀᴄᴋ ꜱᴏᴏɴ 🔜", disable_web_page_preview=True)
+        return
     if REQST_CHANNEL is None or SUPPORT_CHAT_ID is None: return # Must add REQST_CHANNEL and SUPPORT_CHAT_ID to use this feature
     if message.reply_to_message and SUPPORT_CHAT_ID == message.chat.id:
         chat_id = message.chat.id
@@ -735,6 +758,11 @@ async def topsearch_callback(client, callback_query):
 
 @Client.on_message(filters.command('top_search'))
 async def top(_, message):
+    bot_id = client.me.id
+    maintenance_mode = await db.get_maintenance_status(bot_id)
+    if maintenance_mode and message.from_user.id not in ADMINS:
+        await message.reply_text(f"ɪ ᴀᴍ ᴄᴜʀʀᴇɴᴛʟʏ ᴜɴᴅᴇʀ ᴍᴀɪɴᴛᴇɴᴀɴᴄᴇ 🛠️. ɪ ᴡɪʟʟ ʙᴇ ʙᴀᴄᴋ ꜱᴏᴏɴ 🔜", disable_web_page_preview=True)
+        return
     def is_alphanumeric(string):
         return bool(re.match('^[a-zA-Z0-9 ]*$', string))
     try:
@@ -761,6 +789,11 @@ async def top(_, message):
     
 @Client.on_message(filters.command('trendlist'))
 async def trendlist(client, message):
+    bot_id = client.me.id
+    maintenance_mode = await db.get_maintenance_status(bot_id)
+    if maintenance_mode and message.from_user.id not in ADMINS:
+        await message.reply_text(f"ɪ ᴀᴍ ᴄᴜʀʀᴇɴᴛʟʏ ᴜɴᴅᴇʀ ᴍᴀɪɴᴛᴇɴᴀɴᴄᴇ 🛠️. ɪ ᴡɪʟʟ ʙᴇ ʙᴀᴄᴋ ꜱᴏᴏɴ 🔜", disable_web_page_preview=True)
+        return
     def is_alphanumeric(string):
         return bool(re.match('^[a-zA-Z0-9 ]*$', string))
     limit = 31
@@ -833,6 +866,27 @@ async def set_movie_update_notification(client, message):
         await log_error(client, f"Error in set_movie_update_notification: {e}")
         await message.reply_text(f"<b>❗ An error occurred: {e}</b>")
 
+@Client.on_message(filters.private & filters.command("maintenance") & filters.user(ADMINS))
+async def set_maintenance_mode(client, message):
+    bot_id = client.me.id
+    try:
+        option = message.text.split(" ", 1)[1].strip().lower()
+        enable_status = option in ['on', 'true']
+    except (IndexError, ValueError):
+        await message.reply_text("💔 Invalid Option. Please Send 'on' or 'off' Along With Command.. Example- /maintenance on")
+        return
+    try:
+        await db.update_maintenance_status(bot_id, enable_status)
+        response_text = (
+            "<b>ᴍᴀɪɴᴛᴇɴᴀɴᴄᴇ ᴍᴏᴅᴇ ᴇɴᴀʙʟᴇᴅ ✅</b>" if enable_status 
+            else "<b>ᴍᴀɪɴᴛᴇɴᴀɴᴄᴇ ᴍᴏᴅᴇ ᴅɪꜱᴀʙʟᴇᴅ ❌</b>"
+        )
+        await message.reply_text(response_text)
+    except Exception as e:
+        await log_error(client, f"Error in set_maintenance_mode: {e}")
+        await message.reply_text(f"<b>❗ An error occurred: {e}</b>")
+        
+
 @Client.on_message(filters.command("restart") & filters.user(ADMINS))
 async def stop_button(bot, message):
     msg = await bot.send_message(text="<b><i>ʙᴏᴛ ɪꜱ ʀᴇꜱᴛᴀʀᴛɪɴɢ</i></b>", chat_id=message.chat.id)       
@@ -843,6 +897,11 @@ async def stop_button(bot, message):
 
 @Client.on_message(filters.command("reset_group"))
 async def reset_group_command(client, message):
+    bot_id = client.me.id
+    maintenance_mode = await db.get_maintenance_status(bot_id)
+    if maintenance_mode and message.from_user.id not in ADMINS:
+        await message.reply_text(f"ɪ ᴀᴍ ᴄᴜʀʀᴇɴᴛʟʏ ᴜɴᴅᴇʀ ᴍᴀɪɴᴛᴇɴᴀɴᴄᴇ 🛠️. ɪ ᴡɪʟʟ ʙᴇ ʙᴀᴄᴋ ꜱᴏᴏɴ 🔜", disable_web_page_preview=True)
+        return
     grp_id = message.chat.id
     if not await is_check_admin(client, grp_id, message.from_user.id):
         return await message.reply_text('<b>ʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴀᴅᴍɪɴ ɪɴ ᴛʜɪꜱ ɢʀᴏᴜᴘ</b>')
@@ -876,6 +935,11 @@ async def reset_group_command(client, message):
 
 @Client.on_message(filters.command('set_fsub'))
 async def set_fsub(client, message):
+    bot_id = client.me.id
+    maintenance_mode = await db.get_maintenance_status(bot_id)
+    if maintenance_mode and message.from_user.id not in ADMINS:
+        await message.reply_text(f"ɪ ᴀᴍ ᴄᴜʀʀᴇɴᴛʟʏ ᴜɴᴅᴇʀ ᴍᴀɪɴᴛᴇɴᴀɴᴄᴇ 🛠️. ɪ ᴡɪʟʟ ʙᴇ ʙᴀᴄᴋ ꜱᴏᴏɴ 🔜", disable_web_page_preview=True)
+        return
     chat_type = message.chat.type
     if chat_type not in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
         return await message.reply_text("<b>ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪɴ ɢʀᴏᴜᴘ...</b>")
@@ -902,6 +966,11 @@ async def set_fsub(client, message):
 
 @Client.on_message(filters.command('remove_fsub'))
 async def remove_fsub(client, message):
+    bot_id = client.me.id
+    maintenance_mode = await db.get_maintenance_status(bot_id)
+    if maintenance_mode and message.from_user.id not in ADMINS:
+        await message.reply_text(f"ɪ ᴀᴍ ᴄᴜʀʀᴇɴᴛʟʏ ᴜɴᴅᴇʀ ᴍᴀɪɴᴛᴇɴᴀɴᴄᴇ 🛠️. ɪ ᴡɪʟʟ ʙᴇ ʙᴀᴄᴋ ꜱᴏᴏɴ 🔜", disable_web_page_preview=True)
+        return
     chat_type = message.chat.type
     if chat_type not in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
         return await message.reply_text("<b>ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪɴ ɢʀᴏᴜᴘ...</b>")       
@@ -920,8 +989,13 @@ async def remove_fsub(client, message):
 
 
 @Client.on_message(filters.command('details'))
-async def all_settings(client, message):
+async def all_settings(client, message):    
     try:
+        bot_id = client.me.id
+        maintenance_mode = await db.get_maintenance_status(bot_id)
+        if maintenance_mode and message.from_user.id not in ADMINS:
+            await message.reply_text(f"ɪ ᴀᴍ ᴄᴜʀʀᴇɴᴛʟʏ ᴜɴᴅᴇʀ ᴍᴀɪɴᴛᴇɴᴀɴᴄᴇ 🛠️. ɪ ᴡɪʟʟ ʙᴇ ʙᴀᴄᴋ ꜱᴏᴏɴ 🔜", disable_web_page_preview=True)
+            return
         chat_type = message.chat.type
         if chat_type not in [ChatType.GROUP, ChatType.SUPERGROUP]:
             return await message.reply_text("<b>ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪɴ ɢʀᴏᴜᴘ...</b>")
@@ -974,11 +1048,16 @@ async def all_settings(client, message):
         await asyncio.sleep(300)
         await dlt.delete()
     except Exception as e:
-        print(f"Error : {e}")
+        LOGGER.error(f"Error : {e}")
         await message.reply_text(f"Error: {e}")
 
 @Client.on_message(filters.command('group_cmd'))
 async def group_commands(client, message):
+    bot_id = client.me.id
+    maintenance_mode = await db.get_maintenance_status(bot_id)
+    if maintenance_mode and message.from_user.id not in ADMINS:
+        await message.reply_text(f"ɪ ᴀᴍ ᴄᴜʀʀᴇɴᴛʟʏ ᴜɴᴅᴇʀ ᴍᴀɪɴᴛᴇɴᴀɴᴄᴇ 🛠️. ɪ ᴡɪʟʟ ʙᴇ ʙᴀᴄᴋ ꜱᴏᴏɴ 🔜", disable_web_page_preview=True)
+        return
     user = message.from_user.mention
     user_id = message.from_user.id
     await message.reply_text(script.GROUP_CMD, disable_web_page_preview=True)
@@ -992,6 +1071,11 @@ async def admin_commands(client, message):
 @Client.on_message(filters.private & filters.command("movies"))
 async def siletxbotz_list_movies(client, message):
     try:
+        bot_id = client.me.id
+        maintenance_mode = await db.get_maintenance_status(bot_id)
+        if maintenance_mode and message.from_user.id not in ADMINS:
+            await message.reply_text(f"ɪ ᴀᴍ ᴄᴜʀʀᴇɴᴛʟʏ ᴜɴᴅᴇʀ ᴍᴀɪɴᴛᴇɴᴀɴᴄᴇ 🛠️. ɪ ᴡɪʟʟ ʙᴇ ʙᴀᴄᴋ ꜱᴏᴏɴ 🔜", disable_web_page_preview=True)
+            return
         movies = await siletxbotz_get_movies()
         if not movies:
             return await message.reply("❌ No Recent Movies Found", parse_mode=ParseMode.HTML)       
@@ -1000,12 +1084,17 @@ async def siletxbotz_list_movies(client, message):
         msg += "\n".join(f"<b>{i+1}. {m}</b>" for i, m in enumerate(movies))
         await message.reply(msg[:4096], parse_mode=ParseMode.HTML)
     except Exception as e:
-        logger.error(f"Error in siletxbotz_list_movies: {e}")
+        LOGGER.error(f"Error in siletxbotz_list_movies: {e}")
         await message.reply("An Error Occurred ☹️", parse_mode=ParseMode.HTML)
 
 @Client.on_message(filters.private & filters.command("series"))
 async def siletxbotz_list_series(client, message):
     try:
+        bot_id = client.me.id
+        maintenance_mode = await db.get_maintenance_status(bot_id)
+        if maintenance_mode and message.from_user.id not in ADMINS:
+            await message.reply_text(f"ɪ ᴀᴍ ᴄᴜʀʀᴇɴᴛʟʏ ᴜɴᴅᴇʀ ᴍᴀɪɴᴛᴇɴᴀɴᴄᴇ 🛠️. ɪ ᴡɪʟʟ ʙᴇ ʙᴀᴄᴋ ꜱᴏᴏɴ 🔜", disable_web_page_preview=True)
+            return
         series_data = await siletxbotz_get_series()
         if not series_data:
             return await message.reply("❌ No Recent Series Found", parse_mode=ParseMode.HTML)       
@@ -1016,7 +1105,7 @@ async def siletxbotz_list_series(client, message):
             msg += f"<b>{i}. {title} - Season {season_list}</b>\n"
         await message.reply(msg[:4096], parse_mode=ParseMode.HTML)
     except Exception as e:
-        logger.error(f"Error in siletxbotz_list_series: {e}")
+        LOGGER.error(f"Error in siletxbotz_list_series: {e}")
         await message.reply("An Error Occurred ☹️", parse_mode=ParseMode.HTML)
 
 
@@ -1029,6 +1118,5 @@ async def reset_all_settings(client, message):
             quote=True
         )
     except Exception as e:
-        print(f"Error Processing Reset All Settings Command: {str(e)}")
-        await message.reply("<b>ᴇʀʀᴏʀ 🚫.oᴄᴄᴜʀʀᴇᴅ ᴡʜɪʟᴇ ᴅᴇʟᴇᴛɪɴɢ ɢʀᴏᴜᴘ ꜱᴇᴛᴛɪɴɢꜱ! ᴘʟᴇᴀꜱᴇ ᴛʀʏ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ.</b>", quote=True)
-        
+        LOGGER.error(f"Error Processing Reset All Settings Command: {str(e)}")
+        await message.reply("<b>ᴇʀʀᴏʀ 🚫.oᴄᴄᴜʀʀᴇᴅ ᴡʜɪʟᴇ ᴅᴇʟᴇᴛɪɴɢ ɢʀᴏᴜᴘ ꜱᴇᴛᴛɪɴɢꜱ! ᴘʟᴇᴀꜱᴇ ᴛʀʏ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ.</b>", quote=True)       
