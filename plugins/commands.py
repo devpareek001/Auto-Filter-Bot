@@ -21,6 +21,9 @@ from database.users_chats_db import db
 from info import *
 from utils import *
 
+from info import IS_FILE_LIMIT, FILES_LIMIT
+from database.file_limit import get_file_limit, increment_file_limit
+
 TIMEZONE = "Asia/Kolkata"
 BATCH_FILES = {}
 
@@ -330,6 +333,31 @@ async def start(client, message):
                 btn = [
                     [InlineKeyboardButton('𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅', url=UPDATE_CHANNEL_LNK)]
                 ]
+            if IS_FILE_LIMIT:
+                user_count = get_file_limit(message.from_user.id)
+                if user_count >= FILES_LIMIT:
+                    await message.reply("❌ Free file limit khatm! Unlimited chahiye toh premium le lo.")
+                    return
+                 increment_file_limit(message.from_user.id)
+
+@Client.on_message(filters.command("checklimit") & filters.user(ADMINS))
+async def check_user_limit(client, message):
+    if len(message.command) < 2:
+        await message.reply("Usage: /checklimit user_id")
+        return
+    user_id = int(message.command[1])
+    current_limit = get_file_limit(user_id)
+    await message.reply(f"User {user_id} ne {current_limit}/{FILES_LIMIT} files use ki hain.")
+
+@Client.on_message(filters.command("resetuser") & filters.user(ADMINS))
+async def reset_user_limit(client, message):
+    if len(message.command) < 2:
+        await message.reply("Usage: /resetuser user_id")
+        return
+    user_id = int(message.command[1])
+    reset_file_limit(user_id)
+    await message.reply(f"User {user_id} ka file limit reset ho gaya.")
+            
             msg = await client.send_cached_media(
                 chat_id=message.from_user.id,
                 file_id=file_id,
