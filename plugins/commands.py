@@ -321,69 +321,58 @@ async def start(client, message):
     files_ = await get_file_details(file_id)  
     settings = await get_settings(int(grp_id))
     if not files_:
-        pre, file_id = ((base64.urlsafe_b64decode(data + "=" * (-len(data) % 4))).decode("ascii")).split("_", 1)
-        try:
-            if STREAM_MODE:
-                btn = [
-                    [InlineKeyboardButton('𝖦𝖾𝗇𝖾𝗋𝖺𝗍𝖾 𝖲𝗍𝗋𝖾𝗆𝗂𝗇𝗀 𝖫𝗂𝗇𝗄', callback_data=f'streamfile:{file_id}')],
-                    [InlineKeyboardButton('𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅', url=UPDATE_CHANNEL_LNK)]
-             
-                ]
-            else:
-                btn = [
-                    [InlineKeyboardButton('𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅', url=UPDATE_CHANNEL_LNK)]
-                ]
-            if IS_FILE_LIMIT:
-                user_count = get_file_limit(message.from_user.id)
-                if user_count >= FILES_LIMIT:
-                    await message.reply("❌ Free file limit khatm! Unlimited chahiye toh premium le lo.")
-                    return
-                 increment_file_limit(message.from_user.id)
+    pre, file_id = ((base64.urlsafe_b64decode(data + "=" * (-len(data) % 4))).decode("ascii")).split("_", 1)
+    try:
+        if STREAM_MODE:
+            btn = [
+                [InlineKeyboardButton('𝖦𝖾𝗇𝖾𝗋𝖺𝗍𝖾 𝖲𝗍𝗋𝖾𝗆𝗂𝗇𝗀 𝖫𝗂𝗇𝗄', callback_data=f'streamfile:{file_id}')],
+                [InlineKeyboardButton('𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅', url=UPDATE_CHANNEL_LNK)]
+            ]
+        else:
+            btn = [
+                [InlineKeyboardButton('𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅', url=UPDATE_CHANNEL_LNK)]
+            ]
 
-@Client.on_message(filters.command("checklimit") & filters.user(ADMINS))
-async def check_user_limit(client, message):
-    if len(message.command) < 2:
-        await message.reply("Usage: /checklimit user_id")
+        # ---- File limit check (INDENTED CORRECTLY) ----
+        if IS_FILE_LIMIT:
+            user_count = get_file_limit(message.from_user.id)
+            if user_count >= FILES_LIMIT:
+                await message.reply("❌ Free file limit khatm! Unlimited chahiye toh premium le lo.")
+                return
+            increment_file_limit(message.from_user.id)
+
+        # ---- Send file ----
+        msg = await client.send_cached_media(
+            chat_id=message.from_user.id,
+            file_id=file_id,
+            protect_content=settings.get('file_secure', PROTECT_CONTENT),
+            reply_markup=InlineKeyboardMarkup(btn)
+        )
+
+        filetype = msg.media
+        file = getattr(msg, filetype.value)
+        title = clean_filename(file.file_name)              
+        size = get_size(file.file_size)
+        f_caption = f"<code>{title}</code>"
+        settings = await get_settings(int(grp_id))
+        SILENTX_CAPTION = settings.get('caption', CUSTOM_FILE_CAPTION)
+        if SILENTX_CAPTION:
+            try:
+                f_caption = SILENTX_CAPTION.format(
+                    file_name='' if title is None else title,
+                    file_size='' if size is None else size,
+                    file_caption=''
+                )
+            except:
+                return
+        await msg.edit_caption(f_caption)
+        k = await msg.reply(f"<b>♻️ ᴛʜɪꜱ ꜰɪʟᴇ ᴡɪʟʟ ᴀᴜᴛᴏ ᴅᴇʟᴇᴛᴇ ᴀꜰᴛᴇʀ {get_time(DELETE_TIME)}</b>", quote=True)
+        await asyncio.sleep(DELETE_TIME)
+        await msg.delete()
+        await k.edit_text("<b>ʏᴏᴜʀ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ ɪꜱ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ !!</b>")
         return
-    user_id = int(message.command[1])
-    current_limit = get_file_limit(user_id)
-    await message.reply(f"User {user_id} ne {current_limit}/{FILES_LIMIT} files use ki hain.")
-
-@Client.on_message(filters.command("resetuser") & filters.user(ADMINS))
-async def reset_user_limit(client, message):
-    if len(message.command) < 2:
-        await message.reply("Usage: /resetuser user_id")
-        return
-    user_id = int(message.command[1])
-    reset_file_limit(user_id)
-    await message.reply(f"User {user_id} ka file limit reset ho gaya.")
-            
-            msg = await client.send_cached_media(
-                chat_id=message.from_user.id,
-                file_id=file_id,
-                protect_content=settings.get('file_secure', PROTECT_CONTENT),
-                reply_markup=InlineKeyboardMarkup(btn))
-
-            filetype = msg.media
-            file = getattr(msg, filetype.value)
-            title = clean_filename(file.file_name)              
-            size=get_size(file.file_size)
-            f_caption = f"<code>{title}</code>"
-            settings = await get_settings(int(grp_id))
-            SILENTX_CAPTION = settings.get('caption', CUSTOM_FILE_CAPTION)
-            if SILENTX_CAPTION:
-                try:
-                    f_caption=SILENTX_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='')
-                except:
-                    return
-            await msg.edit_caption(f_caption)
-            k = await msg.reply(f"<b>♻️ ᴛʜɪꜱ ꜰɪʟᴇ ᴡɪʟʟ ᴀᴜᴛᴏ ᴅᴇʟᴇᴛᴇ ᴀꜰᴛᴇʀ {get_time(DELETE_TIME)}</b>", quote=True)
-            await asyncio.sleep(DELETE_TIME)
-            await msg.delete()
-            await k.edit_text("<b>ʏᴏᴜʀ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ ɪꜱ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ !!</b>")
-            return
-        except:
-            pass
+    except:
+        pass
         return await message.reply('ɴᴏ ꜱᴜᴄʜ ꜰɪʟᴇ ᴇxɪꜱᴛꜱ !')
     
     files = files_[0]
