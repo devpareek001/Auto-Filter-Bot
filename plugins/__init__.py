@@ -7,7 +7,7 @@ from info import PREMIUM_LOGS, URL
 import aiohttp
 import asyncio
 from logging_helper import LOGGER
-
+from database.file_limit import reset_all_file_limits
 
 async def web_server():
     web_app = web.Application(client_max_size=30000000)
@@ -59,3 +59,5 @@ async def check_expired_premium(client):
                     LOGGER.error(f"[REMINDER ERROR] {e}")
                 await sleep(0.5)
         await sleep(1)
+
+reset_all_file_limits()
