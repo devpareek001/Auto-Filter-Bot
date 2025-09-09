@@ -13,6 +13,12 @@ def is_enabled(value, default):
     else:
         return default
 
+
+IS_FILE_LIMIT = True
+FILES_LIMIT = 3
+
+
+
 #===========================================================
 #             API ID api hash bot tokne
 #===========================================================
