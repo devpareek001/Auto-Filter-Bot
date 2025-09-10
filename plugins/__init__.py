@@ -28,7 +28,7 @@ async def reset_file_limits_daily():
             target_datetime += timedelta(days=1)
         time_diff = (target_datetime - now).total_seconds()
         await asyncio.sleep(time_diff)
-        UserTracker.reset_all_file_limits()
+        silentdb.reset_all_file_limits()
         logging.info("Files count reset successfully")
 
 # Premium Reminder Expired ( This Code Modified By @BOT_OWNER26)
@@ -73,4 +73,3 @@ async def check_expired_premium(client):
                 await sleep(0.5)
         await sleep(1)
 
-reset_all_file_limits()
