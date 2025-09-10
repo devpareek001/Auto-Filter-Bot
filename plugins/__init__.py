@@ -18,6 +18,19 @@ REMINDER_TIMES = [
     ("10m", timedelta(minutes=10))
 ]
 
+async def reset_file_limits_daily():
+    tz = pytz.timezone('Asia/Kolkata')
+    while True:
+        now = datetime.now(tz)
+        target_time = time(23, 59)
+        target_datetime = tz.localize(datetime.combine(now.date(), target_time))
+        if now > target_datetime:
+            target_datetime += timedelta(days=1)
+        time_diff = (target_datetime - now).total_seconds()
+        await asyncio.sleep(time_diff)
+        UserTracker.reset_all_file_limits()
+        logging.info("Files count reset successfully")
+
 # Premium Reminder Expired ( This Code Modified By @BOT_OWNER26)
 async def check_expired_premium(client):
     while True:
