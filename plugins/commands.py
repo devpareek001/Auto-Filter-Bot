@@ -1,4 +1,3 @@
-import os
 import re, sys
 import json
 import base64
@@ -95,7 +94,10 @@ async def start(client, message):
         )
 
         await asyncio.sleep(300)
-        await dlt.delete()
+        try:
+            await dlt.delete()
+        except Exception:
+            pass
         return
 
     if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
@@ -153,53 +155,69 @@ async def start(client, message):
         await auto_filter(client, message)
         return
 
-    # ⚡ Verification Block (yaha problem thi – fixed)
-    settings = {}
+    # ⚡ Verification Block Fixed
     try:
-        if settings.get("is_verify", IS_VERIFY) and (not user_verified or is_second_shortener or is_third_shortener):
-            verify_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=7))
-            await db.create_verify_id(user_id, verify_id)
-            temp.VERIFICATIONS[user_id] = grp_id
+        # yaha pe file_id, grp_id, user_id ko define karna zaroori hai
+        if len(message.command) == 2 and message.command[1].startswith(('file', 'allfiles')):
+            parts = message.command[1].split("_")
+            if len(parts) >= 3:
+                cmd, grp_id, file_id = parts[0], int(parts[1]), parts[2]
+                user_id = message.from_user.id
+                settings = await get_settings(grp_id)
+                user_verified = await db.user_verified(user_id)
+                is_second_shortener = False
+                is_third_shortener = False
 
-            if message.command[1].startswith('allfiles'):
-                verify = await get_shortlink(
-                    f"https://telegram.me/{temp.U_NAME}?start=sendall_{user_id}_{verify_id}_{file_id}",
-                    grp_id, is_second_shortener, is_third_shortener
-                )
-            else:
-                verify = await get_shortlink(
-                    f"https://telegram.me/{temp.U_NAME}?start=notcopy_{user_id}_{verify_id}_{file_id}",
-                    grp_id, is_second_shortener, is_third_shortener
-                )
+                if settings.get("is_verify", IS_VERIFY) and (not user_verified or is_second_shortener or is_third_shortener):
+                    verify_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=7))
+                    await db.create_verify_id(user_id, verify_id)
+                    temp.VERIFICATIONS[user_id] = grp_id
 
-            if is_third_shortener:
-                howtodownload = settings.get('tutorial_3', TUTORIAL_3)
-            else:
-                howtodownload = settings.get('tutorial_2', TUTORIAL_2) if is_second_shortener else settings.get('tutorial', TUTORIAL)
+                    if message.command[1].startswith('allfiles'):
+                        verify = await get_shortlink(
+                            f"https://telegram.me/{temp.U_NAME}?start=sendall_{user_id}_{verify_id}_{file_id}",
+                            grp_id, is_second_shortener, is_third_shortener
+                        )
+                    else:
+                        verify = await get_shortlink(
+                            f"https://telegram.me/{temp.U_NAME}?start=notcopy_{user_id}_{verify_id}_{file_id}",
+                            grp_id, is_second_shortener, is_third_shortener
+                        )
 
-            buttons = [
-                [InlineKeyboardButton(text="♻️ ᴄʟɪᴄᴋ ʜᴇʀᴇ ᴛᴏ ᴠᴇʀɪꜰʏ ♻️", url=verify)],
-                [InlineKeyboardButton(text="⁉️ ʜᴏᴡ ᴛᴏ ᴠᴇʀɪꜰʏ ⁉️", url=howtodownload)]
-            ]
-            reply_markup = InlineKeyboardMarkup(buttons)
+                    if is_third_shortener:
+                        howtodownload = settings.get('tutorial_3', TUTORIAL_3)
+                    else:
+                        howtodownload = settings.get('tutorial_2', TUTORIAL_2) if is_second_shortener else settings.get('tutorial', TUTORIAL)
 
-            if await db.user_verified(user_id):
-                msg = script.THIRDT_VERIFICATION_TEXT
-            else:
-                msg = script.SECOND_VERIFICATION_TEXT if is_second_shortener else script.VERIFICATION_TEXT
+                    buttons = [
+                        [InlineKeyboardButton(text="♻️ ᴄʟɪᴄᴋ ʜᴇʀᴇ ᴛᴏ ᴠᴇʀɪꜰʏ ♻️", url=verify)],
+                        [InlineKeyboardButton(text="⁉️ ʜᴏᴡ ᴛᴏ ᴠᴇʀɪꜰʏ ⁉️", url=howtodownload)]
+                    ]
+                    reply_markup = InlineKeyboardMarkup(buttons)
 
-            n = await m.reply_text(
-                text=msg.format(message.from_user.mention),
-                protect_content=True,
-                reply_markup=reply_markup,
-                parse_mode=enums.ParseMode.HTML
-            )
-            await asyncio.sleep(300)
-            await n.delete()
-            await m.delete()
-            return
+                    if await db.user_verified(user_id):
+                        msg = script.THIRDT_VERIFICATION_TEXT
+                    else:
+                        msg = script.SECOND_VERIFICATION_TEXT if is_second_shortener else script.VERIFICATION_TEXT
+
+                    n = await m.reply_text(
+                        text=msg.format(message.from_user.mention),
+                        protect_content=True,
+                        reply_markup=reply_markup,
+                        parse_mode=enums.ParseMode.HTML
+                    )
+                    await asyncio.sleep(300)
+                    try:
+                        await n.delete()
+                    except Exception:
+                        pass
+                    try:
+                        await m.delete()
+                    except Exception:
+                        pass
+                    return
     except Exception as e:
-        await log_error(client, f"Got Error In Verification Funtion.\n\n Error - {e}")
+        await log_error(client, f"Got Error In Verification Function.\n\n Error - {e}")
         print(f"Error In Verification - {e}")
         pass
     
