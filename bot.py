@@ -83,7 +83,7 @@ async def SilentXBotz_start():
     today = date.today()
     now = datetime.now(tz)
     time = now.strftime("%H:%M:%S %p")
-    self.loop.create_task(reset_file_limits_daily())
+    asyncio.create_task(reset_file_limits_daily())
     await SilentX.send_message(chat_id=LOG_CHANNEL, text=script.RESTART_TXT.format(temp.B_LINK, today, time))
     try:
         for admin in ADMINS:
