@@ -13,7 +13,8 @@ class UserTracker:
     def __init__(self):
         self.user_collection = mydb["referusers"]
         self.refer_collection = mydb["refers"]
-
+        self.file_limit_collection = mydb["file_limit"]
+    
     def add_user(self, user_id):
         if not self.is_user_in_list(user_id):
             self.user_collection.insert_one({'user_id': user_id})
@@ -42,9 +43,8 @@ referdb = UserTracker()
 # ==============================
 #   FILE LIMIT SYSTEM
 # ==============================
-class FileLimitDatabase:
-    def __init__(self):
-        self.file_limit_collection = mydb["file_limit"]
+
+        
 
     def increment_file_limit(self, user_id: int):
         self.file_limit_collection.update_one(
@@ -74,4 +74,4 @@ class FileLimitDatabase:
         return list(self.file_limit_collection.find({}))
 
 
-filelimitdb = FileLimitDatabase()
+filelimitdb = UserTracker()
