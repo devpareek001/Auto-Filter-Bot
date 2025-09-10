@@ -1,15 +1,11 @@
 from pymongo import MongoClient
 from info import DATABASE_URI
 
-class Database
+class Database:
     def __init__(self, uri: str, db_name: str):
         client = MongoClient(uri)
         mydb = client[db_name]
         self.file_limit_collection = mydb["file_limits"] 
-      
-
-    def delete_all_silicon_messages(self):
-        self.silicon_col.delete_many({})
 
 
     def increment_silicon_limit(self, user_id: int):
