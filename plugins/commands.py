@@ -309,13 +309,13 @@ async def start(client, message):
                     parse_mode=enums.ParseMode.HTML
                 )
                 await asyncio.sleep(300) 
-                await n.delete()
-                await m.delete()
-                return
-        except Exception as e:
-            await log_error(client, f"Got Error In Verification Funtion.\n\n Error - {e}")
-            print(f"Error In Verification - {e}")
-            pass
+                                await n.delete()
+                                await m.delete()
+                                return
+                        except Exception as e:
+                            await log_error(client, f"Got Error In Verification Funtion.\n\n Error - {e}")
+                            print(f"Error In Verification - {e}")
+                            pass
     
     if data.startswith("allfiles"):
         files = temp.GETALL.get(file_id)
