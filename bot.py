@@ -14,7 +14,7 @@ from database.users_chats_db import db
 from info import *
 from utils import temp
 from Script import script
-from plugins import web_server, check_expired_premium 
+from plugins import web_server, check_expired_premium, reset_file_limits_daily
 from Lucia.Bot import SilentX
 from Lucia.util.keepalive import ping_server
 from Lucia.Bot.clients import initialize_clients
@@ -83,6 +83,7 @@ async def SilentXBotz_start():
     today = date.today()
     now = datetime.now(tz)
     time = now.strftime("%H:%M:%S %p")
+    self.loop.create_task(reset_file_limits_daily())
     await SilentX.send_message(chat_id=LOG_CHANNEL, text=script.RESTART_TXT.format(temp.B_LINK, today, time))
     try:
         for admin in ADMINS:
