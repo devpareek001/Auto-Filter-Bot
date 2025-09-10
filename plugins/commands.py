@@ -30,6 +30,7 @@ BATCH_FILES = {}
 
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
+    data = message.command[1] if len(message.command) > 1 else ""
     if EMOJI_MODE:
         try:
             await message.react(emoji=random.choice(REACTIONS))
@@ -153,6 +154,7 @@ async def start(client, message):
         return
 
     # ⚡ Verification Block (yaha problem thi – fixed)
+    settings = {}
     try:
         if settings.get("is_verify", IS_VERIFY) and (not user_verified or is_second_shortener or is_third_shortener):
             verify_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=7))
