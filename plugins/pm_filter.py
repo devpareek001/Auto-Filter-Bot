@@ -26,7 +26,9 @@ from database.topdb import silentdb
 import requests
 import string
 import tracemalloc
+import logging
 
+logger = logging.getLogger(__name__)
 tracemalloc.start()
 
 TIMEZONE = "Asia/Kolkata"
