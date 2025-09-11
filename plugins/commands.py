@@ -262,7 +262,7 @@ async def start(client, message):
                     SILICON = settings.get('caption', CUSTOM_FILE_CAPTION)
                     if SILICON:
                         try:
-                            f_caption = SILENTX_CAPTION.format(
+                            f_caption = SILICON.format(
                                 file_name='' if title is None else title, 
                                 file_size='' if size is None else size, 
                                 file_caption='' if f_caption is None else f_caption
