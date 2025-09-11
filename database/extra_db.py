@@ -7,7 +7,6 @@ class Database:
         mydb = client[db_name]
         self.file_limit_collection = mydb["file_limits"] 
 
-
     def increment_silicon_limit(self, user_id: int):
         self.file_limit_collection.update_one(
             {'user_id': user_id},
@@ -35,4 +34,4 @@ class Database:
     def get_all_file_limits(self) -> list:
         return list(self.file_limit_collection.find({}))
 
-silentdb = Database(DATABASE_URI, "SilentXBotz")
+silicondb = SiliconDatabase(DATABASE_URI, "SiliconBotz")
