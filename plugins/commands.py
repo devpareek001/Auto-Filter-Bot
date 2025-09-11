@@ -259,11 +259,22 @@ async def start(client, message):
 
                     file_limit_info = f"\n\n📊 ʏᴏᴜ ʜᴀᴠᴇ ʀᴇᴄᴇɪᴠᴇᴅ {current_file_count}/{FILES_LIMIT} ꜰʀᴇᴇ ꜰɪʟᴇs"
                 
-                    f_caption = settings['caption'].format(
-                        file_name=formate_file_name(files['file_name']),
-                        file_size=get_size(files['file_size']),
-                        file_caption=files.get('caption', '')
-                    ) + file_limit_info
+                    SILICON = settings.get('caption', CUSTOM_FILE_CAPTION)
+                    if SILICON:
+                        try:
+                            f_caption = SILENTX_CAPTION.format(
+                                file_name='' if title is None else title, 
+                                file_size='' if size is None else size, 
+                                file_caption='' if f_caption is None else f_caption
+                            )
+                        except Exception as e:
+                            logger.exception(e)
+                            f_caption = f_caption
+
+                    if f_caption is None:
+                        f_caption = ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), files['file_name'].split()))
+
+                    f_caption += file_limit_info
 
                     btn = [[InlineKeyboardButton("✛ ᴡᴀᴛᴄʜ & ᴅᴏᴡɴʟᴏᴀᴅ ✛", callback_data=f'stream#{file_id}')]]
                     toDel = await client.send_cached_media(
