@@ -248,9 +248,9 @@ async def start(client, message):
                             pass
                         return await message.reply('<b>⚠️ ᴀʟʟ ꜰɪʟᴇs ɴᴏᴛ ꜰᴏᴜɴᴅ ⚠️</b>')
 
-                    if isinstance(files_, list) and len(files_) > 0:
+                    if hasattr(files_, '__iter__') and not isinstance(files_, str) and len(files_) > 0:
                         files = files_[0]
-                    elif isinstance(files_, dict):
+                    elif hasattr(files_, 'get'):  # Check if it's dict-like
                         files = files_
                     else:
                         return await message.reply('<b>⚠️ ᴀʟʟ ꜰɪʟᴇs ɴᴏᴛ ꜰᴏᴜɴᴅ ⚠️</b>')
