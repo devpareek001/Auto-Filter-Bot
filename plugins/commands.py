@@ -513,7 +513,7 @@ async def check_user_limit(client, message):
         
         await message.reply_text(
             f"<b>📊 ꜰɪʟᴇ ʟɪᴍɪᴛ sᴛᴀᴛᴜs ꜰᴏʀ ᴜsᴇʀ {user_id}:\n\n"
-            f"ᴄᴜʀʀᴇɴᴛ ᴅᴏᴡɴʟᴏᴀᴅs: {current_limit}/{FILE_LIMIT}\n"
+            f"ᴄᴜʀʀᴇɴᴛ ᴅᴏᴡɴʟᴏᴀᴅs: {current_limit}/{FILES_LIMIT}\n"
             f"ʀᴇᴍᴀɪɴɪɴɢ: {max(0, FILES_LIMIT - current_limit)}</b>", 
             parse_mode=enums.ParseMode.HTML
         )
