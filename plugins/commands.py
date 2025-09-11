@@ -260,7 +260,7 @@ async def start(client, message):
                     file_limit_info = f"\n\n📊 ʏᴏᴜ ʜᴀᴠᴇ ʀᴇᴄᴇɪᴠᴇᴅ {current_file_count}/{FILES_LIMIT} ꜰʀᴇᴇ ꜰɪʟᴇs"
                     title = ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), files['file_name'].split()))
                     size = get_size(files['file_size'])
-                    f_caption = f"<code>{title}</code>"
+                    f_caption = files.caption
 
                     SILICON = settings.get('caption', CUSTOM_FILE_CAPTION)
                     if SILICON:
