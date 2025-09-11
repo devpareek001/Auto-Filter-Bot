@@ -276,7 +276,16 @@ async def start(client, message):
 
                     f_caption += file_limit_info
 
-                    btn = [[InlineKeyboardButton("✛ ᴡᴀᴛᴄʜ & ᴅᴏᴡɴʟᴏᴀᴅ ✛", callback_data=f'stream#{file_id}')]]
+                    if STREAM_MODE:
+                        btn = [
+                            [InlineKeyboardButton('❍─𓆩〭〬👒𝖦𝖾𝗇𝖾𝗋𝖺𝗍𝖾 𝖲𝗍𝗋𝖾𝗆𝗂𝗇𝗀 𝖫𝗂𝗇𝗄🤍᪳𝆺𝅥⎯', callback_data=f'streamfile:{file_id}')],
+                            [InlineKeyboardButton('❍─𓆩〭〬👒𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅🤍᪳𝆺𝅥⎯', url=UPDATE_CHANNEL_LNK)]  
+                ]
+                    else:
+                        btn = [
+                            [InlineKeyboardButton('❍─𓆩〭〬👒𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅🤍᪳𝆺𝅥⎯', url=UPDATE_CHANNEL_LNK)]
+                       ]
+
                     toDel = await client.send_cached_media(
                         chat_id=message.from_user.id,
                         file_id=file_id,
