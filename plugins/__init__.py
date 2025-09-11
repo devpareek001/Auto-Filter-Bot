@@ -2,7 +2,7 @@ from aiohttp import web
 from .route import routes
 from asyncio import sleep 
 from datetime import datetime, timedelta
-from database.extra_db import silentdb
+from database.extra_db import silicondb
 from database.users_chats_db import db
 from info import PREMIUM_LOGS, URL
 from datetime import time
@@ -30,7 +30,7 @@ async def reset_file_limits_daily():
             target_datetime += timedelta(days=1)
         time_diff = (target_datetime - now).total_seconds()
         await asyncio.sleep(time_diff)
-        silentdb.reset_all_file_limits()
+        silicondb.reset_all_file_limits()
         logging.info("Files count reset successfully")
 
 # Premium Reminder Expired ( This Code Modified By @BOT_OWNER26)
