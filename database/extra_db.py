@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 from info import DATABASE_URI
-
+from database.silicon import SiliconDatabase
 class Database:
     def __init__(self, uri: str, db_name: str):
         client = MongoClient(uri)
