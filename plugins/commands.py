@@ -258,7 +258,10 @@ async def start(client, message):
                     settings = await get_settings(grp_id)
 
                     file_limit_info = f"\n\n📊 ʏᴏᴜ ʜᴀᴠᴇ ʀᴇᴄᴇɪᴠᴇᴅ {current_file_count}/{FILES_LIMIT} ꜰʀᴇᴇ ꜰɪʟᴇs"
-                
+                    title = ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), files['file_name'].split()))
+                    size = get_size(files['file_size'])
+                    f_caption = f"<code>{title}</code>"
+
                     SILICON = settings.get('caption', CUSTOM_FILE_CAPTION)
                     if SILICON:
                         try:
