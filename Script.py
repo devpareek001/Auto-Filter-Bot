@@ -370,8 +370,8 @@ Requested by : {message.from_user.mention}</b>"""
     TRIAL_COMPLETED_TEXT = """
 <blockquote>✨ Free movie plan Finished! ✨ </blockquote>
 
-आपके ** {limit} Free Movies ** पूरे हो गए हैं 🎬  
-(Your {limit} free movies are completed ✅)  
+आपके ** your today Free Movies limit ** पूरे हो गए हैं 🎬  
+(Your your today free movies limit are completed ✅)  
 
 🔥 अब Premium पर अपग्रेड करें और पाएं:  
 • Unlimited Movies & Webseries  
