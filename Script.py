@@ -368,7 +368,7 @@ Requested by : {message.from_user.mention}</b>"""
 """
     
     TRIAL_COMPLETED_TEXT = """
-✨ Free movie plan Finished! ✨  
+<blockquote>✨ Free movie plan Finished! ✨ </blockquote>
 
 आपके ** {limit} Free Movies ** पूरे हो गए हैं 🎬  
 (Your {limit} free movies are completed ✅)  
@@ -379,8 +379,13 @@ Requested by : {message.from_user.mention}</b>"""
 • Zero Waiting, Fast Download  
 • New Releases Sabse Pehle  
 
-💰 Plans:  
-• Click on below Button 
+<blockquote>🎖️ ᴀᴠᴀɪʟᴀʙʟᴇ ᴘʟᴀɴs</blockquote>
+
+◉ 07 ᴅᴀʏꜱ - 15 ₹ / 15 ꜱᴛᴀʀ 
+◉ 15 ᴅᴀʏꜱ - 30 ₹ / 30 ꜱᴛᴀʀ 
+◉ 01 ᴍᴏɴᴛʜꜱ - 60 ₹ / 60 ꜱᴛᴀʀ 
+◉ 02 ᴍᴏɴᴛʜꜱ - 120 ₹ / 120 ꜱᴛᴀʀ 
+◉ 03 ᴍᴏɴᴛʜꜱ - 220 ₹ / 220 ꜱᴛᴀʀ
 
 🚀 Entertainment without Limits – Upgrade Today!
 """
