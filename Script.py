@@ -369,3 +369,20 @@ Requested by : {message.from_user.mention}</b>"""
 ‼️ <b>ᴍᴜꜱᴛ ꜱᴇɴᴅ ꜱᴄʀᴇᴇɴꜱʜᴏᴛ ᴀꜰᴛᴇʀ ᴅᴏɴᴀᴛɪɴɢ.</b>
 """
     
+    TRIAL_COMPLETED_TEXT = """
+✨ Free movie plan Finished! ✨  
+
+आपके ** {limit} Free Movies ** पूरे हो गए हैं 🎬  
+(Your {limit} free movies are completed ✅)  
+
+🔥 अब Premium पर अपग्रेड करें और पाएं:  
+• Unlimited Movies & Webseries  
+• HD / 4K Quality  
+• Zero Waiting, Fast Download  
+• New Releases Sabse Pehle  
+
+💰 Plans:  
+• Click on below Button 
+
+🚀 Entertainment without Limits – Upgrade Today!
+"""
