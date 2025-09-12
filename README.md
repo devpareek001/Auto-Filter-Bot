@@ -58,19 +58,6 @@
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
 
-## 📄 Commands
-
-There Is No need To Setup Commands Manually it Will Be Added Automatically After Deploy Complete
-
----
-
-## 🤖 Demo Bot
-
-**Test the bot before deploying:** [@Mikasa_Filter_Bot](https://t.me/Mikasa_Filter_Bot)
-
-Experience all premium features and functionality with our live demo bot!
-
-<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
 
 ## Variables
 ### Essential Variables
