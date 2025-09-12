@@ -284,18 +284,18 @@ async def start(client, message):
                         btn = [
                             [InlineKeyboardButton('❍─𓆩〭〬👒𝖦𝖾𝗇𝖾𝗋𝖺𝗍𝖾 𝖲𝗍𝗋𝖾𝗆𝗂𝗇𝗀 𝖫𝗂𝗇𝗄🤍᪳𝆺𝅥⎯', callback_data=f'streamfile:{file_id}')],
                             [InlineKeyboardButton('❍─𓆩〭〬👒𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅🤍᪳𝆺𝅥⎯', url=UPDATE_CHANNEL_LNK)]  
-                ]
+                        ]
                     else:
                         btn = [
                             [InlineKeyboardButton('❍─𓆩〭〬👒𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅🤍᪳𝆺𝅥⎯', url=UPDATE_CHANNEL_LNK)]
-                       ]
+                        ]
 
                     toDel = await client.send_cached_media(
                         chat_id=message.from_user.id,
                         file_id=file_id,
                         caption=f_caption,
                         reply_markup=InlineKeyboardMarkup(btn)
-                )
+                    )
 
                     time_text = f'{FILE_AUTO_DEL_TIMER / 60} ᴍɪɴᴜᴛᴇs' if FILE_AUTO_DEL_TIMER >= 60 else f'{FILE_AUTO_DEL_TIMER} sᴇᴄᴏɴᴅs'
                     delCap = f"<b>ʏᴏᴜʀ ғɪʟᴇ ᴡɪʟʟ ʙᴇ ᴅᴇʟᴇᴛᴇᴅ ᴀғᴛᴇʀ {time_text} ᴛᴏ ᴀᴠᴏɪᴅ ᴄᴏᴘʏʀɪɢʜᴛ ᴠɪᴏʟᴀᴛɪᴏɴs!</b>"
@@ -305,6 +305,49 @@ async def start(client, message):
                     await asyncio.sleep(FILE_AUTO_DEL_TIMER)
                     await toDel.delete()
                     return await replyed.edit(afterDelCap)
+                imessage_text = """
+🎬 **Free Trial Completed!** 🎬
+
+Hey there! 👋
+
+Your **3 free trials** have been completed. Thank you for trying our service! 🙏
+
+🌟 **Want Unlimited Access?**
+Upgrade to **Premium** now and enjoy:
+• ✅ Unlimited movie downloads
+• ✅ HD & 4K quality options  
+• ✅ Latest releases first
+• ✅ No waiting time
+• ✅ Priority support
+
+💰 **Premium Plans:**
+• Monthly: ₹99/month
+• Yearly: ₹999/year (Save 17%!)
+
+📸 **How to Upgrade:**
+1. Make payment via UPI/PayTM
+2. Click the button below to send screenshot
+3. Get instant activation!
+
+Ready to unlock unlimited entertainment? 🚀"""
+                ikeyboard = InlineKeyboardMarkup([
+                    [
+                        InlineKeyboardButton(
+                            text="📸 Send Screenshot Here",
+                            callback_data="send_payment_screenshot"
+                        )
+                    ],
+                    [
+                        InlineKeyboardButton(
+                            text="💳 View Payment Options",
+                            callback_data="view_payment_options"
+                        )
+                    ]
+                ])
+                return await m.reply(
+                    text = imessage_text,
+                    reply_markup = ikeyboard
+                )
 
             if settings.get("is_verify", IS_VERIFY) and (not user_verified or is_second_shortener or is_third_shortener):                
                 verify_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=7))
