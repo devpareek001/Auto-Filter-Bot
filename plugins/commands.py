@@ -305,47 +305,21 @@ async def start(client, message):
                     await asyncio.sleep(FILE_AUTO_DEL_TIMER)
                     await toDel.delete()
                     return await replyed.edit(afterDelCap)
-                imessage_text = """
-    🎬 **Free Trial Completed!** 🎬
-    
-    Hey there! 👋
-    
-    Your **3 free trials** have been completed. Thank you for trying our service! 🙏
-    
-    🌟 **Want Unlimited Access?**
-    Upgrade to **Premium** now and enjoy:
-    • ✅ Unlimited movie downloads
-    • ✅ HD & 4K quality options  
-    • ✅ Latest releases first
-    • ✅ No waiting time
-    • ✅ Priority support
-    
-    💰 **Premium Plans:**
-    • Monthly: ₹99/month
-    • Yearly: ₹999/year (Save 17%!)
-    
-    📸 **How to Upgrade:**
-    1. Make payment via UPI/PayTM
-    2. Click the button below to send screenshot
-    3. Get instant activation!
-    
-    Ready to unlock unlimited entertainment? 🚀"""
                 ikeyboard = InlineKeyboardMarkup([
                     [
                         InlineKeyboardButton(
-                            text="📸 Send Screenshot Here",
-                            callback_data="send_payment_screenshot"
+                            text="💳 View Payment Options",
+                            callback_data="buy"
                         )
                     ],
                     [
                         InlineKeyboardButton(
-                            text="💳 View Payment Options",
-                            callback_data="view_payment_options"
+                            text="📸 Send Screenshot Here", url=OWNER_LNK)]
                         )
                     ]
                 ])
                 return await m.reply(
-                    text = imessage_text,
+                    text=script.TRIAL_COMPLETED_TEXT,
                     reply_markup = ikeyboard
                 )
 
