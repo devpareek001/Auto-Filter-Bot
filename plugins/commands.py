@@ -305,7 +305,7 @@ async def start(client, message):
                     await asyncio.sleep(FILE_AUTO_DEL_TIMER)
                     await toDel.delete()
                     return await replyed.edit(afterDelCap)
-                imessage_text = """
+            imessage_text = """
 🎬 **Free Trial Completed!** 🎬
 
 Hey there! 👋
@@ -330,24 +330,24 @@ Upgrade to **Premium** now and enjoy:
 3. Get instant activation!
 
 Ready to unlock unlimited entertainment? 🚀"""
-                ikeyboard = InlineKeyboardMarkup([
-                    [
-                        InlineKeyboardButton(
-                            text="📸 Send Screenshot Here",
-                            callback_data="send_payment_screenshot"
-                        )
-                    ],
-                    [
-                        InlineKeyboardButton(
-                            text="💳 View Payment Options",
-                            callback_data="view_payment_options"
-                        )
-                    ]
-                ])
-                return await m.reply(
-                    text = imessage_text,
-                    reply_markup = ikeyboard
-                )
+            ikeyboard = InlineKeyboardMarkup([
+                [
+                    InlineKeyboardButton(
+                        text="📸 Send Screenshot Here",
+                        callback_data="send_payment_screenshot"
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="💳 View Payment Options",
+                        callback_data="view_payment_options"
+                    )
+                ]
+            ])
+            return await m.reply(
+                text = imessage_text,
+                reply_markup = ikeyboard
+            )
 
             if settings.get("is_verify", IS_VERIFY) and (not user_verified or is_second_shortener or is_third_shortener):                
                 verify_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=7))
