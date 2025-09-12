@@ -51,7 +51,7 @@ reqst_channel = environ.get('REQST_CHANNEL_ID', '-1002272016564')
 
 # File Limit
 
-IS_FILE_LIMIT = is_enabled('IS_FILE_LIMIT', False) # Enable Or Disable File Limit
+IS_FILE_LIMIT = is_enabled('IS_FILE_LIMIT', True) # Enable Or Disable File Limit
 FILES_LIMIT = int(environ.get("FREE_FILES", "3")) #No. of File User Gets In Free
 
 
