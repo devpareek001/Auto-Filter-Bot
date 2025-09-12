@@ -17,11 +17,8 @@ def is_enabled(value, default):
 IS_FILE_LIMIT = False 
 FILES_LIMIT = 3
 
+# Api ids
 
-
-#===========================================================
-#             API ID api hash bot tokne
-#===========================================================
 SESSION = environ.get('SESSION', 'media_search')
 API_ID = int(environ.get('API_ID', '24942826'))
 API_HASH = environ.get('API_HASH', 'e3e2f3b65ef58634139ccd27d6b7d8cb')
@@ -30,7 +27,9 @@ BOT_TOKEN = environ.get('BOT_TOKEN', "")
 CACHE_TIME = int(environ.get('CACHE_TIME', 300))
 USE_CAPTION_FILTER = bool(environ.get('USE_CAPTION_FILTER', True))
 
-#============================pic===============================
+
+# pics for bots
+
 PICS = (environ.get('PICS', 'https://graph.org/file/82224bd9fb82955f59e9f-946f7bf88ccade7aed.jpg https://graph.org/file/9d178c720074c6e13b66d-fceee1e8455bd86e0f.jpg https://graph.org/file/5db2382459f3dcaea240a-b0b3d29811a7227da7.jpg https://graph.org/file/626ee6e3b12630697924f-bb9d4aacbbe38415bd.jpg https://graph.org/file/32ce8a14701db278510a4-fb408ce7db4aebeccb.jpg https://graph.org/file/996f44b5ba51a5cf384f8-60817dfbe9f3d5f926.jpg https://graph.org/file/d62db0f1e1ca7c00b9c84-5c262aeabd4d104645.jpg https://graph.org/file/5105d2d949304523c00ef-2d703fd3d5f8e3d3c7.jpg https://graph.org/file/f60ad193597645330b192-5c5fa0215ba6c6a073.jpg https://graph.org/file/5a4e0cd4e05ed51bef118-f4a96e965a36231e5f.jpg https://graph.org/file/0c0a0a1f226bd8123775b-6d50af5f20dcdcc405.jpg https://graph.org/file/a480495135131c07a789a-a943fdad64a788cc8b.jpg https://graph.org/file/6b256570a9d389dbb428a-5b08b055559e8ac48e.jpg')).split() 
 NOR_IMG = environ.get("NOR_IMG", "https://graph.org/file/8002ab2a32b625a0bca90-2820e4c45072dd29d9.jpg")
 MELCOW_VID = environ.get("MELCOW_VID", "https://graph.org/file/e215d12bfd4fa2155e90e.mp4")
@@ -39,24 +38,22 @@ SUBSCRIPTION = (environ.get('SUBSCRIPTION', 'https://telegra.ph/file/f983d857f3c
 FSUB_IMG = (environ.get('FSUB_IMG', 'https://i.ibb.co/cShkPjcZ/x.jpg')).split() 
 DONATE_IMG = environ.get("DONATE_IMG", "https://graph.org/file/3768bd857b7991d7bc72e-e9f5779b867af7dc2e.jpg")
 
-#===========================admin and channel ids================================
+# Admins and channel info
+
 ADMINS = [int(admin) if id_pattern.search(admin) else admin for admin in environ.get('ADMINS', '6914788581 1976581598').split()] 
 CHANNELS = [int(ch) if id_pattern.search(ch) else ch for ch in environ.get('CHANNELS', '-1002269913541 -1002693892638').split()]
 LOG_CHANNEL = int(environ.get('LOG_CHANNEL', '-1002245108673'))  
 BIN_CHANNEL = int(environ.get('BIN_CHANNEL', '-1002245108673'))  
 PREMIUM_LOGS = int(environ.get('PREMIUM_LOGS', '-1002245108673'))
 MOVIE_UPDATE_CHANNEL = int(environ.get('MOVIE_UPDATE_CHANNEL', '-1002611312335'))  
+MOVIE_UPDATE_NOTIFICATION = bool(environ.get("MOVIE_UPDATE_NOTIFICATION", False))
 support_chat_id = environ.get('SUPPORT_CHAT_ID', '-1002253933263')
+SUPPORT_CHAT = environ.get('SUPPORT_CHAT', 'https://t.me/+bZFqbCxTU0kzNTU1')
 reqst_channel = environ.get('REQST_CHANNEL_ID', '-1002272016564')
 
-#===========================================================
-auth_grp = environ.get('AUTH_GROUP')
-AUTH_GROUPS = [int(ch) for ch in auth_grp.split()] if auth_grp else None 
-REQST_CHANNEL = int(reqst_channel) if reqst_channel and id_pattern.search(reqst_channel) else None 
-SUPPORT_CHAT_ID = int(support_chat_id) if support_chat_id and id_pattern.search(support_chat_id) else None
-#===========================================================
 
-#===============================mongudb============================
+# MongoDB URL
+
 DATABASE_URI = environ.get('DATABASE_URI', "mongodb+srv://Dev:Dev@cluster0.copmobw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 DATABASE_NAME = environ.get('DATABASE_NAME', "Cluster0")
 COLLECTION_NAME = environ.get('COLLECTION_NAME', 'SilentXBotz_files')
@@ -64,21 +61,30 @@ MULTIPLE_DB = is_enabled(os.environ.get('MULTIPLE_DB', "False"), False) # Type T
 DATABASE_URI2 = environ.get('DATABASE_URI2', "mongodb+srv://Demo22:Demo22@cluster0.pj7etfj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 DB_CHANGE_LIMIT = int(environ.get('DB_CHANGE_LIMIT', "432"))
 
-#===========================Channellinks================================
+# Channel links
+
 GRP_LNK = environ.get('GRP_LNK', 'https://t.me/+TGqBUP3rvd0xN2M1')
 CHNL_LNK = environ.get('CHNL_LNK', 'https://t.me/Hollywood_Movies_2025_hd')
 OWNER_LNK = environ.get('OWNER_LNK', 'https://t.me/L_uciBot')
 UPDATE_CHANNEL_LNK = environ.get('UPDATE_CHANNEL_LNK', 'https://t.me/+WRL4fzzm5S9lY2Jl')
 
-#==================================Auth Channel=========================
+# Auth Channels
+
 AUTH_CHANNEL = environ.get("AUTH_CHANNEL", "-1002159274943") # add multiple channels here, separated by single space
 AUTH_CHANNEL = [int(ch) for ch in AUTH_CHANNEL.strip().split()] if AUTH_CHANNEL else []
 AUTH_REQ_CHANNEL = environ.get('AUTH_REQ_CHANNEL', '-1002189976586') # add multiple channels here, separated by single space
 AUTH_REQ_CHANNEL = [int(ch) for ch in AUTH_REQ_CHANNEL.strip().split()] if AUTH_REQ_CHANNEL else []
 
-#===========================================================
-#                shortner info 
-#===========================================================
+# Some other settings 
+
+REACTIONS = ["👀", "🔥", "😍", "😇", "⚡", "🆒", "👻", "😈"]
+PROTECT_CONTENT = is_enabled((environ.get('PROTECT_CONTENT', "False")), True)
+PM_SEARCH = bool(environ.get('PM_SEARCH', True)) 
+EMOJI_MODE = bool(environ.get('EMOJI_MODE', False)) 
+PAID_STREAM = bool(environ.get('PAID_STREAM', True))
+
+# shortner infos
+
 IS_VERIFY = is_enabled('IS_VERIFY', True)
 LOG_VR_CHANNEL = int(environ.get('LOG_VR_CHANNEL', '-1002679851383'))
 LOG_API_CHANNEL = int(environ.get('LOG_API_CHANNEL', '-1002679851383'))
@@ -100,13 +106,14 @@ SHORTENER_WEBSITE3 = environ.get("SHORTENER_WEBSITE3", "Seturl.in")
 TWO_VERIFY_GAP = int(environ.get('TWO_VERIFY_GAP', "1200"))
 THREE_VERIFY_GAP = int(environ.get('THREE_VERIFY_GAP', "54000"))
 
-MOVIE_UPDATE_NOTIFICATION = bool(environ.get("MOVIE_UPDATE_NOTIFICATION", False))
+
+# other settings 
+
 NO_RESULTS_MSG = bool(environ.get("NO_RESULTS_MSG", True))
 MAX_B_TN = environ.get("MAX_B_TN", "8")
 MAX_BTN = is_enabled((environ.get('MAX_BTN', "True")), True)
 PORT = environ.get("PORT", "8089")
-MSG_ALRT = environ.get('MSG_ALRT', 'Share & Support Us ♥️')
-SUPPORT_CHAT = environ.get('SUPPORT_CHAT', 'https://t.me/+bZFqbCxTU0kzNTU1') 
+MSG_ALRT = environ.get('MSG_ALRT', 'Share & Support Us ♥️') 
 P_TTI_SHOW_OFF = is_enabled((environ.get('P_TTI_SHOW_OFF', "False")), False)
 IMDB = is_enabled((environ.get('IMDB', "False")), False)
 AUTO_FFILTER = is_enabled((environ.get('AUTO_FFILTER', "True")), True)
@@ -122,11 +129,12 @@ MAX_LIST_ELM = environ.get("MAX_LIST_ELM", None)
 INDEX_REQ_CHANNEL = int(environ.get('INDEX_REQ_CHANNEL', LOG_CHANNEL))
 FILE_STORE_CHANNEL = [int(ch) for ch in (environ.get('FILE_STORE_CHANNEL', '')).split()]
 MELCOW_NEW_USERS = is_enabled((environ.get('MELCOW_NEW_USERS', "False")), False)
-PROTECT_CONTENT = is_enabled((environ.get('PROTECT_CONTENT', "False")), True)
-PM_SEARCH = bool(environ.get('PM_SEARCH', True)) 
-EMOJI_MODE = bool(environ.get('EMOJI_MODE', False)) 
-PAID_STREAM = bool(environ.get('PAID_STREAM', True)) 
 MAINTENANCE_MODE = bool(environ.get('MAINTENANCE_MODE', False))
+auth_grp = environ.get('AUTH_GROUP')
+AUTH_GROUPS = [int(ch) for ch in auth_grp.split()] if auth_grp else None 
+REQST_CHANNEL = int(reqst_channel) if reqst_channel and id_pattern.search(reqst_channel) else None 
+SUPPORT_CHAT_ID = int(support_chat_id) if support_chat_id and id_pattern.search(support_chat_id) else None
+
 
 IGNORE_WORDS = (list(os.environ.get("IGNORE_WORDS").split(",")) if os.environ.get("IGNORE_WORDS") else []) #Remove Words While Searching Files
 IGNORE_WORDS= ["movies", "Movies", ",", "episode", "Episode", "episodes", "Episodes", "south indian", "south indian movie", "South Indian Movie", "south movie", "South Movie", "South Indian", "web-series", "hindi me bhejo", "gujrati", "combined", "!", "kro", "jaldi", "Audio", "audio", "movi", "language", "Language", "Hollywood", "All", "all", "bollywood", "Bollywood", "South", "south", "HD", "hd", "karo", "Karo", "fullepisode", "please", "plz", "Please", "Plz", "send", "link", "Link", "full", "Full", "dabbed", "dubbed", "season", "Season", "web", "series", "Web", "Series", "webseries", "WebSeries", "upload", "HD", "Hd", "bhejo", "ful", "Send", "Bhejo"]
@@ -166,8 +174,6 @@ if HAS_SSL:
 else:
     URL = "http://{}/".format(FQDN)
 
-
-REACTIONS = ["👀", "🔥", "😍", "😇", "⚡", "🆒", "👻", "😈"]
 
 STAR_PREMIUM_PLANS = {
     1: "7day",
