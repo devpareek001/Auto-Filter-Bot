@@ -382,8 +382,8 @@ async def start(client, message):
                     await m.delete()
                     return
         except Exception as e:
-            await log_error(client, f"Got Error In Verification Funtion.\n\n Error - {e}")
-            print(f"Error In Verification - {e}")
+            await log_error(client, f"Got Error In Non Premium User Funtion.\n\n Error - {e}")
+            print(f"Error In Non Premium User - {e}")
             pass
             
     if data.startswith("allfiles"):
