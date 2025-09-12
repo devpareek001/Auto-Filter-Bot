@@ -209,3 +209,5 @@ if MULTIPLE_DB == False:
 else:
     DATABASE_URI = DATABASE_URI
     DATABASE_URI2 = DATABASE_URI2
+#ignore this var but dont remove
+FILE_AUTO_DEL_TIMER = 600
