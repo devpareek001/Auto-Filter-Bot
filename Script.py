@@ -1,15 +1,13 @@
 class script(object):
     START_TXT = """<blockquote><b>Hᴇʟʟᴏ {},\nMʏ Nᴀᴍᴇ Is {}, \nI Cᴀɴ Pʀᴏᴠɪᴅᴇ Mᴏᴠɪᴇs, Jᴜsᴛ Aᴅᴅ Mᴇ Tᴏ Yᴏᴜʀ Gʀᴏᴜᴘ As Aᴅᴍɪɴ Aɴᴅ Eɴᴊᴏʏ 😍</b></blockquote>"""
 
-    ABOUT_TXT = """<blockquote><b>╭────[ ᴍʏ ᴅᴇᴛᴀɪʟs ]────⍟
-├⍟ ᴍʏ ɴᴀᴍᴇ : <a href=https://t.me/{}>{}</a>
-├⍟ ᴏᴡɴᴇʀ : <a href={}>ᴏᴡɴᴇʀ</a> 
-├⍟ ʟɪʙʀᴀʀʏ : <a href='https://docs.pyrogram.org/'>ᴘʏʀᴏɢʀᴀᴍ</a>
-├⍟ ʟᴀɴɢᴜᴀɢᴇ : <a href='https://www.python.org/download/releases/3.0/'>ᴘʏᴛʜᴏɴ 𝟹</a> 
-├⍟ ᴅᴀᴛᴀʙᴀꜱᴇ : <a href='https://www.mongodb.com/'>ᴍᴏɴɢᴏ ᴅʙ</a> 
-├⍟ ꜱᴇʀᴠᴇʀ : <a href='https://heroku.com/'>ʜᴇʀᴏᴋᴜ</a> 
-├⍟ ꜱᴛᴀᴛᴜꜱ : ᴠ4.8 [ ꜱᴛᴀʙʟᴇ ]
-╰───────────────⍟</b></blockquote>"""
+    ABOUT_TXT = """<blockquote><b>🤖 ᴍʏ ɴᴀᴍᴇ: {} </blockquote>
+<blockquote>⚙️ ʜᴏsᴛᴇᴅ ᴏɴ : <a href="https://www.heroku.com/">ʜᴇʀᴏᴋᴜ</a></blockquote>
+<blockquote>🍿 ᴅᴀᴛᴀʙᴀsᴇ : <a href="https://www.mongodb.com/">ᴍᴏɴɢᴏ ᴅʙ</a></blockquote>
+<blockquote>🐍 ᴄᴏᴅɪɴɢ ᴍᴜsᴄʟᴇs : <a href="https://www.python.org/">ᴘʏᴛʜᴏɴ 𝟹</a></blockquote>
+<blockquote>📚 ʟɪʙʀᴀʀʏ: <a href="https://github.com/Mayuri-Chan/pyrofork">ᴘʏʀᴏꜰᴏʀᴋ</a></blockquote>
+<blockquote>👨‍💻 ᴏᴡɴᴇʀ : <a href="https://telegram.me/Morning006">𖧹𝙳𝚎𝚟࿐</a></blockquote>
+<blockquote>🔧 ʙᴜɪʟᴅ sᴛᴀᴛᴜs : ᴠ𝟷.𝟶.𝟷</b></blockquote>"""
 
     FORCESUB_TEXT="""<b>
 ɪɴ ᴏʀᴅᴇʀ ᴛᴏ ɢᴇᴛ ᴛʜᴇ ᴍᴏᴠɪᴇ ʀᴇᴏ̨ᴜᴇsᴛᴇᴅ ʙʏ ʏᴏᴜ.
