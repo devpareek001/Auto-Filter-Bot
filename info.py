@@ -14,8 +14,6 @@ def is_enabled(value, default):
         return default
 
 
-IS_FILE_LIMIT = False 
-FILES_LIMIT = 3
 
 # Api ids
 
@@ -50,6 +48,11 @@ MOVIE_UPDATE_NOTIFICATION = bool(environ.get("MOVIE_UPDATE_NOTIFICATION", False)
 support_chat_id = environ.get('SUPPORT_CHAT_ID', '-1002253933263')
 SUPPORT_CHAT = environ.get('SUPPORT_CHAT', 'https://t.me/+bZFqbCxTU0kzNTU1')
 reqst_channel = environ.get('REQST_CHANNEL_ID', '-1002272016564')
+
+# File Limit
+
+IS_FILE_LIMIT = is_enabled('IS_FILE_LIMIT', False) # Enable Or Disable File Limit
+FILES_LIMIT = int(environ.get("FREE_FILES", "3")) #No. of File User Gets In Free
 
 
 # MongoDB URL
