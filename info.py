@@ -14,7 +14,7 @@ def is_enabled(value, default):
         return default
 
 
-IS_FILE_LIMIT = True
+IS_FILE_LIMIT = False 
 FILES_LIMIT = 3
 
 
