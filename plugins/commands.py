@@ -307,17 +307,10 @@ async def start(client, message):
                     return await replyed.edit(afterDelCap)
                 ikeyboard = InlineKeyboardMarkup([
                     [
-                        InlineKeyboardButton(
-                            text="💳 View Payment Options",
-                            callback_data="buy"
-                        )
-                    ],
-                    [
-                        InlineKeyboardButton(
-                            text="📸 Send Screenshot Here", url=OWNER_LNK)]
-                        )
-                    ]
-                ])
+                        InlineKeyboardButton(text="💳 View Payment Options",callback_data="buy")
+                    ],[
+                        InlineKeyboardButton(text="📸 Send Screenshot Here", url=OWNER_LNK)
+                    ]])
                 return await m.reply(
                     text=script.TRIAL_COMPLETED_TEXT,
                     reply_markup = ikeyboard
