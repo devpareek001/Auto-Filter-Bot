@@ -2,7 +2,7 @@
   <img src="https://i.ibb.co/LdT5fdJY/photo-2025-08-13-01-12-38-7537871916074270724.jpg">
 </p>
 
-<i><h1 align="center">Mikasa Filter Bot</h1></i>
+<i><h1 align="center">Dev Filter Bot</h1></i>
 
 <div align="center">
 
@@ -14,7 +14,7 @@
 
 <div align="center">
 
-### **Star ⭐ the repository if you find this project helpful!**
+### **Private paid Repository!**
 
 </div>
 
@@ -145,18 +145,12 @@ python3 bot.py
 ## 🏆 Special Recognition
 
 
-- [Silicon-Developer](t.me/Silicon_Official) Rewrote the ENTIRE code from start to finish and added many powerful new features! (It's Me 😎)
-- [Its-Raazz](t.me/Its_Raazz) For His Support in Code.
-- [Authors](https://github.com/Silicon-Developer/Auto-Filter-Bot/blob/SiliconBotz/credit.txt) For their Special Effort in Public Contribution.
-- [Contributors](https://github.com/Silicon-Developer/Auto-Filter-Bot/graphs/contributors) For their Support to make it better.
+- [Dev](t.me/Morning006) Rewrote the ENTIRE code from start to finish and added many powerful new features! (It's Me 😎)
+- [Anonymous](t.me/BeingXAnonymous) For His Support in Code.
 - And All Who Help us in This Journey.
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
 
-## 📊 Support & Updates
-
-[![Support Group](https://img.shields.io/badge/Support_Group-Silicon_Botz-critical?style=for-the-badge&logo=telegram)](https://t.me/Silicon_Botz)
-[![Update Channel](https://img.shields.io/badge/Update_Channel-Silicon_Bot_Update-critical?style=for-the-badge&logo=telegram)](https://t.me/Silicon_Bot_Update)
 
 ## ⚠️ Important Notice
 
