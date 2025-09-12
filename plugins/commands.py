@@ -305,87 +305,87 @@ async def start(client, message):
                     await asyncio.sleep(FILE_AUTO_DEL_TIMER)
                     await toDel.delete()
                     return await replyed.edit(afterDelCap)
-            imessage_text = """
-🎬 **Free Trial Completed!** 🎬
-
-Hey there! 👋
-
-Your **3 free trials** have been completed. Thank you for trying our service! 🙏
-
-🌟 **Want Unlimited Access?**
-Upgrade to **Premium** now and enjoy:
-• ✅ Unlimited movie downloads
-• ✅ HD & 4K quality options  
-• ✅ Latest releases first
-• ✅ No waiting time
-• ✅ Priority support
-
-💰 **Premium Plans:**
-• Monthly: ₹99/month
-• Yearly: ₹999/year (Save 17%!)
-
-📸 **How to Upgrade:**
-1. Make payment via UPI/PayTM
-2. Click the button below to send screenshot
-3. Get instant activation!
-
-Ready to unlock unlimited entertainment? 🚀"""
-            ikeyboard = InlineKeyboardMarkup([
-                [
-                    InlineKeyboardButton(
-                        text="📸 Send Screenshot Here",
-                        callback_data="send_payment_screenshot"
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        text="💳 View Payment Options",
-                        callback_data="view_payment_options"
-                    )
-                ]
-            ])
-            return await m.reply(
-                text = imessage_text,
-                reply_markup = ikeyboard
-            )
-
-            if settings.get("is_verify", IS_VERIFY) and (not user_verified or is_second_shortener or is_third_shortener):                
-                verify_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=7))
-                await db.create_verify_id(user_id, verify_id)
-                temp.VERIFICATIONS[user_id] = grp_id
-                if message.command[1].startswith('allfiles'):
-                    verify = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=sendall_{user_id}_{verify_id}_{file_id}", grp_id, is_second_shortener, is_third_shortener)
-                else:
-                    verify = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=notcopy_{user_id}_{verify_id}_{file_id}", grp_id, is_second_shortener, is_third_shortener)
-                if is_third_shortener:
-                    howtodownload = settings.get('tutorial_3', TUTORIAL_3)
-                else:
-                    howtodownload = settings.get('tutorial_2', TUTORIAL_2) if is_second_shortener else settings.get('tutorial', TUTORIAL)
-                buttons = [[
-                    InlineKeyboardButton(text="♻️ ᴄʟɪᴄᴋ ʜᴇʀᴇ ᴛᴏ ᴠᴇʀɪꜰʏ ♻️", url=verify)
-                ],[
-                    InlineKeyboardButton(text="⁉️ ʜᴏᴡ ᴛᴏ ᴠᴇʀɪꜰʏ ⁉️", url=howtodownload)
-                ]]
-                reply_markup=InlineKeyboardMarkup(buttons)
-                if await db.user_verified(user_id): 
-                    msg = script.THIRDT_VERIFICATION_TEXT
-                else:            
-                    msg = script.SECOND_VERIFICATION_TEXT if is_second_shortener else script.VERIFICATION_TEXT
-                n=await m.reply_text(
-                    text=msg.format(message.from_user.mention),
-                    protect_content = True,
-                    reply_markup=reply_markup,
-                    parse_mode=enums.ParseMode.HTML
-                )
-                await asyncio.sleep(300) 
-                await n.delete()
-                await m.delete()
-                return
-        except Exception as e:
-            await log_error(client, f"Got Error In Verification Funtion.\n\n Error - {e}")
-            print(f"Error In Verification - {e}")
-            pass
+                imessage_text = """
+    🎬 **Free Trial Completed!** 🎬
     
+    Hey there! 👋
+    
+    Your **3 free trials** have been completed. Thank you for trying our service! 🙏
+    
+    🌟 **Want Unlimited Access?**
+    Upgrade to **Premium** now and enjoy:
+    • ✅ Unlimited movie downloads
+    • ✅ HD & 4K quality options  
+    • ✅ Latest releases first
+    • ✅ No waiting time
+    • ✅ Priority support
+    
+    💰 **Premium Plans:**
+    • Monthly: ₹99/month
+    • Yearly: ₹999/year (Save 17%!)
+    
+    📸 **How to Upgrade:**
+    1. Make payment via UPI/PayTM
+    2. Click the button below to send screenshot
+    3. Get instant activation!
+    
+    Ready to unlock unlimited entertainment? 🚀"""
+                ikeyboard = InlineKeyboardMarkup([
+                    [
+                        InlineKeyboardButton(
+                            text="📸 Send Screenshot Here",
+                            callback_data="send_payment_screenshot"
+                        )
+                    ],
+                    [
+                        InlineKeyboardButton(
+                            text="💳 View Payment Options",
+                            callback_data="view_payment_options"
+                        )
+                    ]
+                ])
+                return await m.reply(
+                    text = imessage_text,
+                    reply_markup = ikeyboard
+                )
+
+                if settings.get("is_verify", IS_VERIFY) and (not user_verified or is_second_shortener or is_third_shortener):                
+                    verify_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=7))
+                    await db.create_verify_id(user_id, verify_id)
+                    temp.VERIFICATIONS[user_id] = grp_id
+                    if message.command[1].startswith('allfiles'):
+                        verify = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=sendall_{user_id}_{verify_id}_{file_id}", grp_id, is_second_shortener, is_third_shortener)
+                    else:
+                        verify = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=notcopy_{user_id}_{verify_id}_{file_id}", grp_id, is_second_shortener, is_third_shortener)
+                    if is_third_shortener:
+                        howtodownload = settings.get('tutorial_3', TUTORIAL_3)
+                    else:
+                        howtodownload = settings.get('tutorial_2', TUTORIAL_2) if is_second_shortener else settings.get('tutorial', TUTORIAL)
+                    buttons = [[
+                        InlineKeyboardButton(text="♻️ ᴄʟɪᴄᴋ ʜᴇʀᴇ ᴛᴏ ᴠᴇʀɪꜰʏ ♻️", url=verify)
+                    ],[
+                        InlineKeyboardButton(text="⁉️ ʜᴏᴡ ᴛᴏ ᴠᴇʀɪꜰʏ ⁉️", url=howtodownload)
+                    ]]
+                    reply_markup=InlineKeyboardMarkup(buttons)
+                    if await db.user_verified(user_id): 
+                        msg = script.THIRDT_VERIFICATION_TEXT
+                    else:            
+                        msg = script.SECOND_VERIFICATION_TEXT if is_second_shortener else script.VERIFICATION_TEXT
+                    n=await m.reply_text(
+                        text=msg.format(message.from_user.mention),
+                        protect_content = True,
+                        reply_markup=reply_markup,
+                        parse_mode=enums.ParseMode.HTML
+                    )
+                    await asyncio.sleep(300) 
+                    await n.delete()
+                    await m.delete()
+                    return
+            except Exception as e:
+                await log_error(client, f"Got Error In Verification Funtion.\n\n Error - {e}")
+                print(f"Error In Verification - {e}")
+                pass
+            
     if data.startswith("allfiles"):
         files = temp.GETALL.get(file_id)
         if not files:
