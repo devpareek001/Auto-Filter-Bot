@@ -279,6 +279,15 @@ async def start(client, message):
 
                     f_caption += file_limit_info
 
+                    time_text = f'{FILE_AUTO_DEL_TIMER / 60} ᴍɪɴᴜᴛᴇs' if FILE_AUTO_DEL_TIMER >= 60 else f'{FILE_AUTO_DEL_TIMER} sᴇᴄᴏɴᴅs'
+                    delCap = f"<b>ʏᴏᴜʀ ғɪʟᴇ ᴡɪʟʟ ʙᴇ ᴅᴇʟᴇᴛᴇᴅ ᴀғᴛᴇʀ {time_text} ᴛᴏ ᴀᴠᴏɪᴅ ᴄᴏᴘʏʀɪɢʜᴛ ᴠɪᴏʟᴀᴛɪᴏɴs!</b>"
+                    afterDelCap = f"<b>ʏᴏᴜʀ ғɪʟᴇ ɪs ᴅᴇʟᴇᴛᴇᴅ ᴀғᴛᴇʀ {time_text} ᴛᴏ ᴀᴠᴏɪᴅ ᴄᴏᴘʏʀɪɢʜᴛ ᴠɪᴏʟᴀᴛɪᴏɴs!</b>"
+
+                    replyed = await message.reply(delCap, reply_to_message_id=toDel.id)
+                    await asyncio.sleep(FILE_AUTO_DEL_TIMER)
+                    await toDel.delete()
+                    return await replyed.edit(afterDelCap)
+                    
                     if STREAM_MODE:
                         btn = [
                             [InlineKeyboardButton('❍─𓆩〭〬👒𝖦𝖾𝗇𝖾𝗋𝖺𝗍𝖾 𝖲𝗍𝗋𝖾𝗆𝗂𝗇𝗀 𝖫𝗂𝗇𝗄🤍᪳𝆺𝅥⎯', callback_data=f'streamfile:{file_id}')],
