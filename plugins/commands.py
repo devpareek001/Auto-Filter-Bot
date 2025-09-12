@@ -381,10 +381,10 @@ async def start(client, message):
                     await n.delete()
                     await m.delete()
                     return
-            except Exception as e:
-                await log_error(client, f"Got Error In Verification Funtion.\n\n Error - {e}")
-                print(f"Error In Verification - {e}")
-                pass
+        except Exception as e:
+            await log_error(client, f"Got Error In Verification Funtion.\n\n Error - {e}")
+            print(f"Error In Verification - {e}")
+            pass
             
     if data.startswith("allfiles"):
         files = temp.GETALL.get(file_id)
