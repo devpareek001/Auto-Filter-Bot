@@ -17,6 +17,7 @@ class Database:
         self.verify_id = self.db.verify_id 
         self.codes = self.db.codes
         self.connection = self.db.connections
+        self.fsub_invite_link = self.db.fsub_invite_link
 
     async def find_join_req(self, id, chnl):
         chnl = str(chnl)
@@ -419,6 +420,22 @@ class Database:
 
     async def update_movie_update_status(self, bot_id, enable):
         await self.update_bot_setting(bot_id, 'MOVIE_UPDATE_NOTIFICATION', enable)
+
+    async def save_fsub_invite_link(self, channel_id, invite_link):
+        try:
+            await self.fsub_invite_link.update_one(
+                {'channel_id': str(channel_id)},
+                {'$set': {'invite_link': invite_link}},
+                upsert=True
+            )
+            return True
+        except Exception as e:
+            print(f"Error saving invite link: {e}")
+            return False
+
+    async def get_fsub_invite_link(self, channel_id):
+        record = await self.fsub_invite_link.find_one({'channel_id': str(channel_id)})
+        return record['invite_link'] if record else None
 
         
 db = Database(DATABASE_URI, DATABASE_NAME)    

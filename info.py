@@ -54,6 +54,8 @@ reqst_channel = environ.get('REQST_CHANNEL_ID', '-1002272016564')
 IS_FILE_LIMIT = is_enabled('IS_FILE_LIMIT', False) # Enable Or Disable File Limit
 FILES_LIMIT = int(environ.get("FREE_FILES", "25")) #No. of File User Gets In Free
 
+#USE Single Invite link, Enable this if you don't want that your bot will generate diffrent invite link for each call
+USE_SINGLE_INVITE_LINK = is_enabled('USE_SINGLE_LINK', True)
 
 # MongoDB URL
 

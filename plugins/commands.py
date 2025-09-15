@@ -185,21 +185,45 @@ async def start(client, message):
                     continue
                 if AUTH_REQ_CHANNEL and chnl in AUTH_REQ_CHANNEL and not await is_req_subscribed(client, message, chnl):
                     try:
-                        invite_link = await client.create_chat_invite_link(chnl, creates_join_request=True)
+                        if USE_SINGLE_INVITE_LINK:
+                            invite_link = await db.get_fsub_invite_link(chnl)
+                            if not invite_link:
+                                invite_link = await client.create_chat_invite_link(chnl, creates_join_request=True)
+                                result = await db.save_fsub_invite_link(chnl, invite_link.invite_link)
+                                if not result:
+                                    print("Failed to save invite link")
+                                    return
+                                invite_link = invite_link.invite_link
+
+                        else:
+                            invite_link = await client.create_chat_invite_link(chnl, creates_join_request=True)
+                            invite_link = invite_link.invite_link
                     except ChatAdminRequired:
                         print("Bot Ko AUTH_CHANNEL Per Admin Bana Bhai Pahile 🤧")
                         return
                     btn.append([
-                        InlineKeyboardButton(f"⛔️ ᴊᴏɪɴ ɴᴏᴡ channel {i}⛔️", url=invite_link.invite_link)
+                        InlineKeyboardButton(f"⛔️ ᴊᴏɪɴ ɴᴏᴡ channel {i}⛔️", url=invite_link)
                     ])
                 elif chnl not in AUTH_REQ_CHANNEL and not await is_subscribed(client, message.from_user.id, chnl):
                     try:
-                        invite_link = await client.create_chat_invite_link(chnl)
+                        if USE_SINGLE_INVITE_LINK:
+                            invite_link = await db.get_fsub_invite_link(chnl)
+                            if not invite_link:
+                                invite_link = await client.create_chat_invite_link(chnl)
+                                result = await db.save_fsub_invite_link(chnl, invite_link.invite_link)
+                                if not result:
+                                    print("Failed to save invite link")
+                                    return
+                                invite_link = invite_link.invite_link
+
+                        else:
+                            invite_link = await client.create_chat_invite_link(chnl)
+                            invite_link = invite_link.invite_link
                     except ChatAdminRequired:
                         print("Bot Ko AUTH_CHANNEL Per Admin Bana Bhai Pahile 🤧")
                         return
                     btn.append([
-                        InlineKeyboardButton(f"⛔️ ᴊᴏɪɴ ɴᴏᴡ channel {i}⛔️", url=invite_link.invite_link)
+                        InlineKeyboardButton(f"⛔️ ᴊᴏɪɴ ɴᴏᴡ channel {i}⛔️", url=invite_link)
                     ])
                 i += 1
 
