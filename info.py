@@ -62,7 +62,7 @@ USE_SINGLE_INVITE_LINK = is_enabled('USE_SINGLE_LINK', True)
 DATABASE_URI = environ.get('DATABASE_URI', "mongodb+srv://Dev:Dev@cluster0.copmobw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 DATABASE_NAME = environ.get('DATABASE_NAME', "Cluster0")
 COLLECTION_NAME = environ.get('COLLECTION_NAME', 'SilentXBotz_files')
-MULTIPLE_DB = is_enabled(os.environ.get('MULTIPLE_DB', "False"), False) # Type True For Turn On MULTIPLE DB FUNTION 
+MULTIPLE_DB = is_enabled(os.environ.get('MULTIPLE_DB', "True"), False) # Type True For Turn On MULTIPLE DB FUNTION 
 DATABASE_URI2 = environ.get('DATABASE_URI2', "mongodb+srv://Demo22:Demo22@cluster0.pj7etfj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 DB_CHANGE_LIMIT = int(environ.get('DB_CHANGE_LIMIT', "432"))
 
