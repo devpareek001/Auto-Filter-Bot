@@ -17,7 +17,7 @@ class Database:
         self.verify_id = self.db.verify_id 
         self.codes = self.db.codes
         self.connection = self.db.connections
-        self.fsub_invite_link = self.db.fsub_invite_link
+        self.fsub_invite_link = self.db.bot_id.fsub_invite_link
 
     async def find_join_req(self, id, chnl):
         chnl = str(chnl)
