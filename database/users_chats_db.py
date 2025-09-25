@@ -437,6 +437,15 @@ class Database:
         record = await self.fsub_invite_link.find_one({'channel_id': str(channel_id)})
         return record['invite_link'] if record else None
 
+    async def del_fsub_invite_link(self, chanl_id):
+        try:
+            await self.fsub_invite_link.delete_one({'channel_id': str(chanl_id)})
+            return True
+        except Exception as e:
+            print(f"Error delete invite link: {e}")
+            return False
+
+
         
 db = Database(DATABASE_URI, DATABASE_NAME)    
 db2 = Database(DATABASE_URI2, DATABASE_NAME)
