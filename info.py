@@ -21,7 +21,7 @@ SESSION = environ.get('SESSION', 'media_search')
 API_ID = int(environ.get('API_ID', '24942826'))
 API_HASH = environ.get('API_HASH', 'e3e2f3b65ef58634139ccd27d6b7d8cb')
 BOT_TOKEN = environ.get('BOT_TOKEN', "")
-BOT_ID = BOT_TOKEN.split(':', 1)[0]
+bot_id = BOT_TOKEN.split(':', 1)[0]
 
 CACHE_TIME = int(environ.get('CACHE_TIME', 300))
 USE_CAPTION_FILTER = bool(environ.get('USE_CAPTION_FILTER', True))
