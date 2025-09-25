@@ -1221,4 +1221,56 @@ async def reset_all_settings(client, message):
     except Exception as e:
         print(f"Error Processing Reset All Settings Command: {str(e)}")
         await message.reply("<b>ᴇʀʀᴏʀ 🚫.oᴄᴄᴜʀʀᴇᴅ ᴡʜɪʟᴇ ᴅᴇʟᴇᴛɪɴɢ ɢʀᴏᴜᴘ ꜱᴇᴛᴛɪɴɢꜱ! ᴘʟᴇᴀꜱᴇ ᴛʀʏ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ.</b>", quote=True)
+
+@Client.on_message(filters.command("delexistlink") & filters.user(ADMINS))
+async def delete_existing_link(client, message):
+    try:
+        # split command args
+        args = message.text.split(maxsplit=1)
+
+        # if no channel id provided
+        if len(args) < 2:
+            await message.reply_text(
+                "❌ Please add channel ID after command.\n\n"
+                "✅ Format: `/delexistlink -1001234567890`",
+                quote=True
+            )
+            return
+
+        channel_id = args[1].strip()
+
+        # check format of channel id
+        if not channel_id.startswith("-100"):
+            await message.reply_text(
+                "❌ Invalid channel ID format.\n\n"
+                "✅ Correct format: `/delexistlink -1001234567890`",
+                quote=True
+            )
+            return
+
+        # call delete function
+        result = await db.del_fsub_invite_link(channel_id)
+
+        if result is True:
+            await message.reply_text(
+                f"✅ Invite link for channel `{channel_id}` has been deleted.",
+                quote=True
+            )
+        elif result is False:
+            await message.reply_text(
+                f"⚠️ No invite link found for channel `{channel_id}`.",
+                quote=True
+            )
+        else:
+            # result contains error string
+            await message.reply_text(
+                f"❌ {result}",
+                quote=True
+            )
+
+    except Exception as e:
+        await message.reply_text(
+            f"⚠️ Unexpected error: `{e}`",
+            quote=True
+        )
         
