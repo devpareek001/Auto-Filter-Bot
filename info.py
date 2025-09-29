@@ -60,7 +60,7 @@ USE_SINGLE_INVITE_LINK = is_enabled('USE_SINGLE_LINK', True)
 
 # MongoDB URL
 
-DATABASE_URI = environ.get('DATABASE_URI', "mongodb+srv://Dev:Dev@cluster0.copmobw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+DATABASE_URI = environ.get('DATABASE_URI', "mongodb+srv://Hdhub:Hdhub@cluster0.fw9syl6.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 DATABASE_NAME = environ.get('DATABASE_NAME', "Cluster0")
 COLLECTION_NAME = environ.get('COLLECTION_NAME', 'SilentXBotz_files')
 MULTIPLE_DB = is_enabled(os.environ.get('MULTIPLE_DB', "True"), False) # Type True For Turn On MULTIPLE DB FUNTION 
