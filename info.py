@@ -39,8 +39,8 @@ DONATE_IMG = environ.get("DONATE_IMG", "https://graph.org/file/3768bd857b7991d7b
 
 # Admins and channel info
 
-ADMINS = [int(admin) if id_pattern.search(admin) else admin for admin in environ.get('ADMINS', '6914788581 1976581598').split()] 
-CHANNELS = [int(ch) if id_pattern.search(ch) else ch for ch in environ.get('CHANNELS', '-1002269913541 -1002693892638').split()]
+ADMINS = [int(admin) if id_pattern.search(admin) else admin for admin in environ.get('ADMINS', '6914788581 1976581598 7980688785').split()] 
+CHANNELS = [int(ch) if id_pattern.search(ch) else ch for ch in environ.get('CHANNELS', '-1003467906075').split()]
 LOG_CHANNEL = int(environ.get('LOG_CHANNEL', '-1003212009746'))  
 BIN_CHANNEL = int(environ.get('BIN_CHANNEL', '-1003212009746'))  
 PREMIUM_LOGS = int(environ.get('PREMIUM_LOGS', '-1003212009746'))
@@ -71,7 +71,7 @@ DB_CHANGE_LIMIT = int(environ.get('DB_CHANGE_LIMIT', "432"))
 
 GRP_LNK = environ.get('GRP_LNK', 'https://t.me/+TGqBUP3rvd0xN2M1')
 CHNL_LNK = environ.get('CHNL_LNK', 'https://t.me/Hollywood_Movies_2025_hd')
-OWNER_LNK = environ.get('OWNER_LNK', 'https://t.me/L_uciBot')
+OWNER_LNK = environ.get('OWNER_LNK', 'https://t.me/ImJustDev')
 UPDATE_CHANNEL_LNK = environ.get('UPDATE_CHANNEL_LNK', 'https://t.me/+WRL4fzzm5S9lY2Jl')
 
 # Auth Channels
@@ -92,8 +92,8 @@ PAID_STREAM = bool(environ.get('PAID_STREAM', True))
 # shortner infos
 
 IS_VERIFY = is_enabled('IS_VERIFY', False)
-LOG_VR_CHANNEL = int(environ.get('LOG_VR_CHANNEL', '-1002679851383'))
-LOG_API_CHANNEL = int(environ.get('LOG_API_CHANNEL', '-1002679851383'))
+LOG_VR_CHANNEL = int(environ.get('LOG_VR_CHANNEL', '-1003212009746'))
+LOG_API_CHANNEL = int(environ.get('LOG_API_CHANNEL', '-1003212009746'))
 VERIFY_IMG = environ.get("VERIFY_IMG", "https://telegra.ph/file/9ecc5d6e4df5b83424896.jpg")
 
 TUTORIAL = environ.get("TUTORIAL", "https://t.me/")
