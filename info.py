@@ -41,9 +41,9 @@ DONATE_IMG = environ.get("DONATE_IMG", "https://graph.org/file/3768bd857b7991d7b
 
 ADMINS = [int(admin) if id_pattern.search(admin) else admin for admin in environ.get('ADMINS', '6914788581 1976581598').split()] 
 CHANNELS = [int(ch) if id_pattern.search(ch) else ch for ch in environ.get('CHANNELS', '-1002269913541 -1002693892638').split()]
-LOG_CHANNEL = int(environ.get('LOG_CHANNEL', '-1002245108673'))  
-BIN_CHANNEL = int(environ.get('BIN_CHANNEL', '-1002245108673'))  
-PREMIUM_LOGS = int(environ.get('PREMIUM_LOGS', '-1002245108673'))
+LOG_CHANNEL = int(environ.get('LOG_CHANNEL', '-1003212009746'))  
+BIN_CHANNEL = int(environ.get('BIN_CHANNEL', '-1003212009746'))  
+PREMIUM_LOGS = int(environ.get('PREMIUM_LOGS', '-1003212009746'))
 MOVIE_UPDATE_CHANNEL = int(environ.get('MOVIE_UPDATE_CHANNEL', '-1002611312335'))  
 MOVIE_UPDATE_NOTIFICATION = bool(environ.get("MOVIE_UPDATE_NOTIFICATION", False))
 support_chat_id = environ.get('SUPPORT_CHAT_ID', '-1002253933263')
