@@ -39,16 +39,16 @@ DONATE_IMG = environ.get("DONATE_IMG", "https://graph.org/file/3768bd857b7991d7b
 
 # Admins and channel info
 
-ADMINS = [int(admin) if id_pattern.search(admin) else admin for admin in environ.get('ADMINS', '6914788581 1976581598 7980688785').split()] 
-CHANNELS = [int(ch) if id_pattern.search(ch) else ch for ch in environ.get('CHANNELS', '-1003467906075').split()]
-LOG_CHANNEL = int(environ.get('LOG_CHANNEL', '-1003212009746'))  
-BIN_CHANNEL = int(environ.get('BIN_CHANNEL', '-1003212009746'))  
-PREMIUM_LOGS = int(environ.get('PREMIUM_LOGS', '-1003212009746'))
-MOVIE_UPDATE_CHANNEL = int(environ.get('MOVIE_UPDATE_CHANNEL', '-1002611312335'))  
+ADMINS = [int(admin) if id_pattern.search(admin) else admin for admin in environ.get('ADMINS', '8385589427').split()] 
+CHANNELS = [int(ch) if id_pattern.search(ch) else ch for ch in environ.get('CHANNELS', '-1003687198050').split()]
+LOG_CHANNEL = int(environ.get('LOG_CHANNEL', '-1003535574297'))  
+BIN_CHANNEL = int(environ.get('BIN_CHANNEL', '-1003535574297'))  
+PREMIUM_LOGS = int(environ.get('PREMIUM_LOGS', '-1003535574297'))
+MOVIE_UPDATE_CHANNEL = int(environ.get('MOVIE_UPDATE_CHANNEL', '-1003684260218'))  
 MOVIE_UPDATE_NOTIFICATION = bool(environ.get("MOVIE_UPDATE_NOTIFICATION", False))
-support_chat_id = environ.get('SUPPORT_CHAT_ID', '-1002253933263')
-SUPPORT_CHAT = environ.get('SUPPORT_CHAT', 'https://t.me/+bZFqbCxTU0kzNTU1')
-reqst_channel = environ.get('REQST_CHANNEL_ID', '-1002272016564')
+support_chat_id = environ.get('SUPPORT_CHAT_ID', '-1005081391767')
+SUPPORT_CHAT = environ.get('SUPPORT_CHAT', 'https://t.me/+_eO8A6ttPWJlYzU9')
+reqst_channel = environ.get('REQST_CHANNEL_ID', '-1003535574297')
 
 # File Limit
 
@@ -71,8 +71,8 @@ DB_CHANGE_LIMIT = int(environ.get('DB_CHANGE_LIMIT', "432"))
 
 GRP_LNK = environ.get('GRP_LNK', 'https://t.me/+TGqBUP3rvd0xN2M1')
 CHNL_LNK = environ.get('CHNL_LNK', 'https://t.me/Hollywood_Movies_2025_hd')
-OWNER_LNK = environ.get('OWNER_LNK', 'https://t.me/ImJustDev')
-UPDATE_CHANNEL_LNK = environ.get('UPDATE_CHANNEL_LNK', 'https://t.me/+WRL4fzzm5S9lY2Jl')
+OWNER_LNK = environ.get('OWNER_LNK', 'https://t.me/Try_againn1')
+UPDATE_CHANNEL_LNK = environ.get('UPDATE_CHANNEL_LNK', 'https://t.me/+_eO8A6ttPWJlYzU9')
 
 # Auth Channels
 
@@ -92,8 +92,8 @@ PAID_STREAM = bool(environ.get('PAID_STREAM', True))
 # shortner infos
 
 IS_VERIFY = is_enabled('IS_VERIFY', False)
-LOG_VR_CHANNEL = int(environ.get('LOG_VR_CHANNEL', '-1003212009746'))
-LOG_API_CHANNEL = int(environ.get('LOG_API_CHANNEL', '-1003212009746'))
+LOG_VR_CHANNEL = int(environ.get('LOG_VR_CHANNEL', '-1003535574297'))
+LOG_API_CHANNEL = int(environ.get('LOG_API_CHANNEL', '-1003535574297'))
 VERIFY_IMG = environ.get("VERIFY_IMG", "https://telegra.ph/file/9ecc5d6e4df5b83424896.jpg")
 
 TUTORIAL = environ.get("TUTORIAL", "https://t.me/")
