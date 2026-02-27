@@ -40,7 +40,7 @@ DONATE_IMG = environ.get("DONATE_IMG", "https://graph.org/file/3768bd857b7991d7b
 # Admins and channel info
 
 ADMINS = [int(admin) if id_pattern.search(admin) else admin for admin in environ.get('ADMINS', '8385589427').split()] 
-CHANNELS = [int(ch) if id_pattern.search(ch) else ch for ch in environ.get('CHANNELS', '-1003687198050').split()]
+CHANNELS = [int(ch) if id_pattern.search(ch) else ch for ch in environ.get('CHANNELS', '-1002150030043').split()]
 LOG_CHANNEL = int(environ.get('LOG_CHANNEL', '-1003535574297'))  
 BIN_CHANNEL = int(environ.get('BIN_CHANNEL', '-1003535574297'))  
 PREMIUM_LOGS = int(environ.get('PREMIUM_LOGS', '-1003535574297'))
