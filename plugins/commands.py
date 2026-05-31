@@ -1273,4 +1273,49 @@ async def delete_existing_link(client, message):
             f"⚠️ Unexpected error: `{e}`",
             quote=True
         )
-        
+
+@Client.on_message(filters.command("cleardb") & filters.user(ADMINS))
+async def clear_database(client, message):
+
+    msg = await message.reply_text("⚠️ Clearing Complete Database...")
+
+    try:
+        # Files
+        await Media.collection.delete_many({})
+        await Media2.collection.delete_many({})
+
+        # Users & Groups
+        await db.col.delete_many({})
+        await db.grp.delete_many({})
+
+        # Premium Users
+        await db.users.delete_many({})
+
+        # Verification Data
+        await db.verify_id.delete_many({})
+
+        # Misc Data
+        await db.misc.delete_many({})
+
+        # Codes
+        await db.codes.delete_many({})
+
+        # Connections
+        await db.connection.delete_many({})
+
+        # Bot Settings
+        await db.botcol.delete_many({})
+
+        await msg.edit(
+            "✅ COMPLETE DATABASE CLEARED\n\n"
+            "➤ All Users Deleted\n"
+            "➤ All Groups Deleted\n"
+            "➤ All Premium Users Deleted\n"
+            "➤ All Files Deleted\n"
+            "➤ All Verification Data Deleted\n"
+            "➤ All Connections Deleted\n"
+            "➤ All Bot Settings Deleted"
+        )
+
+    except Exception as e:
+        await msg.edit(f"❌ Error:\n<code>{e}</code>")
