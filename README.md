@@ -3,7 +3,7 @@
 
 <div align="center">
 
-### **Private paid Repository!**
+### **To much error in this Repository!if you using this first solve some error or avoid this repository**
 
 </div>
 
