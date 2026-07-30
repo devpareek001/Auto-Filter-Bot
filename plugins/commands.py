@@ -19,6 +19,7 @@ from pyrogram.errors import FloodWait, ChatAdminRequired
 from pyrogram.types import *
 from database.ia_filterdb import *
 from database.users_chats_db import db
+from database.movielock_db import is_locked_movie
 from info import *
 from utils import *
 
@@ -101,7 +102,7 @@ async def start(client, message):
                     InlineKeyboardButton('𝔄ʙᴏᴜᴛ 💌', callback_data='about')
                 ],[
                     InlineKeyboardButton('ᴇᴀʀɴ ᴍᴏɴᴇʏ 🤑', callback_data="earn"), 
-                    InlineKeyboardButton("🍁 𝚂𝚞𝚙𝚙𝚘𝚛𝚝", callback_data="show_channels")
+                    InlineKeyboardButton("🎬 ᴘʀᴇᴍɪᴜᴍ ᴍᴏᴠɪᴇꜱ", callback_data="premiummovieslist")
                 ]]
         reply_markup = InlineKeyboardMarkup(buttons)
         await asyncio.sleep(1)
@@ -167,7 +168,35 @@ async def start(client, message):
         pre, grp_id, file_id = data.split('_', 2)
     except:
         pre, grp_id, file_id = "", 0, data
+    # ---- 🔒 Premium-Only Movie Check ----
+    is_allfiles_request = data and data.startswith("allfiles")
+    premium_check_titles = []
+    if is_allfiles_request:
+        batch_files = temp.GETALL.get(file_id)
+        if batch_files:
+            premium_check_titles = [getattr(f, "file_name", "") for f in batch_files]
+    else:
+        single_file = await get_file_details(file_id)
+        if single_file:
+            premium_check_titles = [getattr(single_file[0], "file_name", "")]
 
+    if premium_check_titles:
+        locked = False
+        for _title in premium_check_titles:
+            if await is_locked_movie(_title):
+                locked = True
+                break
+        if locked and not await db.has_premium_access(m.from_user.id):
+            buy_btn = [[InlineKeyboardButton("💎 ʙᴜʏ ᴘʀᴇᴍɪᴜᴍ", callback_data="buy")]]
+            await m.reply_text(
+                "🔒✨ <b>ᴘʀᴇᴍɪᴜᴍ-ᴏɴʟʏ ᴍᴏᴠɪᴇ!</b> ✨🔒\n\n"
+                "🎬 ᴛʜɪꜱ ᴍᴏᴠɪᴇ ɪꜱ ʟᴏᴄᴋᴇᴅ ᴀɴᴅ ᴏɴʟʏ ᴀᴠᴀɪʟᴀʙʟᴇ ꜰᴏʀ ᴏᴜʀ 💎 ᴘʀᴇᴍɪᴜᴍ ᴍᴇᴍʙᴇʀꜱ.\n\n"
+                "🚀 ᴜᴘɢʀᴀᴅᴇ ɴᴏᴡ ᴀɴᴅ ᴇɴᴊᴏʏ ᴜɴʟɪᴍɪᴛᴇᴅ ᴀᴄᴄᴇꜱꜱ ᴛᴏ ᴀʟʟ ᴘʀᴇᴍɪᴜᴍ ᴍᴏᴠɪᴇꜱ! 👇",
+                reply_markup=InlineKeyboardMarkup(buy_btn),
+                parse_mode=enums.ParseMode.HTML
+            )
+            return
+    # ---- End Premium-Only Movie Check ----
     try:
         settings = await get_settings(int(data.split("_", 2)[1]))
         fsub_id_list = settings.get('fsub_id', [])
