@@ -1375,7 +1375,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
   
 
     
-    elelif query.data == "premiummovieslist":
+    elif query.data == "premiummovieslist":
         try:
             movies = await get_locked_movies()
             if not movies:
