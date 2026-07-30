@@ -23,6 +23,7 @@ from logging_helper import LOGGER
 from urllib.parse import quote_plus
 from Lucia.util.file_properties import get_name, get_hash, get_media_file_size
 from database.topdb import silentdb
+from database.movielock_db import get_locked_movies
 import requests
 import string
 import tracemalloc
@@ -1358,7 +1359,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                     InlineKeyboardButton('𝔄ʙᴏᴜᴛ 💌', callback_data='about')
                 ],[
                     InlineKeyboardButton('ᴇᴀʀɴ ᴍᴏɴᴇʏ 🤑', callback_data="earn"),
-                    InlineKeyboardButton("𝚂𝚞𝚙𝚙𝚘𝚛𝚝 🍁", callback_data="show_channels")
+                    InlineKeyboardButton("🎬 ᴘʀᴇᴍɪᴜᴍ ᴍᴏᴠɪᴇꜱ", callback_data="premiummovieslist")
                 ]]
         reply_markup = InlineKeyboardMarkup(buttons)
         await client.edit_message_media(
@@ -1374,26 +1375,38 @@ async def cb_handler(client: Client, query: CallbackQuery):
   
 
     
+    elelif query.data == "premiummovieslist":
+        try:
+            movies = await get_locked_movies()
+            if not movies:
+                text = (
+                    "🎬✨ <b>ᴘʀᴇᴍɪᴜᴍ ᴍᴏᴠɪᴇꜱ</b> ✨🎬\n\n"
+                    "📭 ɴᴏ ᴘʀᴇᴍɪᴜᴍ ᴍᴏᴠɪᴇꜱ ᴀᴠᴀɪʟᴀʙʟᴇ ʀɪɢʜᴛ ɴᴏᴡ.\n"
+                    "ᴄʜᴇᴄᴋ ʙᴀᴄᴋ ꜱᴏᴏɴ, ɴᴇᴡ ᴏɴᴇꜱ ᴀʀᴇ ᴀᴅᴅᴇᴅ ʀᴇɢᴜʟᴀʀʟʏ! 🔄"
+                )
+            else:
+                text = "🎬✨ <b>ᴘʀᴇᴍɪᴜᴍ-ᴏɴʟʏ ᴍᴏᴠɪᴇꜱ</b> ✨🎬\n\n"
+                for i, movie in enumerate(movies, 1):
+                    text += f"🔒 <b>{i}.</b> {movie.title()}\n"
+                text += (
+                    f"\n📊 ᴛᴏᴛᴀʟ: <b>{len(movies)}</b>\n\n"
+                    "💎 ᴡᴀɴᴛ ᴛᴏ ᴡᴀᴛᴄʜ ᴛʜᴇꜱᴇ? ᴜɴʟᴏᴄᴋ ᴡɪᴛʜ ᴘʀᴇᴍɪᴜᴍ! 👇"
+                )
+            btn = [[
+                InlineKeyboardButton('💎 ʙᴜʏ ᴘʀᴇᴍɪᴜᴍ', callback_data='buy')
+            ],[
+                InlineKeyboardButton('⇋ ʙᴀᴄᴋ ᴛᴏ ʜᴏᴍᴇ ⇋', callback_data='start')
+            ]]
+            reply_markup = InlineKeyboardMarkup(btn)
+            await query.message.edit_text(
+                text=text,
+                reply_markup=reply_markup,
+                parse_mode=enums.ParseMode.HTML
+            )
+        except Exception as e:
+            LOGGER.error(f"Error In premiummovieslist - {e}")
+
     elif query.data == "show_channels":
-        keyboard = InlineKeyboardMarkup([
-            [
-                InlineKeyboardButton("𝙼𝚊𝚒𝚗 𝙲𝚑𝚊𝚗𝚗𝚎𝚕 🦋", url="https://t.me/Hollywood_Movies_2025_hd"),
-                InlineKeyboardButton("𝙱𝚊𝚌𝚔𝚞𝚙 𝙲𝚑𝚊𝚗𝚗𝚎𝚕🦋", url="https://t.me/MoviesEmpire_Backup")
-            ],
-            [
-                InlineKeyboardButton("𝚂𝚞𝚙𝚙𝚘𝚛𝚝 Grp🦋", url="https://t.me/+bZFqbCxTU0kzNTU1"),
-                InlineKeyboardButton("𝙱𝚊𝚌𝚔𝚞𝚙 𝙶𝚛𝚘𝚞𝚙🦋", url="https://t.me/+VZw75b8hs-o0NjE1")
-            ],
-            [InlineKeyboardButton('⇋ 𝙱𝚊𝚌𝚔 𝚃𝚘 𝙷𝚘𝚖𝚎 ⇋', callback_data='start')]
-        ])
-        await query.message.edit_text(
-            "⚡ ɢʀᴏᴜᴘs & ᴄʜᴀɴɴᴇʟs ɪɴғᴏ ⚡\n\n"
-            "▫ ᴀʟʟ ɴᴇᴡ ᴍᴏᴠɪᴇs & sᴇʀɪᴇs.\n"
-            "▫ ғᴀsᴛᴇsᴛ ʙᴏᴛs ᴀʀᴇ ᴀᴅᴅᴇᴅ.\n"
-            "▫ ғʀᴇᴇ & ᴇᴀsʏ ᴛᴏ ᴜsᴇ.\n"
-            "▫ 2𝟺x𝟽 sᴇʀᴠɪᴄᴇs ᴀᴠᴀɪʟᴀʙʟᴇ.",
-            reply_markup=keyboard
-        )
     
     elif query.data == "give_trial":
         try:
