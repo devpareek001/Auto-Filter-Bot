@@ -1405,8 +1405,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
             )
         except Exception as e:
             LOGGER.error(f"Error In premiummovieslist - {e}")
-
-    elif query.data == "show_channels":
     
     elif query.data == "give_trial":
         try:
