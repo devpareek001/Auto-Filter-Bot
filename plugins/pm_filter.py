@@ -1315,7 +1315,11 @@ async def cb_handler(client: Client, query: CallbackQuery):
             if PAID_STREAM and not is_premium_user:
                 premiumbtn = [[InlineKeyboardButton("𝖡𝗎𝗒 𝖯𝗋𝖾𝗆𝗂𝗎𝗆 ♻️", callback_data='buy')]]
                 await query.answer("<b>📌 ᴛʜɪꜱ ꜰᴇᴀᴛᴜʀᴇ ɪꜱ ᴏɴʟʏ ꜰᴏʀ ᴘʀᴇᴍɪᴜᴍ ᴜꜱᴇʀꜱ</b>", show_alert=True)
-                await query.message.reply("<b>📌 ᴛʜɪꜱ ꜰᴇᴀᴛᴜʀᴇ ɪꜱ ᴏɴʟʏ ꜰᴏʀ ᴘʀᴇᴍɪᴜᴍ ᴜꜱᴇʀꜱ. ʙᴜʏ ᴘʀᴇᴍɪᴜᴍ ᴛᴏ ᴀᴄᴄᴇꜱꜱ ᴛʜɪꜱ ꜰᴇᴀᴛᴜʀᴇ ✅</b>", reply_markup=InlineKeyboardMarkup(premiumbtn))
+                await query.message.reply_photo(
+                    photo=SUBSCRIPTION,
+                    caption="🔒✨ <b>ᴘʀᴇᴍɪᴜᴍ-ᴏɴʟʏ ꜰᴇᴀᴛᴜʀᴇ!</b> ✨🔒\n\n🎬 <b>ꜱᴛʀᴇᴀᴍɪɴɢ ʟɪɴᴋꜱ</b> ᴀʀᴇ ᴇxᴄʟᴜꜱɪᴠᴇʟʏ ᴀᴠᴀɪʟᴀʙʟᴇ ꜰᴏʀ ᴏᴜʀ 💎 ᴘʀᴇᴍɪᴜᴍ ᴍᴇᴍʙᴇʀꜱ.\n\n🚀 ᴜᴘɢʀᴀᴅᴇ ɴᴏᴡ ᴀɴᴅ ᴇɴᴊᴏʏ ɪɴꜱᴛᴀɴᴛ ᴏɴʟɪɴᴇ ᴡᴀᴛᴄʜɪɴɢ! 👇",
+                    reply_markup=InlineKeyboardMarkup(premiumbtn)
+                )
                 return
             username =  query.from_user.mention 
             silent_msg = await client.send_cached_media(
