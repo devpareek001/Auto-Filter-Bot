@@ -51,7 +51,7 @@ SUPPORT_CHAT = environ.get('SUPPORT_CHAT', 'https://t.me/+-B6DV3YvzGo3MWE9')
 reqst_channel = environ.get('REQST_CHANNEL_ID', '-1004331006334')
 # File Limit
 
-IS_FILE_LIMIT = is_enabled('IS_FILE_LIMIT', True) # Enable Or Disable File Limit
+IS_FILE_LIMIT = is_enabled('IS_FILE_LIMIT', False) # Enable Or Disable File Limit
 FILES_LIMIT = int(environ.get("FREE_FILES", "4")) #No. of File User Gets In Free
 
 #USE Single Invite link, Enable this if you don't want that your bot will generate diffrent invite link for each call
@@ -90,7 +90,7 @@ PAID_STREAM = bool(environ.get('PAID_STREAM', True))
 
 # shortner infos
 
-IS_VERIFY = is_enabled('IS_VERIFY', True)
+IS_VERIFY = is_enabled('IS_VERIFY', False)
 LOG_VR_CHANNEL = int(environ.get('LOG_VR_CHANNEL', '-1004464824907'))
 LOG_API_CHANNEL = int(environ.get('LOG_API_CHANNEL', '-1004464824907'))
 VERIFY_IMG = environ.get("VERIFY_IMG", "https://telegra.ph/file/9ecc5d6e4df5b83424896.jpg")
