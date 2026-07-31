@@ -90,7 +90,7 @@ PAID_STREAM = bool(environ.get('PAID_STREAM', True))
 
 # shortner infos
 
-IS_VERIFY = is_enabled('IS_VERIFY', False)
+IS_VERIFY = is_enabled('IS_VERIFY', True)
 LOG_VR_CHANNEL = int(environ.get('LOG_VR_CHANNEL', '-1004464824907'))
 LOG_API_CHANNEL = int(environ.get('LOG_API_CHANNEL', '-1004464824907'))
 VERIFY_IMG = environ.get("VERIFY_IMG", "https://telegra.ph/file/9ecc5d6e4df5b83424896.jpg")
