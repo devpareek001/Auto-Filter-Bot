@@ -410,6 +410,50 @@ async def start(client, message):
         files = temp.GETALL.get(file_id)
         if not files:
             return await message.reply('<b><i>ɴᴏ ꜱᴜᴄʜ ꜰɪʟᴇ ᴇxɪꜱᴛꜱ !</b></i>')
+
+        # ---- 📊 File Limit Check For "Send All" ----
+        limit_info_text = ""
+        if IS_FILE_LIMIT and FILES_LIMIT > 0 and not await db.has_premium_access(message.from_user.id):
+            current_file_count = silicondb.silicon_file_limit(message.from_user.id)
+            remaining = FILES_LIMIT - current_file_count
+
+            if len(files) > remaining:
+                settings = await get_settings(int(grp_id))
+                if settings.get("is_verify", IS_VERIFY):
+                    user_id = message.from_user.id
+                    verify_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=7))
+                    await db.create_verify_id(user_id, verify_id)
+                    temp.VERIFICATIONS[user_id] = grp_id
+                    is_second_shortener = await db.use_second_shortener(user_id, settings.get('verify_time', TWO_VERIFY_GAP))
+                    is_third_shortener = await db.use_third_shortener(user_id, settings.get('third_verify_time', THREE_VERIFY_GAP))
+                    verify = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=sendall_{user_id}_{verify_id}_{file_id}", grp_id, is_second_shortener, is_third_shortener)
+                    if is_third_shortener:
+                        howtodownload = settings.get('tutorial_3', TUTORIAL_3)
+                    else:
+                        howtodownload = settings.get('tutorial_2', TUTORIAL_2) if is_second_shortener else settings.get('tutorial', TUTORIAL)
+                    buttons = [[
+                        InlineKeyboardButton(text="♻️ ᴄʟɪᴄᴋ ʜᴇʀᴇ ᴛᴏ ᴠᴇʀɪꜰʏ ♻️", url=verify)
+                    ],[
+                        InlineKeyboardButton(text="⁉️ ʜᴏᴡ ᴛᴏ ᴠᴇʀɪꜰʏ ⁉️", url=howtodownload)
+                    ]]
+                    return await message.reply_text(
+                        text=script.VERIFICATION_TEXT.format(message.from_user.mention),
+                        protect_content=True,
+                        reply_markup=InlineKeyboardMarkup(buttons),
+                        parse_mode=enums.ParseMode.HTML
+                    )
+                else:
+                    return await message.reply_text(
+                        f"<b>📊 ᴛʜɪꜱ ʙᴀᴛᴄʜ ʜᴀꜱ {len(files)} ꜰɪʟᴇꜱ, ʙᴜᴛ ʏᴏᴜ ᴏɴʟʏ ʜᴀᴠᴇ {remaining} ꜰʀᴇᴇ ꜰɪʟᴇ(ꜱ) ʟᴇꜰᴛ ᴛᴏᴅᴀʏ ({current_file_count}/{FILES_LIMIT} ᴜꜱᴇᴅ).</b>\n\nʙᴜʏ ᴘʀᴇᴍɪᴜᴍ ꜰᴏʀ ᴜɴʟɪᴍɪᴛᴇᴅ ᴀᴄᴄᴇꜱꜱ 💎",
+                        reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("💎 ʙᴜʏ ᴘʀᴇᴍɪᴜᴍ", callback_data="buy")]])
+                    )
+
+            for _ in range(len(files)):
+                silicondb.increment_silicon_limit(message.from_user.id)
+            new_count = current_file_count + len(files)
+            limit_info_text = f"\n\n📊 ꜰʀᴇᴇ ꜰɪʟᴇꜱ ᴜꜱᴇᴅ ᴛᴏᴅᴀʏ: {new_count}/{FILES_LIMIT}"
+        # ---- End File Limit Check ----
+
         filesarr = []
         for file in files:
             file_id = file.file_id
@@ -445,7 +489,7 @@ async def start(client, message):
                 reply_markup=InlineKeyboardMarkup(btn)
             )
             filesarr.append(msg)
-        k = await client.send_message(chat_id=message.from_user.id, text=f"<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nᴛʜɪꜱ ᴍᴏᴠɪᴇ ꜰɪʟᴇ/ᴠɪᴅᴇᴏ ᴡɪʟʟ ʙᴇ ᴅᴇʟᴇᴛᴇᴅ ɪɴ <b><u><code>{get_time(DELETE_TIME)}</code></u> 🫥 <i></b>(ᴅᴜᴇ ᴛᴏ ᴄᴏᴘʏʀɪɢʜᴛ ɪꜱꜱᴜᴇꜱ)</i>.\n\n<b><i>ᴘʟᴇᴀꜱᴇ ꜰᴏʀᴡᴀʀᴅ ᴛʜɪꜱ ꜰɪʟᴇ ᴛᴏ ꜱᴏᴍᴇᴡʜᴇʀᴇ ᴇʟꜱᴇ ᴀɴᴅ ꜱᴛᴀʀᴛ ᴅᴏᴡɴʟᴏᴀᴅɪɴɢ ᴛʜᴇʀᴇ</i></b>")
+        k = await client.send_message(chat_id=message.from_user.id, text=f"<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nᴛʜɪꜱ ᴍᴏᴠɪᴇ ꜰɪʟᴇ/ᴠɪᴅᴇᴏ ᴡɪʟʟ ʙᴇ ᴅᴇʟᴇᴛᴇᴅ ɪɴ <b><u><code>{get_time(DELETE_TIME)}</code></u> 🫥 <i></b>(ᴅᴜᴇ ᴛᴏ ᴄᴏᴘʏʀɪɢʜᴛ ɪꜱꜱᴜᴇꜱ)</i>.\n\n<b><i>ᴘʟᴇᴀꜱᴇ ꜰᴏʀᴡᴀʀᴅ ᴛʜɪꜱ ꜰɪʟᴇ ᴛᴏ ꜱᴏᴍᴇᴡʜᴇʀᴇ ᴇʟꜱᴇ ᴀɴᴅ ꜱᴛᴀʀᴛ ᴅᴏᴡɴʟᴏᴀᴅɪɴɢ ᴛʜᴇʀᴇ</i></b>{limit_info_text}")
         await asyncio.sleep(DELETE_TIME)
         for x in filesarr:
             await x.delete()
