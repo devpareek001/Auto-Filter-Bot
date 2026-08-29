@@ -6,7 +6,7 @@ import time
 import mimetypes
 from logging_helper import LOGGER
 from aiohttp.http_exceptions import BadStatusLine
-from Lucia.Bot import multi_clients, work_loads, SilentX
+from Lucia.Bot import multi_clients, work_loads, Dev
 from Lucia.server.exceptions import FIleNotFound, InvalidHash
 from Lucia.zzint import StartTime, __version__
 from Lucia.util.custom_dl import ByteStreamer
@@ -18,7 +18,7 @@ routes = web.RouteTableDef()
 
 @routes.get("/", allow_head=True)
 async def root_route_handler(request):
-    return web.json_response("Telegram - @SilentXBotz")
+    return web.json_response("Telegram - @Dev")
 
 
 @routes.get(r"/watch/{path:\S+}", allow_head=True)
