@@ -296,7 +296,7 @@ def get_size(size):
         size /= 1024.0
     return "%.2f %s" % (size, units[i])
 
-def silent_size(size):
+def dev_size(size):
     size = float(size)
     size_gb = size / (1024 ** 3)
     return "%.2f GB" % size_gb
