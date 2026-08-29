@@ -91,7 +91,6 @@ async def start(client, message):
         await db.add_user(message.from_user.id, message.from_user.first_name)
         await client.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(message.from_user.id, message.from_user.mention))
     if len(message.command) != 2:
-        silenxbotz=await message.reply_sticker("CAACAgQAAxkBAAKzuGh-GKMMaPaSe4ewHm1CA47XAAEC5wAC4QMAAipyxAwmIqzr_aaU7zYE")
         buttons = [[
                     InlineKeyboardButton('☆ 𝔄ᴅᴅ 𝔐ᴇ 𝔗ᴏ 𝔜ᴏᴜʀ 𝔊ʀᴏᴜᴘ ☆', url=f'http://telegram.me/{temp.U_NAME}?startgroup=true')
                 ],[
@@ -105,8 +104,6 @@ async def start(client, message):
                     InlineKeyboardButton("🎬 ᴘʀᴇᴍɪᴜᴍ ᴍᴏᴠɪᴇꜱ", callback_data="premiummovieslist")
                 ]]
         reply_markup = InlineKeyboardMarkup(buttons)
-        await asyncio.sleep(1)
-        await silenxbotz.delete()
         await message.reply_photo(
             photo=random.choice(PICS),
             caption=script.START_TXT.format(message.from_user.mention, temp.U_NAME, temp.B_NAME),
