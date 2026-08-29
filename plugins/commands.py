@@ -12,7 +12,7 @@ from Script import script
 from datetime import datetime
 from database.refer import referdb
 from database.extra_db import silicondb 
-from database.topdb import silentdb
+from database.topdb import devdb
 from pyrogram.enums import ParseMode, ChatType
 from pyrogram import Client, filters, enums
 from pyrogram.errors import FloodWait, ChatAdminRequired
@@ -459,10 +459,10 @@ async def start(client, message):
             size = get_size(files1.file_size)
             f_caption = files1.caption
             settings = await get_settings(int(grp_id))
-            SILENTX_CAPTION = settings.get('caption', CUSTOM_FILE_CAPTION)
-            if SILENTX_CAPTION:
+            DEV_CAPTION = settings.get('caption', CUSTOM_FILE_CAPTION)
+            if DEV_CAPTION:
                 try:
-                    f_caption=SILENTX_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
+                    f_caption=DEV_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
                 except Exception as e:
                     logger.exception(e)
                     f_caption = f_caption
@@ -520,10 +520,10 @@ async def start(client, message):
             size=get_size(file.file_size)
             f_caption = f"<code>{title}</code>"
             settings = await get_settings(int(grp_id))
-            SILENTX_CAPTION = settings.get('caption', CUSTOM_FILE_CAPTION)
-            if SILENTX_CAPTION:
+            DEV_CAPTION = settings.get('caption', CUSTOM_FILE_CAPTION)
+            if DEV_CAPTION:
                 try:
-                    f_caption=SILENTX_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='')
+                    f_caption=DEV_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='')
                 except:
                     return
             await msg.edit_caption(f_caption)
@@ -541,10 +541,10 @@ async def start(client, message):
     size = get_size(files.file_size)
     f_caption = files.caption
     settings = await get_settings(int(grp_id))            
-    SILENTX_CAPTION = settings.get('caption', CUSTOM_FILE_CAPTION)
-    if SILENTX_CAPTION:
+    DEV_CAPTION = settings.get('caption', CUSTOM_FILE_CAPTION)
+    if DEV_CAPTION:
         try:
-            f_caption=SILENTX_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
+            f_caption=DEV_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
         except Exception as e:
             logger.exception(e)
             f_caption = f_caption
@@ -771,9 +771,9 @@ async def settings(client, message):
         group_list = []
         for group in connected_groups:
             try:
-                silentx = await client.get_chat(group)
+                dev = await client.get_chat(group)
                 group_list.append([
-                    InlineKeyboardButton(text=silentx.title, callback_data=f"grp_pm#{silentx.id}")
+                    InlineKeyboardButton(text=dev.title, callback_data=f"grp_pm#{dev.id}")
                 ])
             except Exception as e:
                 print(f"Error In PM Settings Button - {e}")
@@ -971,7 +971,7 @@ async def topsearch_callback(client, callback_query):
     def is_alphanumeric(string):
         return bool(re.match('^[a-zA-Z0-9 ]*$', string))    
     limit = 20  
-    top_messages = await silentdb.get_top_messages(limit)
+    top_messages = await devdb.get_top_messages(limit)
     seen_messages = set()
     truncated_messages = []
     for msg in top_messages:
@@ -1000,7 +1000,7 @@ async def top(_, message):
         limit = int(message.command[1])
     except (IndexError, ValueError):
         limit = 20
-    top_messages = await silentdb.get_top_messages(limit)
+    top_messages = await devdb.get_top_messages(limit)
     seen_messages = set()
     truncated_messages = []
     for msg in top_messages:
@@ -1030,7 +1030,7 @@ async def trendlist(client, message):
             await message.reply_text("Invalid number format.\nPlease provide a valid number after the /trendlist command.")
             return 
     try:
-        top_messages = await silentdb.get_top_messages(limit)
+        top_messages = await devdb.get_top_messages(limit)
     except Exception as e:
         await message.reply_text(f"Error retrieving messages: {str(e)}")
         return  
@@ -1282,7 +1282,7 @@ async def siletxbotz_list_series(client, message):
 @Client.on_message(filters.private & filters.command("resetall") & filters.user(ADMINS))
 async def reset_all_settings(client, message):
     try:
-        reset_count = await db.silentx_reset_settings()
+        reset_count = await db.dev_reset_settings()
         await message.reply(
             f"<b>ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ ꜱᴇᴛᴛɪɴɢꜱ ꜰᴏʀ {reset_count} ɢʀᴏᴜᴘꜱ. ᴅᴇꜰᴀᴜʟᴛ ᴠᴀʟᴜᴇꜱ ᴡɪʟʟ ʙᴇ ᴜꜱᴇᴅ ✅</b>",
             quote=True
@@ -1388,3 +1388,4 @@ async def clear_database(client, message):
 
     except Exception as e:
         await msg.edit(f"❌ Error:\n<code>{e}</code>")
+
