@@ -15,7 +15,7 @@ from info import *
 from utils import temp
 from Script import script
 from plugins import web_server, check_expired_premium, reset_file_limits_daily
-from Lucia.Bot import SilentX
+from Lucia.Bot import Dev
 from Lucia.util.keepalive import ping_server
 from Lucia.Bot.clients import initialize_clients
 import pyrogram.utils
@@ -42,11 +42,11 @@ def ping_loop():
         time.sleep(120)
 threading.Thread(target=ping_loop, daemon=True).start()
 
-async def SilentXBotz_start():
+async def Dev_start():
     LOGGER.info('Initalizing Your Bot!')
-    await SilentX.start()
-    bot_info = await SilentX.get_me()
-    SilentX.username = bot_info.username
+    await Dev.start()
+    bot_info = await Dev.get_me()
+    Dev.username = bot_info.username
     await initialize_clients()
     for name in files:
         with open(name) as a:
@@ -70,13 +70,13 @@ async def SilentXBotz_start():
         LOGGER.info("Multiple Database Mode On. Now Files Will Be Save In Second DB If First DB Is Full")
     else:
         LOGGER.info("Single DB Mode On ! Files Will Be Save In First Database")
-    me = await SilentX.get_me()
+    me = await Dev.get_me()
     temp.ME = me.id
     temp.U_NAME = me.username
     temp.B_NAME = me.first_name
     temp.B_LINK = me.mention
-    SilentX.username = '@' + me.username
-    SilentX.loop.create_task(check_expired_premium(SilentX))
+    Dev.username = '@' + me.username
+    Dev.loop.create_task(check_expired_premium(Dev))
     LOGGER.info(f"{me.first_name} with Pyrogram v{__version__} (Layer {layer}) started on {me.username}.")
     LOGGER.info(script.LOGO)
     tz = pytz.timezone('Asia/Kolkata')
@@ -84,10 +84,10 @@ async def SilentXBotz_start():
     now = datetime.now(tz)
     time = now.strftime("%H:%M:%S %p")
     asyncio.create_task(reset_file_limits_daily())
-    await SilentX.send_message(chat_id=LOG_CHANNEL, text=script.RESTART_TXT.format(temp.B_LINK, today, time))
+    await Dev.send_message(chat_id=LOG_CHANNEL, text=script.RESTART_TXT.format(temp.B_LINK, today, time))
     try:
         for admin in ADMINS:
-            await SilentX.send_message(chat_id=admin, text=f"<b>๏[-ิ_•ิ]๏ {me.mention} Restarted ✅</code></b>")
+            await Dev.send_message(chat_id=admin, text=f"<b>๏[-ิ_•ิ]๏ {me.mention} Restarted ✅</code></b>")
     except:
         pass
     app = web.AppRunner(await web_server())
@@ -99,6 +99,6 @@ async def SilentXBotz_start():
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
     try:
-        loop.run_until_complete(SilentXBotz_start())
+        loop.run_until_complete(Dev_start())
     except KeyboardInterrupt:
         LOGGER.info('Service Stopped Bye 👋')
