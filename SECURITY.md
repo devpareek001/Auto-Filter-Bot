@@ -21,7 +21,7 @@ If you discover a security vulnerability in the Auto Filter Bot, please report i
 
 To report a vulnerability, please contact us via Telegram:
 
-- **Telegram**: Send a private message to [SilentXBotz_Support](https://t.me/SilentXBotz_support)
+- **Telegram**: Send a private message to [dev_Support](https://t.me/BeingsDev)
 
 When reporting, include the following details to help us address the issue quickly:
 
