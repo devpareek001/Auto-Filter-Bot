@@ -61,7 +61,7 @@ USE_SINGLE_INVITE_LINK = is_enabled('USE_SINGLE_LINK', True)
 
 DATABASE_URI = environ.get('DATABASE_URI', "mongodb+srv://Hdhub:Hdhub@cluster0.fw9syl6.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 DATABASE_NAME = environ.get('DATABASE_NAME', "Cluster0")
-COLLECTION_NAME = environ.get('COLLECTION_NAME', 'SilentXBotz_files')
+COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Dev_files')
 MULTIPLE_DB = is_enabled(os.environ.get('MULTIPLE_DB', "True"), False) # Type True For Turn On MULTIPLE DB FUNTION 
 DATABASE_URI2 = environ.get('DATABASE_URI2', "mongodb+srv://Demo22:Demo22@cluster0.pj7etfj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 DB_CHANGE_LIMIT = int(environ.get('DB_CHANGE_LIMIT', "432"))
@@ -164,9 +164,9 @@ FQDN = str(getenv('FQDN', BIND_ADRESS)) if not ON_HEROKU or getenv('FQDN') else 
 URL = "https://{}/".format(FQDN) if ON_HEROKU or NO_PORT else "https://{}/".format(FQDN, PORT)
 SLEEP_THRESHOLD = int(environ.get('SLEEP_THRESHOLD', '60'))
 WORKERS = int(environ.get('WORKERS', '4'))
-SESSION_NAME = str(environ.get('SESSION_NAME', 'SilentXBotz'))
+SESSION_NAME = str(environ.get('SESSION_NAME', 'Dev'))
 MULTI_CLIENT = False
-name = str(environ.get('name', 'SilentX'))
+name = str(environ.get('name', 'Dev'))
 PING_INTERVAL = int(environ.get("PING_INTERVAL", "1200"))  # 20 minutes
 if 'DYNO' in environ:
     ON_HEROKU = True
@@ -213,3 +213,4 @@ else:
     DATABASE_URI2 = DATABASE_URI2
 #ignore this var but dont remove
 FILE_AUTO_DEL_TIMER = 600
+
