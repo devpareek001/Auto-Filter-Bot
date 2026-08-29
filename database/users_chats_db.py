@@ -158,7 +158,7 @@ class Database:
         else:
             return default.copy()
 
-    async def silentx_reset_settings(self):
+    async def dev_reset_settings(self):
         try:
             result = await self.grp.update_many(
                 {'settings': {'$exists': True}},
@@ -449,3 +449,4 @@ class Database:
         
 db = Database(DATABASE_URI, DATABASE_NAME)    
 db2 = Database(DATABASE_URI2, DATABASE_NAME)
+
