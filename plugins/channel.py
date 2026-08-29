@@ -19,7 +19,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQ
 
 CAPTION_LANGUAGES = ["Bhojpuri", "Hindi", "Bengali", "Tamil", "English", "Bangla", "Telugu", "Malayalam", "Kannada", "Marathi", "Punjabi", "Bengoli", "Gujrati", "Korean", "Gujarati", "Spanish", "French", "German", "Chinese", "Arabic", "Portuguese", "Russian", "Japanese", "Odia", "Assamese", "Urdu"]
 
-SILENTX_UPDATE_CAPTION = """𝖭𝖤𝖶 𝖥𝖨𝖫𝖤 𝖠𝖣𝖣𝖤𝖣 ✅
+DEV_UPDATE_CAPTION = """𝖭𝖤𝖶 𝖥𝖨𝖫𝖤 𝖠𝖣𝖣𝖤𝖣 ✅
 
 {} #{}
 📺 𝖥𝗈𝗋𝗆𝖺𝗍 - {}
@@ -45,9 +45,9 @@ async def media(bot, message):
         return
     media.file_type = file_type
     media.caption = message.caption
-    success, silentxbotz = await save_file(media)
+    success, dev = await save_file(media)
     try:  
-        if success and silentxbotz == 1 and await get_status(bot.me.id):            
+        if success and dev == 1 and await get_status(bot.me.id):            
             await send_movie_update(bot, file_name=media.file_name, caption=media.caption)
     except Exception as e:
         LOGGER.error(f"Error In Movie Update - {e}")
@@ -80,7 +80,7 @@ async def send_movie_update(bot, file_name, caption):
         unique_id = generate_unique_id(search_movie)
         reaction_counts[unique_id] = {"❤️": 0, "👍": 0, "👎": 0, "🔥": 0}
         user_reactions[unique_id] = {}        
-        full_caption = SILENTX_UPDATE_CAPTION.format(file_name, kind, quality, pixel, language, imdb_link)
+        full_caption = DEV_UPDATE_CAPTION.format(file_name, kind, quality, pixel, language, imdb_link)
         buttons = [[
             InlineKeyboardButton(f"❤️ {reaction_counts[unique_id]['❤️']}", callback_data=f"r_{unique_id}_{search_movie}_heart"),                
             InlineKeyboardButton(f"👍 {reaction_counts[unique_id]['👍']}", callback_data=f"r_{unique_id}_{search_movie}_like"),
@@ -211,5 +211,5 @@ async def generate_random_filename(extension=".jpg"):
     timestamp = now.strftime("%Y%m%d%H%M%S")
     sin_value = abs(math.sin(int(timestamp[-5:]))) 
     random_part = ''.join(random.choices(string.ascii_lowercase + string.digits, k=6))   
-    filename = f"silentxbotz_{int(sin_value*10000)}_{random_part}{extension}"
+    filename = f"dev_{int(sin_value*10000)}_{random_part}{extension}"
     return filename
