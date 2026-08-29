@@ -253,7 +253,7 @@ async def siletxbotz_fetch_media(limit: int) -> List[dict]:
         LOGGER.error(f"Error in siletxbotz_fetch_media: {e}")
         return []
 
-async def silentxbotz_clean_title(filename: str, is_series: bool = False) -> str:
+async def dev_clean_title(filename: str, is_series: bool = False) -> str:
     try:
         year_match = re.search(r"^(.*?(\d{4}|\(\d{4}\)))", filename, re.IGNORECASE)
         if year_match:
@@ -280,7 +280,7 @@ async def siletxbotz_get_movies(limit: int = 20) -> List[str]:
             file_name = getattr(file, "file_name", "")
             caption = getattr(file, "caption", "")
             if not (re.search(pattern, file_name, re.IGNORECASE) or re.search(pattern, caption, re.IGNORECASE)):
-                title = await silentxbotz_clean_title(file_name)
+                title = await dev_clean_title(file_name)
                 results.add(title)
             if len(results) >= limit:
                 break
@@ -303,10 +303,11 @@ async def siletxbotz_get_series(limit: int = 30) -> Dict[str, List[int]]:
             if not match and caption:
                 match = re.search(pattern, caption, re.IGNORECASE)
             if match:
-                title = await silentxbotz_clean_title(match.group(1), is_series=True)
+                title = await dev_clean_title(match.group(1), is_series=True)
                 season = int(match.group(2) or match.group(3) or match.group(4))
                 grouped[title].append(season)
         return {title: sorted(set(seasons))[:10] for title, seasons in grouped.items() if seasons}
     except Exception as e:
         LOGGER.error(f"Error in siletxbotz_get_series: {e}")
         return []
+
