@@ -1,6 +1,6 @@
 import jinja2
 from info import *
-from Lucia.Bot import SilentX
+from Lucia.Bot import Dev
 from Lucia.util.human_readable import humanbytes
 from Lucia.util.file_properties import get_file_ids
 from Lucia.server.exceptions import InvalidHash
@@ -9,8 +9,8 @@ from logging_helper import LOGGER
 import aiohttp
 
 async def render_page(id, secure_hash, src=None):
-    file = await SilentX.get_messages(int(BIN_CHANNEL), int(id))
-    file_data = await get_file_ids(SilentX, int(BIN_CHANNEL), int(id))
+    file = await Dev.get_messages(int(BIN_CHANNEL), int(id))
+    file_data = await get_file_ids(Dev, int(BIN_CHANNEL), int(id))
     if file_data.unique_id[:6] != secure_hash:
         LOGGER.info(f"link hash: {secure_hash} - {file_data.unique_id[:6]}")
         LOGGER.info(f"Invalid hash for message with - ID {id}")
