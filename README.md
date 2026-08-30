@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="https://github.com">
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=32&pause=1000&color=F75C7E&center=true&vCenter=true&width=500&lines=%F0%9F%8E%AC+Movie+Filter+Bot;Auto-Filter+%7C+Premium+%7C+Force-Subscribe;Built+with+Pyrogram+%2B+MongoDB" alt="Typing SVG" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=32&pause=1000&color=F75C7E&center=true&vCenter=true&width=500&lines=%F0%9F%8E%AC+Movie+Filter+Bot" alt="Typing SVG" />
   </a>
 </p>
 
