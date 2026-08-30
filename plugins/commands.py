@@ -92,15 +92,21 @@ async def start(client, message):
         await client.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(message.from_user.id, message.from_user.mention))
     if len(message.command) != 2:
         buttons = [[
-                    InlineKeyboardButton('☆ 𝔄ᴅᴅ 𝔐ᴇ 𝔗ᴏ 𝔜ᴏᴜʀ 𝔊ʀᴏᴜᴘ ☆', url=f'http://telegram.me/{temp.U_NAME}?startgroup=true')
+                    InlineKeyboardButton('➕ ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ', url=f'http://telegram.me/{temp.U_NAME}?startgroup=true')
                 ],[
-                    InlineKeyboardButton('𝙼ᴏ𝚜ᴛ 𝚂ᴇᴀʀᴄʜ 🔍', callback_data="topsearch"),
-                    InlineKeyboardButton('𝔓ʀᴇᴍɪᴜᴍ 🎫', callback_data="premium"),
+                    InlineKeyboardButton('💰 ᴇᴀʀɴ ᴍᴏɴᴇʏ', callback_data="earn"),
+                    InlineKeyboardButton('🎭 ᴍᴏᴠɪᴇ ɢʀᴏᴜᴘ', url=GRP_LNK)
                 ],[
-                    InlineKeyboardButton('ℋᴇʟᴘ ⚙️', callback_data='help'),
-                    InlineKeyboardButton('𝔄ʙᴏᴜᴛ 💌', callback_data='about')
+                    InlineKeyboardButton('⚠️ ʜᴇʟᴘ', callback_data='help'),
+                    InlineKeyboardButton('📗 ᴀʙᴏᴜᴛ', callback_data='about')
                 ],[
-                    InlineKeyboardButton('ᴇᴀʀɴ ᴍᴏɴᴇʏ 🤑', callback_data="earn")
+                    InlineKeyboardButton('✨ ʙᴜʏ ᴘʀᴇᴍɪᴜᴍ ✨', callback_data="premium")
+                ],[
+                    InlineKeyboardButton('🔍 ᴛʀᴇɴᴅɪɴɢ sᴇᴀʀᴄʜᴇs', callback_data="topsearch")
+                ],[
+                    InlineKeyboardButton('👥 ʀᴇꜰᴇʀ & ɢᴇᴛ ᴘʀᴇᴍɪᴜᴍ', callback_data="reffff")
+                ],[
+                    InlineKeyboardButton('📢 ᴊᴏɪɴ ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟ', url=UPDATE_CHANNEL_LNK)
                 ]]
         reply_markup = InlineKeyboardMarkup(buttons)
         await message.reply_photo(
