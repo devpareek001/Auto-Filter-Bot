@@ -9,6 +9,7 @@ class script(object):
 <blockquote>👨‍💻 ᴏᴡɴᴇʀ : <a href="https://telegram.me/beginsdev">𖧹𝙳𝚎𝚟࿐</a></blockquote>
 <blockquote>🔧 ʙᴜɪʟᴅ sᴛᴀᴛᴜs : ᴠ𝟷.𝟶.𝟷</b></blockquote>"""
 
+
     FORCESUB_TEXT="""<b>
 ɪɴ ᴏʀᴅᴇʀ ᴛᴏ ɢᴇᴛ ᴛʜᴇ ᴍᴏᴠɪᴇ ʀᴇᴏ̨ᴜᴇsᴛᴇᴅ ʙʏ ʏᴏᴜ.
 
