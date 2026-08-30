@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://graph.org/file/43ccc3dd5b84652505e6d-05594eb0e4ccfba6a7.jpg" width="100%" alt="Bot Banner">
+  <img src="https://graph.org/file/7e859b8397fafe899bc7f-c0f3be688b6551f8c9.jpg" width="100%" alt="Bot Banner">
 </p>
 
 <p align="center">
