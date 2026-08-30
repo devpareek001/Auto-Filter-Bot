@@ -32,19 +32,19 @@ async def broadcast_users(bot, message):
         reply_markup=ReplyKeyboardMarkup([["Yes", "No"]], one_time_keyboard=True, resize_keyboard=True)
     )
     try:
-        silentxbotz_user_response = await bot.listen(chat_id=message.chat.id, user_id=message.from_user.id, timeout=60)
+        dev_user_response = await bot.listen(chat_id=message.chat.id, user_id=message.from_user.id, timeout=60)
     except asyncio.TimeoutError:
         await ask.delete()
         return await message.reply("❌ Timed out. Broadcast cancelled.")
     await ask.delete()
-    if silentxbotz_user_response.text not in ("Yes", "No"):
+    if dev_user_response.text not in ("Yes", "No"):
         return await message.reply("❌ Invalid input. Broadcast cancelled.")
 
-    is_pin = silentxbotz_user_response.text == "Yes"
+    is_pin = dev_user_response.text == "Yes"
     b_msg = message.reply_to_message
     users = [user async for user in await db.get_all_users()]
     total_users = len(users)
-    silentxbotz_status_msg = await message.reply_text("📤 <b>Broadcasting your message...</b>")
+    dev_status_msg = await message.reply_text("📤 <b>Broadcasting your message...</b>")
     success = blocked = deleted = failed = 0
     start_time = time.time()
     cancelled = False
@@ -78,7 +78,7 @@ async def broadcast_users(bot, message):
 
             done = i + len(batch)
             elapsed = get_readable_time(time.time() - start_time)
-            await silentxbotz_status_msg.edit(
+            await dev_status_msg.edit(
                 f"📣 <b>Broadcast Progress....:</b>\n\n"
                 f"👥 Total: <code>{total_users}</code>\n"
                 f"✅ Done: <code>{done}</code>\n"
@@ -101,7 +101,7 @@ async def broadcast_users(bot, message):
         f"🗑️ Deleted: <code>{deleted}</code>\n"
         f"❌ Failed: <code>{failed}</code>"
     )
-    await silentxbotz_status_msg.edit(final_status)
+    await dev_status_msg.edit(final_status)
 
 
 @Client.on_message(filters.command("grp_broadcast") & filters.user(ADMINS) & filters.reply)
@@ -111,19 +111,19 @@ async def broadcast_group(bot, message):
         reply_markup=ReplyKeyboardMarkup([["Yes", "No"]], one_time_keyboard=True, resize_keyboard=True)
     )
     try:
-        silentxbotz_user_response = await bot.listen(chat_id=message.chat.id, user_id=message.from_user.id, timeout=60)
+        dev_user_response = await bot.listen(chat_id=message.chat.id, user_id=message.from_user.id, timeout=60)
     except asyncio.TimeoutError:
         await ask.delete()
         return await message.reply("❌ Timed out. Broadcast cancelled.")
     await ask.delete()
-    if silentxbotz_user_response.text not in ("Yes", "No"):
+    if dev_user_response.text not in ("Yes", "No"):
         return await message.reply("❌ Invalid input. Broadcast cancelled.")
 
-    is_pin = silentxbotz_user_response.text == "Yes"
+    is_pin = dev_user_response.text == "Yes"
     b_msg = message.reply_to_message
     chats = await db.get_all_chats()
     total_chats = await db.total_chat_count()
-    silentxbotz_status_msg = await message.reply_text("📤 <b>Broadcasting your message to groups...</b>")
+    dev_status_msg = await message.reply_text("📤 <b>Broadcasting your message to groups...</b>")
     start_time = time.time()
     done = success = failed = 0
     cancelled = False
@@ -147,7 +147,7 @@ async def broadcast_group(bot, message):
             done += 1
             if done % 10 == 0:
                 btn = [[InlineKeyboardButton("❌ CANCEL", callback_data="broadcast_cancel#groups")]]
-                await silentxbotz_status_msg.edit(
+                await dev_status_msg.edit(
                     f"📣 <b>Group broadcast progress:</b>\n\n"
                     f"👥 Total Groups: <code>{total_chats}</code>\n"
                     f"✅ Completed: <code>{done} / {total_chats}</code>\n"
@@ -156,7 +156,7 @@ async def broadcast_group(bot, message):
                     reply_markup=InlineKeyboardMarkup(btn)
                 )
     time_taken = get_readable_time(time.time() - start_time)
-    silentxbotz_text = (
+    dev_text = (
         f"{'❌ <b>Groups broadcast cancelled!</b>' if cancelled else '✅ <b>Group broadcast completed.</b>'}\n"
         f"⏱️ Completed in {time_taken}\n\n"
         f"👥 Total Groups: <code>{total_chats}</code>\n"
@@ -165,12 +165,12 @@ async def broadcast_group(bot, message):
         f"❌ Failed: <code>{failed}</code>"
     )
     try:
-        await silentxbotz_status_msg.edit(silentxbotz_text)
+        await dev_status_msg.edit(dev_text)
     except MessageTooLong:
         with open("reason.txt", "w+") as outfile:
             outfile.write(str(failed))
         await message.reply_document(
-            "reason.txt", caption=silentxbotz_text
+            "reason.txt", caption=dev_text
         )
         os.remove("reason.txt")
 
@@ -238,3 +238,4 @@ async def junk_clear_group(bot, message):
             outfile.write(failed)
         await message.reply_document('junk.txt', caption=f"Completed:\nCompleted in {time_taken} seconds.\n\nTotal Groups {total_groups}\nCompleted: {done} / {total_groups}\nDeleted: {deleted}")
         os.remove("junk.txt")
+
