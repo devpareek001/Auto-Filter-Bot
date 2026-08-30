@@ -1,8 +1,12 @@
 <p align="center">
-  <img src="https://telegra.ph/file/f983d857f3ce40795e4b8.jpg" width="100%" alt="Bot Banner">
+  <img src="https://graph.org/file/cb7996122ec758cdceb00-2c709ead1000dae919.jpg" width="100%" alt="Bot Banner">
 </p>
 
-<h1 align="center">🎬 Movie Filter Bot</h1>
+<p align="center">
+  <a href="https://github.com">
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=32&pause=1000&color=F75C7E&center=true&vCenter=true&width=500&lines=%F0%9F%8E%AC+Movie+Filter+Bot;Auto-Filter+%7C+Premium+%7C+Force-Subscribe;Built+with+Pyrogram+%2B+MongoDB" alt="Typing SVG" />
+  </a>
+</p>
 
 <p align="center">
   A Telegram bot that auto-searches and delivers movies/series from your connected channels — with premium subscriptions, force-subscribe, referral rewards, and more.
