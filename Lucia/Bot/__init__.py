@@ -7,7 +7,7 @@ from aiohttp import web
 from logging_helper import LOGGER
 
 
-class SilentXBot(Client):
+class DevBot(Client):
     def __init__(self):
         super().__init__(
             name=SESSION,
@@ -57,7 +57,7 @@ class SilentXBot(Client):
                 yield message
                 current += 1
       
-SilentX = SilentXBot()
+Dev = DevBot()
 
 multi_clients = {}
 work_loads = {}
