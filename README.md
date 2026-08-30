@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://telegra.ph/file/f983d857f3ce40795e4b8.jpg" width="100%" alt="Bot Banner">
+  <img src="https://graph.org/file/cb7996122ec758cdceb00-2c709ead1000dae919.jpg" width="100%" alt="Bot Banner">
 </p>
 
 <h1 align="center">🎬 Movie Filter Bot</h1>
