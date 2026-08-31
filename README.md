@@ -16,7 +16,7 @@
   <img src="https://img.shields.io/badge/Python-3.11-blue?logo=python&logoColor=white">
   <img src="https://img.shields.io/badge/Framework-Pyrogram-orange">
   <img src="https://img.shields.io/badge/Database-MongoDB-green?logo=mongodb&logoColor=white">
-  <img src="https://img.shields.io/badge/Deploy-Koyeb-purple">
+  <img src="https://img.shields.io/badge/Deploy-Heroku-purple">
 </p>
 
 ---
@@ -57,7 +57,7 @@
 
 ## 🚀 Deployment
 
-This bot is built to run on **Koyeb** (or any host that supports long-running Python workers).
+This bot is built to run on **Koyeb,Heroku,Vps** (or any host that supports long-running Python workers).
 
 1. Fork/clone this repository
 2. Set up a MongoDB database (e.g. MongoDB Atlas — free tier works)
