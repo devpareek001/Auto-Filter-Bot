@@ -1252,9 +1252,9 @@ async def admin_commands(client, message):
     await message.reply_text(script.ADMIN_CMD, disable_web_page_preview=True)
 
 @Client.on_message(filters.private & filters.command("movies"))
-async def siletxbotz_list_movies(client, message):
+async def devxbot_list_movies(client, message):
     try:
-        movies = await siletxbotz_get_movies()
+        movies = await devxbot_get_movies()
         if not movies:
             return await message.reply("❌ No Recent Movies Found", parse_mode=ParseMode.HTML)       
         msg = "<b>Latest Uploads List ✅</b>\n\n"
@@ -1262,13 +1262,13 @@ async def siletxbotz_list_movies(client, message):
         msg += "\n".join(f"<b>{i+1}. {m}</b>" for i, m in enumerate(movies))
         await message.reply(msg[:4096], parse_mode=ParseMode.HTML)
     except Exception as e:
-        logger.error(f"Error in siletxbotz_list_movies: {e}")
+        logger.error(f"Error in devxbot_list_movies: {e}")
         await message.reply("An Error Occurred ☹️", parse_mode=ParseMode.HTML)
 
 @Client.on_message(filters.private & filters.command("series"))
-async def siletxbotz_list_series(client, message):
+async def devxbot_list_series(client, message):
     try:
-        series_data = await siletxbotz_get_series()
+        series_data = await devxbot_get_series()
         if not series_data:
             return await message.reply("❌ No Recent Series Found", parse_mode=ParseMode.HTML)       
         msg = "<b>Latest Uploades List ✅</b>\n\n"
@@ -1278,7 +1278,7 @@ async def siletxbotz_list_series(client, message):
             msg += f"<b>{i}. {title} - Season {season_list}</b>\n"
         await message.reply(msg[:4096], parse_mode=ParseMode.HTML)
     except Exception as e:
-        logger.error(f"Error in siletxbotz_list_series: {e}")
+        logger.error(f"Error in devxbot_list_series: {e}")
         await message.reply("An Error Occurred ☹️", parse_mode=ParseMode.HTML)
 
 
@@ -1391,4 +1391,5 @@ async def clear_database(client, message):
 
     except Exception as e:
         await msg.edit(f"❌ Error:\n<code>{e}</code>")
+
 
