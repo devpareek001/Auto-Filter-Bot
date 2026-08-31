@@ -238,7 +238,7 @@ def unpack_new_file_id(new_file_id):
     file_ref = encode_file_ref(decoded.file_reference)
     return file_id, file_ref
 
-async def siletxbotz_fetch_media(limit: int) -> List[dict]:
+async def devxbot_fetch_media(limit: int) -> List[dict]:
     try:
         if MULTIPLE_DB:
             db_size = await check_db_size(Media)
@@ -250,7 +250,7 @@ async def siletxbotz_fetch_media(limit: int) -> List[dict]:
         files = await cursor.to_list(length=limit)
         return files
     except Exception as e:
-        LOGGER.error(f"Error in siletxbotz_fetch_media: {e}")
+        LOGGER.error(f"Error in devxbot_fetch_media: {e}")
         return []
 
 async def dev_clean_title(filename: str, is_series: bool = False) -> str:
@@ -271,9 +271,9 @@ async def dev_clean_title(filename: str, is_series: bool = False) -> str:
         LOGGER.error(f"Error in truncate_title: {e}")
         return filename
         
-async def siletxbotz_get_movies(limit: int = 20) -> List[str]:
+async def devxbot_get_movies(limit: int = 20) -> List[str]:
     try:
-        cursor = await siletxbotz_fetch_media(limit * 2)
+        cursor = await devxbot_fetch_media(limit * 2)
         results = set()
         pattern = r"(?:s\d{1,2}|season\s*\d+|season\d+)(?:\s*combined)?(?:e\d{1,2}|episode\s*\d+)?\b"
         for file in cursor:
@@ -286,12 +286,12 @@ async def siletxbotz_get_movies(limit: int = 20) -> List[str]:
                 break
         return sorted(list(results))[:limit]
     except Exception as e:
-        LOGGER.error(f"Error in siletxbotz_get_movies: {e}")
+        LOGGER.error(f"Error in devxbot_get_movies: {e}")
         return []
 
-async def siletxbotz_get_series(limit: int = 30) -> Dict[str, List[int]]:
+async def devxbot_get_series(limit: int = 30) -> Dict[str, List[int]]:
     try:
-        cursor = await siletxbotz_fetch_media(limit * 5)
+        cursor = await devxbot_fetch_media(limit * 5)
         grouped = defaultdict(list)
         pattern = r"(.*?)(?:S(\d{1,2})|Season\s*(\d+)|Season(\d+))(?:\s*Combined)?(?:E(\d{1,2})|Episode\s*(\d+))?\b"
         for file in cursor:
@@ -308,6 +308,6 @@ async def siletxbotz_get_series(limit: int = 30) -> Dict[str, List[int]]:
                 grouped[title].append(season)
         return {title: sorted(set(seasons))[:10] for title, seasons in grouped.items() if seasons}
     except Exception as e:
-        LOGGER.error(f"Error in siletxbotz_get_series: {e}")
+        LOGGER.error(f"Error in devxbot_get_series: {e}")
         return []
 
