@@ -334,12 +334,12 @@ async def start(client, message):
                     
                     if STREAM_MODE:
                         btn = [
-                            [InlineKeyboardButton('❍─𓆩〭〬👒𝖦𝖾𝗇𝖾𝗋𝖺𝗍𝖾 𝖲𝗍𝗋𝖾𝗆𝗂𝗇𝗀 𝖫𝗂𝗇𝗄🤍᪳𝆺𝅥⎯', callback_data=f'streamfile:{file_id}')],
-                            [InlineKeyboardButton('❍─𓆩〭〬👒𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅🤍᪳𝆺𝅥⎯', url=UPDATE_CHANNEL_LNK)]  
+                            [InlineKeyboardButton('𝖦𝖾𝗇𝖾𝗋𝖺𝗍𝖾 𝖲𝗍𝗋𝖾𝗆𝗂𝗇𝗀 𝖫𝗂𝗇𝗄', callback_data=f'streamfile:{file_id}')],
+                            [InlineKeyboardButton('• 𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅', url=UPDATE_CHANNEL_LNK)]  
                         ]
                     else:
                         btn = [
-                            [InlineKeyboardButton('❍─𓆩〭〬👒𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅🤍᪳𝆺𝅥⎯', url=UPDATE_CHANNEL_LNK)]
+                            [InlineKeyboardButton('• 𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅', url=UPDATE_CHANNEL_LNK)]
                         ]
 
                     toDel = await client.send_cached_media(
@@ -473,12 +473,12 @@ async def start(client, message):
                 f_caption = f"{' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), files1.file_name.split()))}"
             if STREAM_MODE:
                 btn = [
-                    [InlineKeyboardButton('❍─𓆩〭〬👒𝖦𝖾𝗇𝖾𝗋𝖺𝗍𝖾 𝖲𝗍𝗋𝖾𝗆𝗂𝗇𝗀 𝖫𝗂𝗇𝗄🤍᪳𝆺𝅥⎯', callback_data=f'streamfile:{file_id}')],
-                    [InlineKeyboardButton('❍─𓆩〭〬👒𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅🤍᪳𝆺𝅥⎯', url=UPDATE_CHANNEL_LNK)]  
+                    [InlineKeyboardButton('𝖦𝖾𝗇𝖾𝗋𝖺𝗍𝖾 𝖲𝗍𝗋𝖾𝗆𝗂𝗇𝗀 𝖫𝗂𝗇𝗄', callback_data=f'streamfile:{file_id}')],
+                    [InlineKeyboardButton('• 𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅', url=UPDATE_CHANNEL_LNK)]  
                 ]
             else:
                 btn = [
-                    [InlineKeyboardButton('❍─𓆩〭〬👒𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅🤍᪳𝆺𝅥⎯', url=UPDATE_CHANNEL_LNK)]
+                    [InlineKeyboardButton('• 𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅', url=UPDATE_CHANNEL_LNK)]
                 ]
             msg = await client.send_cached_media(
                 chat_id=message.from_user.id,
@@ -503,13 +503,13 @@ async def start(client, message):
         try:
             if STREAM_MODE:
                 btn = [
-                    [InlineKeyboardButton('❍─𓆩〭〬👒𝖦𝖾𝗇𝖾𝗋𝖺𝗍𝖾 𝖲𝗍𝗋𝖾𝗆𝗂𝗇𝗀 𝖫𝗂𝗇𝗄🤍᪳𝆺𝅥⎯', callback_data=f'streamfile:{file_id}')],
-                    [InlineKeyboardButton('❍─𓆩〭〬👒𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅🤍᪳𝆺𝅥⎯', url=UPDATE_CHANNEL_LNK)]
+                    [InlineKeyboardButton('𝖦𝖾𝗇𝖾𝗋𝖺𝗍𝖾 𝖲𝗍𝗋𝖾𝗆𝗂𝗇𝗀 𝖫𝗂𝗇𝗄', callback_data=f'streamfile:{file_id}')],
+                    [InlineKeyboardButton('• 𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅', url=UPDATE_CHANNEL_LNK)]
              
                 ]
             else:
                 btn = [
-                    [InlineKeyboardButton('❍─𓆩〭〬👒𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅🤍᪳𝆺𝅥⎯', url=UPDATE_CHANNEL_LNK)]
+                    [InlineKeyboardButton('• 𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅', url=UPDATE_CHANNEL_LNK)]
                 ]
             msg = await client.send_cached_media(
                 chat_id=message.from_user.id,
@@ -556,12 +556,12 @@ async def start(client, message):
         f_caption = ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), files.file_name.split()))
     if STREAM_MODE:
         btn = [
-            [InlineKeyboardButton('❍─𓆩〭〬👒𝖦𝖾𝗇𝖾𝗋𝖺𝗍𝖾 𝖲𝗍𝗋𝖾𝗆𝗂𝗇𝗀 𝖫𝗂𝗇𝗄🤍᪳𝆺𝅥⎯', callback_data=f'streamfile:{file_id}')],
-            [InlineKeyboardButton('❍─𓆩〭〬👒𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅🤍᪳𝆺𝅥⎯', url=UPDATE_CHANNEL_LNK)]
+            [InlineKeyboardButton('𝖦𝖾𝗇𝖾𝗋𝖺𝗍𝖾 𝖲𝗍𝗋𝖾𝗆𝗂𝗇𝗀 𝖫𝗂𝗇𝗄', callback_data=f'streamfile:{file_id}')],
+            [InlineKeyboardButton('• 𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅', url=UPDATE_CHANNEL_LNK)]
         ]
     else:
         btn = [
-            [InlineKeyboardButton('❍─𓆩〭〬👒𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅🤍᪳𝆺𝅥⎯', url=UPDATE_CHANNEL_LNK)]
+            [InlineKeyboardButton('• 𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅', url=UPDATE_CHANNEL_LNK)]
         ]
     msg = await client.send_cached_media(
         chat_id=message.from_user.id,
