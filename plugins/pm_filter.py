@@ -159,29 +159,13 @@ async def next_page(bot, query):
                 ]
                 for file in files
             ]
-            btn.insert(0, 
-                [ 
-                    InlineKeyboardButton("ᴘɪxᴇʟ", callback_data=f"qualities#{key}#0"),
-                    InlineKeyboardButton("ʟᴀɴɢᴜᴀɢᴇ", callback_data=f"languages#{key}#0"),
-                    InlineKeyboardButton("ꜱᴇᴀꜱᴏɴ",  callback_data=f"seasons#{key}#0")
-                ]
-            )
-            btn.insert(1, [
-                InlineKeyboardButton("📥 Sᴇɴᴅ Aʟʟ 📥", callback_data=f"sendfiles#{key}")
-           
+            btn.insert(0, [
+                InlineKeyboardButton("📥 Gᴇᴛ Aʟʟ 📥", callback_data=f"sendfiles#{key}")
             ])
         else:
             btn = []
-            btn.insert(0, 
-                [
-                    InlineKeyboardButton("ᴘɪxᴇʟ", callback_data=f"qualities#{key}#0"),
-                    InlineKeyboardButton("ʟᴀɴɢᴜᴀɢᴇ", callback_data=f"languages#{key}#0"),
-                    InlineKeyboardButton("ꜱᴇᴀꜱᴏɴ",  callback_data=f"seasons#{key}#0")
-                ]
-            )
-            btn.insert(1, [
-                InlineKeyboardButton("📥 Sᴇɴᴅ Aʟʟ 📥", callback_data=f"sendfiles#{key}") 
-           
+            btn.insert(0, [
+                InlineKeyboardButton("📥 Gᴇᴛ Aʟʟ 📥", callback_data=f"sendfiles#{key}")
             ])
         try:
             if settings['max_btn']:
@@ -352,30 +336,14 @@ async def filter_qualities_cb_handler(client: Client, query: CallbackQuery):
                 ]
                 for file in files
             ]
-            btn.insert(0, 
-                [ 
-                    InlineKeyboardButton("ᴘɪxᴇʟ", callback_data=f"qualities#{key}#0"),
-                    InlineKeyboardButton("ʟᴀɴɢᴜᴀɢᴇ", callback_data=f"languages#{key}#0"),
-                    InlineKeyboardButton("ꜱᴇᴀꜱᴏɴ",  callback_data=f"seasons#{key}#0")
-                ]
-            )
-            btn.insert(1, [
-                InlineKeyboardButton("📥 Sᴇɴᴅ Aʟʟ 📥", callback_data=f"sendfiles#{key}")
-           
+            btn.insert(0, [
+                InlineKeyboardButton("📥 Gᴇᴛ Aʟʟ 📥", callback_data=f"sendfiles#{key}")
             ])
 
         else:
             btn = []
-            btn.insert(0, 
-                [
-                    InlineKeyboardButton("ᴘɪxᴇʟ", callback_data=f"qualities#{key}#0"),
-                    InlineKeyboardButton("ʟᴀɴɢᴜᴀɢᴇ", callback_data=f"languages#{key}#0"),
-                    InlineKeyboardButton("ꜱᴇᴀꜱᴏɴ",  callback_data=f"seasons#{key}#0")
-                ]
-            )
-            btn.insert(1, [           
-                InlineKeyboardButton("📥 Sᴇɴᴅ Aʟʟ 📥", callback_data=f"sendfiles#{key}")
-           
+            btn.insert(0, [
+                InlineKeyboardButton("📥 Gᴇᴛ Aʟʟ 📥", callback_data=f"sendfiles#{key}")
             ])
         if n_offset != "":
             try:
@@ -503,28 +471,13 @@ async def filter_languages_cb_handler(client: Client, query: CallbackQuery):
                 ]
                 for file in files
             ]
-            btn.insert(0, 
-                [
-                    InlineKeyboardButton("ᴘɪxᴇʟ", callback_data=f"qualities#{key}#0"),
-                    InlineKeyboardButton("ʟᴀɴɢᴜᴀɢᴇ", callback_data=f"languages#{key}#0"),
-                    InlineKeyboardButton("ꜱᴇᴀꜱᴏɴ",  callback_data=f"seasons#{key}#0")
-                ]
-            )
-            btn.insert(1, [
-                InlineKeyboardButton("📥 Sᴇɴᴅ Aʟʟ 📥", callback_data=f"sendfiles#{key}")
-            
+            btn.insert(0, [
+                InlineKeyboardButton("📥 Gᴇᴛ Aʟʟ 📥", callback_data=f"sendfiles#{key}")
             ])
         else:
             btn = []
-            btn.insert(0, 
-                [
-                    InlineKeyboardButton("ᴘɪxᴇʟ", callback_data=f"qualities#{key}#0"),
-                    InlineKeyboardButton("ʟᴀɴɢᴜᴀɢᴇ", callback_data=f"languages#{key}#0"),
-                    InlineKeyboardButton("ꜱᴇᴀꜱᴏɴ",  callback_data=f"seasons#{key}#0")
-                ]
-            )
-            btn.insert(1, [
-                InlineKeyboardButton("📥 Sᴇɴᴅ Aʟʟ 📥", callback_data=f"sendfiles#{key}")            
+            btn.insert(0, [
+                InlineKeyboardButton("📥 Gᴇᴛ Aʟʟ 📥", callback_data=f"sendfiles#{key}")
             ])
         if n_offset != "":
             try:
@@ -653,28 +606,13 @@ async def filter_season_cb_handler(client: Client, query: CallbackQuery):
                 ]
                 for file in files
             ]
-            btn.insert(0, 
-                [
-                    InlineKeyboardButton("ᴘɪxᴇʟ", callback_data=f"qualities#{key}#0"),
-                    InlineKeyboardButton("ʟᴀɴɢᴜᴀɢᴇ", callback_data=f"languages#{key}#0"),
-                    InlineKeyboardButton("ꜱᴇᴀꜱᴏɴ",  callback_data=f"seasons#{key}#0")
-                ]
-            )
-            btn.insert(1, [
-                InlineKeyboardButton("📥 Sᴇɴᴅ Aʟʟ 📥", callback_data=f"sendfiles#{key}")
-
+            btn.insert(0, [
+                InlineKeyboardButton("📥 Gᴇᴛ Aʟʟ 📥", callback_data=f"sendfiles#{key}")
             ])
         else:
             btn = []
-            btn.insert(0, 
-                [
-                    InlineKeyboardButton("ᴘɪxᴇʟ", callback_data=f"qualities#{key}#0"),
-                    InlineKeyboardButton("ʟᴀɴɢᴜᴀɢᴇ", callback_data=f"languages#{key}#0"),
-                    InlineKeyboardButton("ꜱᴇᴀꜱᴏɴ",  callback_data=f"seasons#{key}#0")
-                ]
-            )
-            btn.insert(1, [
-                InlineKeyboardButton("📥 Sᴇɴᴅ Aʟʟ 📥", callback_data=f"sendfiles#{key}")            
+            btn.insert(0, [
+                InlineKeyboardButton("📥 Gᴇᴛ Aʟʟ 📥", callback_data=f"sendfiles#{key}")
             ])
         if n_offset != "":
             try:
@@ -1528,6 +1466,30 @@ async def cb_handler(client: Client, query: CallbackQuery):
         except Exception as e:
             print(e)
                     
+    elif query.data == "others_menu":
+        buttons = [[
+                    InlineKeyboardButton('🆘 Support Grp', url=GRP_LNK),
+                    InlineKeyboardButton('💎 Referral', callback_data='reffff')
+                ],[
+                    InlineKeyboardButton('📊 Promotion', callback_data='premium'),
+                    InlineKeyboardButton('🌿 Branches', url=UPDATE_CHANNEL_LNK)
+                ],[
+                    InlineKeyboardButton('← Back', callback_data='start'),
+                    InlineKeyboardButton('🤵 Credits', callback_data='about')
+                ]]
+        reply_markup = InlineKeyboardMarkup(buttons)
+
+        media = InputMediaAnimation(
+            media=MELCOW_VID,
+            caption="——————————\n📥 Here are available options\n——————————",
+            parse_mode=enums.ParseMode.HTML
+        )
+
+        await query.message.edit_media(
+            media=media,
+            reply_markup=reply_markup
+        )
+
     elif query.data == "about":
         buttons = [[
             InlineKeyboardButton('🤵 Owner Info', url=OWNER_LNK),
@@ -2043,28 +2005,14 @@ async def auto_filter(client, msg, spoll=False):
             ]
             for file in files
         ]
-        btn.insert(0, 
-            [
-                InlineKeyboardButton("ᴘɪxᴇʟ", callback_data=f"qualities#{key}#0"),
-                InlineKeyboardButton("ʟᴀɴɢᴜᴀɢᴇ", callback_data=f"languages#{key}#0"),
-                InlineKeyboardButton("ꜱᴇᴀꜱᴏɴ",  callback_data=f"seasons#{key}#0")
-            ]
-        )
-        btn.insert(1, [
-            InlineKeyboardButton("📥 Sᴇɴᴅ Aʟʟ 📥", callback_data=f"sendfiles#{key}")
+        btn.insert(0, [
+            InlineKeyboardButton("📥 Gᴇᴛ Aʟʟ 📥", callback_data=f"sendfiles#{key}")
             
         ])
     else:
         btn = []
-        btn.insert(0, 
-            [
-                InlineKeyboardButton("ᴘɪxᴇʟ", callback_data=f"qualities#{key}#0"),
-                InlineKeyboardButton("ʟᴀɴɢᴜᴀɢᴇ", callback_data=f"languages#{key}#0"),
-                InlineKeyboardButton("ꜱᴇᴀꜱᴏɴ",  callback_data=f"seasons#{key}#0")
-            ]
-        )
-        btn.insert(1, [
-            InlineKeyboardButton("📥 Sᴇɴᴅ Aʟʟ 📥", callback_data=f"sendfiles#{key}")
+        btn.insert(0, [
+            InlineKeyboardButton("📥 Gᴇᴛ Aʟʟ 📥", callback_data=f"sendfiles#{key}")
             
         ])
     if offset != "":
@@ -2087,7 +2035,7 @@ async def auto_filter(client, msg, spoll=False):
         btn.append(
             [InlineKeyboardButton(text="↭ ɴᴏ ᴍᴏʀᴇ ᴘᴀɢᴇꜱ ᴀᴠᴀɪʟᴀʙʟᴇ ↭",callback_data="pages")]
         )
-    imdb = await get_poster(search, file=(files[0]).file_name) if settings["imdb"] else None
+    imdb = None  # IMDB lookup disabled here for speed — simple caption used instead
     cur_time = datetime.now(pytz.timezone('Asia/Kolkata')).time()
     time_difference = timedelta(hours=cur_time.hour, minutes=cur_time.minute, seconds=(cur_time.second+(cur_time.microsecond/1000000))) - timedelta(hours=curr_time.hour, minutes=curr_time.minute, seconds=(curr_time.second+(curr_time.microsecond/1000000)))
     remaining_seconds = "{:.2f}".format(time_difference.total_seconds())
@@ -2130,9 +2078,9 @@ async def auto_filter(client, msg, spoll=False):
                 cap += f"\n\n<b>{file_num}. <a href='https://telegram.me/{temp.U_NAME}?start=file_{message.chat.id}_{file.file_id}'>{get_size(file.file_size)} | {clean_filename(file.file_name)}</a></b>"
     else:
         if settings.get('button'):
-            cap =f"<b><blockquote>Hᴇʏ,{message.from_user.mention}</blockquote>\n\n📂 Hᴇʀᴇ I Fᴏᴜɴᴅ Fᴏʀ Yᴏᴜʀ Sᴇᴀʀᴄʜ <code>{search}</code></b>\n\n"
+            cap =f"<b><blockquote>{message.from_user.mention}</blockquote></b>\n\n"
         else:
-            cap =f"<b><blockquote>Hᴇʏ,{message.from_user.mention}</blockquote>\n\n📂 Hᴇʀᴇ I Fᴏᴜɴᴅ Fᴏʀ Yᴏᴜʀ Sᴇᴀʀᴄʜ <code>{search}</code></b>\n\n"            
+            cap =f"<b><blockquote>{message.from_user.mention}</blockquote></b>\n\n"            
             for file_num, file in enumerate(files, start=1):
                 cap += f"<b>{file_num}. <a href='https://telegram.me/{temp.U_NAME}?start=file_{message.chat.id}_{file.file_id}'>{get_size(file.file_size)} | {clean_filename(file.file_name)}\n\n</a></b>"                
     if imdb and imdb.get('poster'):
