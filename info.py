@@ -90,16 +90,16 @@ PAID_STREAM = bool(environ.get('PAID_STREAM', True))
 
 # shortner infos
 
-IS_VERIFY = is_enabled('IS_VERIFY', False)
-VERIFY_EXPIRE = int(environ.get('VERIFY_EXPIRE', "86400"))  # how long (in seconds) a verification stays valid — default 24 hours
-LOG_VR_CHANNEL = int(environ.get('LOG_VR_CHANNEL', '-1004464824907'))
-LOG_API_CHANNEL = int(environ.get('LOG_API_CHANNEL', '-1004464824907'))
+IS_VERIFY = is_enabled('IS_VERIFY', True)
+VERIFY_EXPIRE = int(environ.get('VERIFY_EXPIRE', "43200"))  # how long (in seconds) a verification stays valid — default 24 hours
+LOG_VR_CHANNEL = int(environ.get('LOG_VR_CHANNEL', '-1003900052105'))
+LOG_API_CHANNEL = int(environ.get('LOG_API_CHANNEL', '-1003900052105'))
 VERIFY_IMG = environ.get("VERIFY_IMG", "https://telegra.ph/file/9ecc5d6e4df5b83424896.jpg")
 
-TUTORIAL = environ.get("TUTORIAL", "https://t.me/")
+TUTORIAL = environ.get("TUTORIAL", "https://t.me/howtoopenanylinkin1min/3")
 
-SHORTENER_API = environ.get("SHORTENER_API", "5eb21caac29e8bf88cb75aaae34bbf9a75890a28")
-SHORTENER_WEBSITE = environ.get("SHORTENER_WEBSITE", "Seturl.in")
+SHORTENER_API = environ.get("SHORTENER_API", "082082f64ea69b98d05e921a1cf928ae07e76784")
+SHORTENER_WEBSITE = environ.get("SHORTENER_WEBSITE", "arolinks.com")
 
 
 # other settings 
