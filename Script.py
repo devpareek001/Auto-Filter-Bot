@@ -68,7 +68,7 @@ class script(object):
 
 ›› sᴛᴇᴘ 𝟸 :  ᴍᴀᴋᴇ <a href=https://t.me/{}</a> 🏴‍☠️ ᴀᴅᴍɪɴ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ.
 
-›› sᴛᴇᴘ 𝟹 : ᴍᴀᴋᴇ ᴀᴄᴄᴏᴜɴᴛ ᴏɴ Sʜᴏʀᴛᴇɴᴇʀ Wᴇʙsɪᴛᴇ ʏᴏᴜ ᴄᴀɴ ᴀʟsᴏ ᴜsᴇ ᴛʜɪs ʙᴇsᴛ sʜᴏʀᴛɴᴇʀ <a href=https://seturl.in/ref/devesh>Shortener</a>
+›› sᴛᴇᴘ 𝟹 : ᴍᴀᴋᴇ ᴀᴄᴄᴏᴜɴᴛ ᴏɴ Sʜᴏʀᴛᴇɴᴇʀ Wᴇʙsɪᴛᴇ ʏᴏᴜ ᴄᴀɴ ᴀʟsᴏ ᴜsᴇ ᴛʜɪs ʙᴇsᴛ sʜᴏʀᴛɴᴇʀ <a href=https://arolinks.com/ref/devesh001>Shortener</a>
 
 ›› sᴛᴇᴘ 4 : ɴᴏᴡ ꜱᴇᴛ ʏᴏᴜʀ ꜱʜᴏʀᴛɴᴇʀ, ᴛᴜᴛᴏʀɪᴀʟ.
 
