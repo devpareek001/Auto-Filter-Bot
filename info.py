@@ -91,25 +91,15 @@ PAID_STREAM = bool(environ.get('PAID_STREAM', True))
 # shortner infos
 
 IS_VERIFY = is_enabled('IS_VERIFY', False)
+VERIFY_EXPIRE = int(environ.get('VERIFY_EXPIRE', "86400"))  # how long (in seconds) a verification stays valid — default 24 hours
 LOG_VR_CHANNEL = int(environ.get('LOG_VR_CHANNEL', '-1004464824907'))
 LOG_API_CHANNEL = int(environ.get('LOG_API_CHANNEL', '-1004464824907'))
 VERIFY_IMG = environ.get("VERIFY_IMG", "https://telegra.ph/file/9ecc5d6e4df5b83424896.jpg")
 
 TUTORIAL = environ.get("TUTORIAL", "https://t.me/")
-TUTORIAL_2 = environ.get("TUTORIAL_2", "https://t.me/")
-TUTORIAL_3 = environ.get("TUTORIAL_3", "https://t.me/")
 
 SHORTENER_API = environ.get("SHORTENER_API", "5eb21caac29e8bf88cb75aaae34bbf9a75890a28")
 SHORTENER_WEBSITE = environ.get("SHORTENER_WEBSITE", "Seturl.in")
-
-SHORTENER_API2 = environ.get("SHORTENER_API2", "5eb21caac29e8bf88cb75aaae34bbf9a75890a28")
-SHORTENER_WEBSITE2 = environ.get("SHORTENER_WEBSITE2", "Seturl.in")
-
-SHORTENER_API3 = environ.get("SHORTENER_API3", "5eb21caac29e8bf88cb75aaae34bbf9a75890a28")
-SHORTENER_WEBSITE3 = environ.get("SHORTENER_WEBSITE3", "Seturl.in")
-
-TWO_VERIFY_GAP = int(environ.get('TWO_VERIFY_GAP', "1200"))
-THREE_VERIFY_GAP = int(environ.get('THREE_VERIFY_GAP', "54000"))
 
 
 # other settings 
@@ -119,7 +109,7 @@ MAX_B_TN = environ.get("MAX_B_TN", "8")
 MAX_BTN = is_enabled((environ.get('MAX_BTN', "True")), True)
 PORT = environ.get("PORT", "8089")
 MSG_ALRT = environ.get('MSG_ALRT', 'Share & Support Us ♥️') 
-P_TTI_SHOW_OFF = is_enabled((environ.get('P_TTI_SHOW_OFF', "False")), False)
+P_TTI_SHOW_OFF = is_enabled((environ.get('P_TTI_SHOW_OFF', "True")), False)
 IMDB = is_enabled((environ.get('IMDB', "False")), False)
 AUTO_FFILTER = is_enabled((environ.get('AUTO_FFILTER', "True")), True)
 AUTO_DELETE = is_enabled((environ.get('AUTO_DELETE', "True")), True)
