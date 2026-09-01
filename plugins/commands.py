@@ -73,7 +73,7 @@ async def start(client, message):
         reply_markup=InlineKeyboardMarkup(btn)
         dlt=await m.reply_photo(
             photo=(VERIFY_IMG),
-            caption=msg.format(message.from_user.mention, get_readable_time(TWO_VERIFY_GAP)),
+            caption=msg.format(message.from_user.mention, get_readable_time(VERIFY_EXPIRE)),
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
@@ -276,8 +276,6 @@ async def start(client, message):
             grp_id = int(grp_id)
             user_verified = await db.is_user_verified(user_id)
             settings = await get_settings(grp_id)
-            is_second_shortener = await db.use_second_shortener(user_id, settings.get('verify_time', TWO_VERIFY_GAP)) 
-            is_third_shortener = await db.use_third_shortener(user_id, settings.get('third_verify_time', THREE_VERIFY_GAP))
 
             is_allfiles_request = data and data.startswith("allfiles")
 
@@ -334,12 +332,12 @@ async def start(client, message):
                     
                     if STREAM_MODE:
                         btn = [
-                            [InlineKeyboardButton('𝖦𝖾𝗇𝖾𝗋𝖺𝗍𝖾 𝖲𝗍𝗋𝖾𝗆𝗂𝗇𝗀 𝖫𝗂𝗇𝗄', callback_data=f'streamfile:{file_id}')],
-                            [InlineKeyboardButton('• 𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅', url=UPDATE_CHANNEL_LNK)]  
+                            [InlineKeyboardButton('❍─𓆩〭〬👒𝖦𝖾𝗇𝖾𝗋𝖺𝗍𝖾 𝖲𝗍𝗋𝖾𝗆𝗂𝗇𝗀 𝖫𝗂𝗇𝗄🤍᪳𝆺𝅥⎯', callback_data=f'streamfile:{file_id}')],
+                            [InlineKeyboardButton('❍─𓆩〭〬👒𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅🤍᪳𝆺𝅥⎯', url=UPDATE_CHANNEL_LNK)]  
                         ]
                     else:
                         btn = [
-                            [InlineKeyboardButton('• 𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅', url=UPDATE_CHANNEL_LNK)]
+                            [InlineKeyboardButton('❍─𓆩〭〬👒𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅🤍᪳𝆺𝅥⎯', url=UPDATE_CHANNEL_LNK)]
                         ]
 
                     toDel = await client.send_cached_media(
@@ -368,28 +366,22 @@ async def start(client, message):
                     reply_markup = ikeyboard
                 )
 
-            if settings.get("is_verify", IS_VERIFY) and (not user_verified or is_second_shortener or is_third_shortener):                
+            if settings.get("is_verify", IS_VERIFY) and not user_verified:                
                 verify_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=7))
                 await db.create_verify_id(user_id, verify_id)
                 temp.VERIFICATIONS[user_id] = grp_id
                 if message.command[1].startswith('allfiles'):
-                    verify = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=sendall_{user_id}_{verify_id}_{file_id}", grp_id, is_second_shortener, is_third_shortener)
+                    verify = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=sendall_{user_id}_{verify_id}_{file_id}", grp_id)
                 else:
-                    verify = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=notcopy_{user_id}_{verify_id}_{file_id}", grp_id, is_second_shortener, is_third_shortener)
-                if is_third_shortener:
-                    howtodownload = settings.get('tutorial_3', TUTORIAL_3)
-                else:
-                    howtodownload = settings.get('tutorial_2', TUTORIAL_2) if is_second_shortener else settings.get('tutorial', TUTORIAL)
+                    verify = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=notcopy_{user_id}_{verify_id}_{file_id}", grp_id)
+                howtodownload = settings.get('tutorial', TUTORIAL)
                 buttons = [[
                     InlineKeyboardButton(text="♻️ ᴄʟɪᴄᴋ ʜᴇʀᴇ ᴛᴏ ᴠᴇʀɪꜰʏ ♻️", url=verify)
                 ],[
                     InlineKeyboardButton(text="⁉️ ʜᴏᴡ ᴛᴏ ᴠᴇʀɪꜰʏ ⁉️", url=howtodownload)
                 ]]
                 reply_markup=InlineKeyboardMarkup(buttons)
-                if await db.user_verified(user_id): 
-                    msg = script.THIRDT_VERIFICATION_TEXT
-                else:            
-                    msg = script.SECOND_VERIFICATION_TEXT if is_second_shortener else script.VERIFICATION_TEXT
+                msg = script.VERIFICATION_TEXT
                 n=await m.reply_text(
                     text=msg.format(message.from_user.mention),
                     protect_content = True,
@@ -423,13 +415,8 @@ async def start(client, message):
                     verify_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=7))
                     await db.create_verify_id(user_id, verify_id)
                     temp.VERIFICATIONS[user_id] = grp_id
-                    is_second_shortener = await db.use_second_shortener(user_id, settings.get('verify_time', TWO_VERIFY_GAP))
-                    is_third_shortener = await db.use_third_shortener(user_id, settings.get('third_verify_time', THREE_VERIFY_GAP))
-                    verify = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=sendall_{user_id}_{verify_id}_{file_id}", grp_id, is_second_shortener, is_third_shortener)
-                    if is_third_shortener:
-                        howtodownload = settings.get('tutorial_3', TUTORIAL_3)
-                    else:
-                        howtodownload = settings.get('tutorial_2', TUTORIAL_2) if is_second_shortener else settings.get('tutorial', TUTORIAL)
+                    verify = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=sendall_{user_id}_{verify_id}_{file_id}", grp_id)
+                    howtodownload = settings.get('tutorial', TUTORIAL)
                     buttons = [[
                         InlineKeyboardButton(text="♻️ ᴄʟɪᴄᴋ ʜᴇʀᴇ ᴛᴏ ᴠᴇʀɪꜰʏ ♻️", url=verify)
                     ],[
@@ -473,12 +460,12 @@ async def start(client, message):
                 f_caption = f"{' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), files1.file_name.split()))}"
             if STREAM_MODE:
                 btn = [
-                    [InlineKeyboardButton('𝖦𝖾𝗇𝖾𝗋𝖺𝗍𝖾 𝖲𝗍𝗋𝖾𝗆𝗂𝗇𝗀 𝖫𝗂𝗇𝗄', callback_data=f'streamfile:{file_id}')],
-                    [InlineKeyboardButton('• 𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅', url=UPDATE_CHANNEL_LNK)]  
+                    [InlineKeyboardButton('❍─𓆩〭〬👒𝖦𝖾𝗇𝖾𝗋𝖺𝗍𝖾 𝖲𝗍𝗋𝖾𝗆𝗂𝗇𝗀 𝖫𝗂𝗇𝗄🤍᪳𝆺𝅥⎯', callback_data=f'streamfile:{file_id}')],
+                    [InlineKeyboardButton('❍─𓆩〭〬👒𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅🤍᪳𝆺𝅥⎯', url=UPDATE_CHANNEL_LNK)]  
                 ]
             else:
                 btn = [
-                    [InlineKeyboardButton('• 𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅', url=UPDATE_CHANNEL_LNK)]
+                    [InlineKeyboardButton('❍─𓆩〭〬👒𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅🤍᪳𝆺𝅥⎯', url=UPDATE_CHANNEL_LNK)]
                 ]
             msg = await client.send_cached_media(
                 chat_id=message.from_user.id,
@@ -503,13 +490,13 @@ async def start(client, message):
         try:
             if STREAM_MODE:
                 btn = [
-                    [InlineKeyboardButton('𝖦𝖾𝗇𝖾𝗋𝖺𝗍𝖾 𝖲𝗍𝗋𝖾𝗆𝗂𝗇𝗀 𝖫𝗂𝗇𝗄', callback_data=f'streamfile:{file_id}')],
-                    [InlineKeyboardButton('• 𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅', url=UPDATE_CHANNEL_LNK)]
+                    [InlineKeyboardButton('❍─𓆩〭〬👒𝖦𝖾𝗇𝖾𝗋𝖺𝗍𝖾 𝖲𝗍𝗋𝖾𝗆𝗂𝗇𝗀 𝖫𝗂𝗇𝗄🤍᪳𝆺𝅥⎯', callback_data=f'streamfile:{file_id}')],
+                    [InlineKeyboardButton('❍─𓆩〭〬👒𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅🤍᪳𝆺𝅥⎯', url=UPDATE_CHANNEL_LNK)]
              
                 ]
             else:
                 btn = [
-                    [InlineKeyboardButton('• 𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅', url=UPDATE_CHANNEL_LNK)]
+                    [InlineKeyboardButton('❍─𓆩〭〬👒𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅🤍᪳𝆺𝅥⎯', url=UPDATE_CHANNEL_LNK)]
                 ]
             msg = await client.send_cached_media(
                 chat_id=message.from_user.id,
@@ -556,12 +543,12 @@ async def start(client, message):
         f_caption = ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), files.file_name.split()))
     if STREAM_MODE:
         btn = [
-            [InlineKeyboardButton('𝖦𝖾𝗇𝖾𝗋𝖺𝗍𝖾 𝖲𝗍𝗋𝖾𝗆𝗂𝗇𝗀 𝖫𝗂𝗇𝗄', callback_data=f'streamfile:{file_id}')],
-            [InlineKeyboardButton('• 𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅', url=UPDATE_CHANNEL_LNK)]
+            [InlineKeyboardButton('❍─𓆩〭〬👒𝖦𝖾𝗇𝖾𝗋𝖺𝗍𝖾 𝖲𝗍𝗋𝖾𝗆𝗂𝗇𝗀 𝖫𝗂𝗇𝗄🤍᪳𝆺𝅥⎯', callback_data=f'streamfile:{file_id}')],
+            [InlineKeyboardButton('❍─𓆩〭〬👒𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅🤍᪳𝆺𝅥⎯', url=UPDATE_CHANNEL_LNK)]
         ]
     else:
         btn = [
-            [InlineKeyboardButton('• 𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅', url=UPDATE_CHANNEL_LNK)]
+            [InlineKeyboardButton('❍─𓆩〭〬👒𝖴𝗉𝖽𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅🤍᪳𝆺𝅥⎯', url=UPDATE_CHANNEL_LNK)]
         ]
     msg = await client.send_cached_media(
         chat_id=message.from_user.id,
@@ -1120,16 +1107,8 @@ async def reset_group_command(client, message):
     reply_markup = InlineKeyboardMarkup(btn)
     await save_group_settings(grp_id, 'shortner', SHORTENER_WEBSITE)
     await save_group_settings(grp_id, 'api', SHORTENER_API)
-    await save_group_settings(grp_id, 'shortner_two', SHORTENER_WEBSITE2)
-    await save_group_settings(grp_id, 'api_two', SHORTENER_API2)
-    await save_group_settings(grp_id, 'shortner_three', SHORTENER_WEBSITE3)
-    await save_group_settings(grp_id, 'api_three', SHORTENER_API3)
-    await save_group_settings(grp_id, 'verify_time', TWO_VERIFY_GAP)
-    await save_group_settings(grp_id, 'third_verify_time', THREE_VERIFY_GAP)
     await save_group_settings(grp_id, 'template', IMDB_TEMPLATE)
     await save_group_settings(grp_id, 'tutorial', TUTORIAL)
-    await save_group_settings(grp_id, 'tutorial_2', TUTORIAL_2)
-    await save_group_settings(grp_id, 'tutorial_3', TUTORIAL_3)
     await save_group_settings(grp_id, 'caption', CUSTOM_FILE_CAPTION)
     await save_group_settings(grp_id, 'log', LOG_VR_CHANNEL)
     await save_group_settings(grp_id, 'is_verify', IS_VERIFY)
@@ -1196,27 +1175,13 @@ async def all_settings(client, message):
         settings = await get_settings(grp_id)
         nbbotz = f"""<b>⚙️ ʏᴏᴜʀ sᴇᴛᴛɪɴɢs ꜰᴏʀ - {title}</b>
 
-✅️ <b><u>1sᴛ ᴠᴇʀɪꜰʏ sʜᴏʀᴛɴᴇʀ</u></b>
+✅️ <b><u>ᴠᴇʀɪꜰʏ sʜᴏʀᴛɴᴇʀ</u></b>
 <b>ɴᴀᴍᴇ</b> - <code>{settings["shortner"]}</code>
 <b>ᴀᴘɪ</b> - <code>{settings["api"]}</code>
 
-✅️ <b><u>2ɴᴅ ᴠᴇʀɪꜰʏ sʜᴏʀᴛɴᴇʀ</u></b>
-<b>ɴᴀᴍᴇ</b> - <code>{settings["shortner_two"]}</code>
-<b>ᴀᴘɪ</b> - <code>{settings["api_two"]}</code>
+⏰ <b>ᴠᴇʀɪꜰɪᴄᴀᴛɪᴏɴ ᴠᴀʟɪᴅ ꜰᴏʀ</b> - <code>{get_readable_time(VERIFY_EXPIRE)}</code>
 
-✅️ <b><u>𝟹ʀᴅ ᴠᴇʀɪꜰʏ sʜᴏʀᴛɴᴇʀ</u></b>
-<b>ɴᴀᴍᴇ</b> - <code>{settings["shortner_three"]}</code>
-<b>ᴀᴘɪ</b> - <code>{settings["api_three"]}</code>
-
-⏰ <b>2ɴᴅ ᴠᴇʀɪꜰɪᴄᴀᴛɪᴏɴ ᴛɪᴍᴇ</b> - <code>{settings["verify_time"]}</code>
-
-⏰ <b>𝟹ʀᴅ ᴠᴇʀɪꜰɪᴄᴀᴛɪᴏɴ ᴛɪᴍᴇ</b> - <code>{settings['third_verify_time']}</code>
-
-1️⃣ <b>ᴛᴜᴛᴏʀɪᴀʟ ʟɪɴᴋ 1</b> - {settings['tutorial']}
-
-2️⃣ <b>ᴛᴜᴛᴏʀɪᴀʟ ʟɪɴᴋ 2</b> - {settings.get('tutorial_2', TUTORIAL_2)}
-
-3️⃣ <b>ᴛᴜᴛᴏʀɪᴀʟ ʟɪɴᴋ 3</b> - {settings.get('tutorial_3', TUTORIAL_3)}
+1️⃣ <b>ᴛᴜᴛᴏʀɪᴀʟ ʟɪɴᴋ</b> - {settings['tutorial']}
 
 📝 <b>ʟᴏɢ ᴄʜᴀɴɴᴇʟ ɪᴅ</b> - <code>{settings['log']}</code>
 
