@@ -222,9 +222,10 @@ class Database:
         ist_timezone = pytz.timezone('Asia/Kolkata')
         pastDate = pastDate.astimezone(ist_timezone)
         current_time = datetime.datetime.now(tz=ist_timezone)
+        seconds_since_midnight = (current_time - datetime.datetime(current_time.year, current_time.month, current_time.day, 0, 0, 0, tzinfo=ist_timezone)).total_seconds()
         time_diff = current_time - pastDate
         total_seconds = time_diff.total_seconds()
-        return total_seconds <= VERIFY_EXPIRE
+        return total_seconds <= seconds_since_midnight
 
     async def user_verified(self, user_id):
         user = await self.get_notcopy_user(user_id)
@@ -242,8 +243,6 @@ class Database:
         return total_seconds <= seconds_since_midnight
 
     async def use_second_shortener(self, user_id, time):
-        if VERIFY_TIERS < 2:
-            return False
         user = await self.get_notcopy_user(user_id)
         if not user.get("second_time_verified"):
             ist_timezone = pytz.timezone('Asia/Kolkata')
@@ -266,8 +265,6 @@ class Database:
         return False
 
     async def use_third_shortener(self, user_id, time):
-        if VERIFY_TIERS < 3:
-            return False
         user = await self.get_notcopy_user(user_id)
         if not user.get("third_time_verified"):
             ist_timezone = pytz.timezone('Asia/Kolkata')
@@ -288,7 +285,7 @@ class Database:
                 second_time = user["third_time_verified"].astimezone(ist_timezone)
                 return second_time < pastDate
         return False
-
+   
     async def create_verify_id(self, user_id: int, hash):
         res = {"user_id": user_id, "hash":hash, "verified":False}
         return await self.verify_id.insert_one(res)
@@ -452,4 +449,3 @@ class Database:
         
 db = Database(DATABASE_URI, DATABASE_NAME)    
 db2 = Database(DATABASE_URI2, DATABASE_NAME)
-
