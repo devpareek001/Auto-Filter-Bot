@@ -102,14 +102,14 @@ TUTORIAL_3 = environ.get("TUTORIAL_3", "")
 SHORTENER_API = environ.get("SHORTENER_API", "082082f64ea69b98d05e921a1cf928ae07e76784")
 SHORTENER_WEBSITE = environ.get("SHORTENER_WEBSITE", "arolinks.com")
 
-SHORTENER_API2 = environ.get("SHORTENER_API2", "")
-SHORTENER_WEBSITE2 = environ.get("SHORTENER_WEBSITE2", "")
+SHORTENER_API2 = environ.get("SHORTENER_API2", "082082f64ea69b98d05e921a1cf928ae07e76784")
+SHORTENER_WEBSITE2 = environ.get("SHORTENER_WEBSITE2", "arolinks.com")
 
-SHORTENER_API3 = environ.get("SHORTENER_API3", "")
-SHORTENER_WEBSITE3 = environ.get("SHORTENER_WEBSITE3", "")
+SHORTENER_API3 = environ.get("SHORTENER_API3", "082082f64ea69b98d05e921a1cf928ae07e76784")
+SHORTENER_WEBSITE3 = environ.get("SHORTENER_WEBSITE3", "arolinks.com")
 
-TWO_VERIFY_GAP = int(environ.get('TWO_VERIFY_GAP', "1200"))
-THREE_VERIFY_GAP = int(environ.get('THREE_VERIFY_GAP', "54000"))
+TWO_VERIFY_GAP = int(environ.get('TWO_VERIFY_GAP', "60"))
+THREE_VERIFY_GAP = int(environ.get('THREE_VERIFY_GAP', "60"))
 
 
 # other settings 
