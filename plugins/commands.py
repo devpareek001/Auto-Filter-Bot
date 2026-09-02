@@ -276,6 +276,8 @@ async def start(client, message):
             grp_id = int(grp_id)
             user_verified = await db.is_user_verified(user_id)
             settings = await get_settings(grp_id)
+            is_second_shortener = await db.use_second_shortener(user_id, settings.get('verify_time', TWO_VERIFY_GAP)) 
+            is_third_shortener = await db.use_third_shortener(user_id, settings.get('third_verify_time', THREE_VERIFY_GAP))
 
             is_allfiles_request = data and data.startswith("allfiles")
 
@@ -366,24 +368,31 @@ async def start(client, message):
                     reply_markup = ikeyboard
                 )
 
-            if settings.get("is_verify", IS_VERIFY) and not user_verified:                
+            if settings.get("is_verify", IS_VERIFY) and (not user_verified or is_second_shortener or is_third_shortener):                
                 verify_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=7))
                 await db.create_verify_id(user_id, verify_id)
                 temp.VERIFICATIONS[user_id] = grp_id
                 if message.command[1].startswith('allfiles'):
-                    verify = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=sendall_{user_id}_{verify_id}_{file_id}", grp_id)
+                    verify = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=sendall_{user_id}_{verify_id}_{file_id}", grp_id, is_second_shortener, is_third_shortener)
                 else:
-                    verify = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=notcopy_{user_id}_{verify_id}_{file_id}", grp_id)
-                howtodownload = settings.get('tutorial', TUTORIAL)
+                    verify = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=notcopy_{user_id}_{verify_id}_{file_id}", grp_id, is_second_shortener, is_third_shortener)
+                if is_third_shortener:
+                    howtodownload = settings.get('tutorial_3', TUTORIAL_3)
+                else:
+                    howtodownload = settings.get('tutorial_2', TUTORIAL_2) if is_second_shortener else settings.get('tutorial', TUTORIAL)
                 buttons = [[
                     InlineKeyboardButton(text="♻️ ᴄʟɪᴄᴋ ʜᴇʀᴇ ᴛᴏ ᴠᴇʀɪꜰʏ ♻️", url=verify)
                 ],[
                     InlineKeyboardButton(text="⁉️ ʜᴏᴡ ᴛᴏ ᴠᴇʀɪꜰʏ ⁉️", url=howtodownload)
                 ]]
                 reply_markup=InlineKeyboardMarkup(buttons)
-                msg = script.VERIFICATION_TEXT
-                n=await m.reply_text(
-                    text=msg.format(message.from_user.mention),
+                if await db.user_verified(user_id): 
+                    msg = script.THIRDT_VERIFICATION_TEXT
+                else:            
+                    msg = script.SECOND_VERIFICATION_TEXT if is_second_shortener else script.VERIFICATION_TEXT
+                n=await m.reply_photo(
+                    photo=VERIFY_IMG,
+                    caption=msg.format(message.from_user.mention),
                     protect_content = True,
                     reply_markup=reply_markup,
                     parse_mode=enums.ParseMode.HTML
@@ -415,15 +424,21 @@ async def start(client, message):
                     verify_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=7))
                     await db.create_verify_id(user_id, verify_id)
                     temp.VERIFICATIONS[user_id] = grp_id
-                    verify = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=sendall_{user_id}_{verify_id}_{file_id}", grp_id)
-                    howtodownload = settings.get('tutorial', TUTORIAL)
+                    is_second_shortener = await db.use_second_shortener(user_id, settings.get('verify_time', TWO_VERIFY_GAP))
+                    is_third_shortener = await db.use_third_shortener(user_id, settings.get('third_verify_time', THREE_VERIFY_GAP))
+                    verify = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=sendall_{user_id}_{verify_id}_{file_id}", grp_id, is_second_shortener, is_third_shortener)
+                    if is_third_shortener:
+                        howtodownload = settings.get('tutorial_3', TUTORIAL_3)
+                    else:
+                        howtodownload = settings.get('tutorial_2', TUTORIAL_2) if is_second_shortener else settings.get('tutorial', TUTORIAL)
                     buttons = [[
                         InlineKeyboardButton(text="♻️ ᴄʟɪᴄᴋ ʜᴇʀᴇ ᴛᴏ ᴠᴇʀɪꜰʏ ♻️", url=verify)
                     ],[
                         InlineKeyboardButton(text="⁉️ ʜᴏᴡ ᴛᴏ ᴠᴇʀɪꜰʏ ⁉️", url=howtodownload)
                     ]]
-                    return await message.reply_text(
-                        text=script.VERIFICATION_TEXT.format(message.from_user.mention),
+                    return await message.reply_photo(
+                        photo=VERIFY_IMG,
+                        caption=script.VERIFICATION_TEXT.format(message.from_user.mention),
                         protect_content=True,
                         reply_markup=InlineKeyboardMarkup(buttons),
                         parse_mode=enums.ParseMode.HTML
@@ -1107,8 +1122,16 @@ async def reset_group_command(client, message):
     reply_markup = InlineKeyboardMarkup(btn)
     await save_group_settings(grp_id, 'shortner', SHORTENER_WEBSITE)
     await save_group_settings(grp_id, 'api', SHORTENER_API)
+    await save_group_settings(grp_id, 'shortner_two', SHORTENER_WEBSITE2)
+    await save_group_settings(grp_id, 'api_two', SHORTENER_API2)
+    await save_group_settings(grp_id, 'shortner_three', SHORTENER_WEBSITE3)
+    await save_group_settings(grp_id, 'api_three', SHORTENER_API3)
+    await save_group_settings(grp_id, 'verify_time', TWO_VERIFY_GAP)
+    await save_group_settings(grp_id, 'third_verify_time', THREE_VERIFY_GAP)
     await save_group_settings(grp_id, 'template', IMDB_TEMPLATE)
     await save_group_settings(grp_id, 'tutorial', TUTORIAL)
+    await save_group_settings(grp_id, 'tutorial_2', TUTORIAL_2)
+    await save_group_settings(grp_id, 'tutorial_3', TUTORIAL_3)
     await save_group_settings(grp_id, 'caption', CUSTOM_FILE_CAPTION)
     await save_group_settings(grp_id, 'log', LOG_VR_CHANNEL)
     await save_group_settings(grp_id, 'is_verify', IS_VERIFY)
@@ -1175,13 +1198,29 @@ async def all_settings(client, message):
         settings = await get_settings(grp_id)
         nbbotz = f"""<b>⚙️ ʏᴏᴜʀ sᴇᴛᴛɪɴɢs ꜰᴏʀ - {title}</b>
 
-✅️ <b><u>ᴠᴇʀɪꜰʏ sʜᴏʀᴛɴᴇʀ</u></b>
+✅️ <b><u>1sᴛ ᴠᴇʀɪꜰʏ sʜᴏʀᴛɴᴇʀ</u></b>
 <b>ɴᴀᴍᴇ</b> - <code>{settings["shortner"]}</code>
 <b>ᴀᴘɪ</b> - <code>{settings["api"]}</code>
 
+✅️ <b><u>2ɴᴅ ᴠᴇʀɪꜰʏ sʜᴏʀᴛɴᴇʀ</u></b> {"(ᴏɴ)" if VERIFY_TIERS >= 2 else "(ᴏꜰꜰ)"}
+<b>ɴᴀᴍᴇ</b> - <code>{settings["shortner_two"]}</code>
+<b>ᴀᴘɪ</b> - <code>{settings["api_two"]}</code>
+
+✅️ <b><u>𝟹ʀᴅ ᴠᴇʀɪꜰʏ sʜᴏʀᴛɴᴇʀ</u></b> {"(ᴏɴ)" if VERIFY_TIERS >= 3 else "(ᴏꜰꜰ)"}
+<b>ɴᴀᴍᴇ</b> - <code>{settings["shortner_three"]}</code>
+<b>ᴀᴘɪ</b> - <code>{settings["api_three"]}</code>
+
+⏰ <b>2ɴᴅ ᴠᴇʀɪꜰɪᴄᴀᴛɪᴏɴ ᴛɪᴍᴇ</b> - <code>{settings["verify_time"]}</code>
+
+⏰ <b>𝟹ʀᴅ ᴠᴇʀɪꜰɪᴄᴀᴛɪᴏɴ ᴛɪᴍᴇ</b> - <code>{settings['third_verify_time']}</code>
+
 ⏰ <b>ᴠᴇʀɪꜰɪᴄᴀᴛɪᴏɴ ᴠᴀʟɪᴅ ꜰᴏʀ</b> - <code>{get_readable_time(VERIFY_EXPIRE)}</code>
 
-1️⃣ <b>ᴛᴜᴛᴏʀɪᴀʟ ʟɪɴᴋ</b> - {settings['tutorial']}
+1️⃣ <b>ᴛᴜᴛᴏʀɪᴀʟ ʟɪɴᴋ 1</b> - {settings['tutorial']}
+
+2️⃣ <b>ᴛᴜᴛᴏʀɪᴀʟ ʟɪɴᴋ 2</b> - {settings.get('tutorial_2', TUTORIAL_2)}
+
+3️⃣ <b>ᴛᴜᴛᴏʀɪᴀʟ ʟɪɴᴋ 3</b> - {settings.get('tutorial_3', TUTORIAL_3)}
 
 📝 <b>ʟᴏɢ ᴄʜᴀɴɴᴇʟ ɪᴅ</b> - <code>{settings['log']}</code>
 
@@ -1356,5 +1395,6 @@ async def clear_database(client, message):
 
     except Exception as e:
         await msg.edit(f"❌ Error:\n<code>{e}</code>")
+
 
 
