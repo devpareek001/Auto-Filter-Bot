@@ -90,17 +90,17 @@ PAID_STREAM = bool(environ.get('PAID_STREAM', True))
 
 # shortner infos
 
-IS_VERIFY = is_enabled('IS_VERIFY', False)
+IS_VERIFY = is_enabled('IS_VERIFY', True)
 LOG_VR_CHANNEL = int(environ.get('LOG_VR_CHANNEL', '-1004464824907'))
 LOG_API_CHANNEL = int(environ.get('LOG_API_CHANNEL', '-1004464824907'))
 VERIFY_IMG = environ.get("VERIFY_IMG", "https://telegra.ph/file/9ecc5d6e4df5b83424896.jpg")
 
-TUTORIAL = environ.get("TUTORIAL", "https://t.me/")
+TUTORIAL = environ.get("TUTORIAL", "https://t.me/howtoopenanylinkin1min/3")
 TUTORIAL_2 = environ.get("TUTORIAL_2", "https://t.me/")
 TUTORIAL_3 = environ.get("TUTORIAL_3", "https://t.me/")
 
-SHORTENER_API = environ.get("SHORTENER_API", "5eb21caac29e8bf88cb75aaae34bbf9a75890a28")
-SHORTENER_WEBSITE = environ.get("SHORTENER_WEBSITE", "Seturl.in")
+SHORTENER_API = environ.get("SHORTENER_API", "082082f64ea69b98d05e921a1cf928ae07e76784")
+SHORTENER_WEBSITE = environ.get("SHORTENER_WEBSITE", "arolinks.com")
 
 SHORTENER_API2 = environ.get("SHORTENER_API2", "5eb21caac29e8bf88cb75aaae34bbf9a75890a28")
 SHORTENER_WEBSITE2 = environ.get("SHORTENER_WEBSITE2", "Seturl.in")
