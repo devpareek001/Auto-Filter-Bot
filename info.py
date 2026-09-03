@@ -93,7 +93,8 @@ PAID_STREAM = bool(environ.get('PAID_STREAM', True))
 IS_VERIFY = is_enabled('IS_VERIFY', True)
 LOG_VR_CHANNEL = int(environ.get('LOG_VR_CHANNEL', '-1003900052105'))
 LOG_API_CHANNEL = int(environ.get('LOG_API_CHANNEL', '-1003900052105'))
-VERIFY_IMG = environ.get("VERIFY_IMG", "https://telegra.ph/file/9ecc5d6e4df5b83424896.jpg")
+VERIFY_IMG = environ.get("VERIFY_IMG", "https://graph.org/file/e3add5e199126fe8ab5ba-4459dd80bc412c6f7c.jpg")   # shown on the "verify complete" message
+BEFORE_VERIFY_IMG = environ.get("BEFORE_VERIFY_IMG", "https://graph.org/file/50d7769ab97d6d896c893-9767740bed19d699b2.jpg")  # shown on the "please verify" message
 
 TUTORIAL = environ.get("TUTORIAL", "https://t.me/howtoopenanylinkin1min/3")
 TUTORIAL_2 = environ.get("TUTORIAL_2", "")
@@ -111,7 +112,7 @@ SHORTENER_WEBSITE3 = environ.get("SHORTENER_WEBSITE3", "arolinks.com")
 # Turn each shortener ON/OFF individually. Verification will rotate ONLY between
 # the shorteners that are set to True below (1 -> 2 -> 3 -> back to 1 ...).
 ENABLE_SHORTENER_1 = is_enabled((environ.get('ENABLE_SHORTENER_1', "True")), True)
-ENABLE_SHORTENER_2 = is_enabled((environ.get('ENABLE_SHORTENER_2', "True")), True)
+ENABLE_SHORTENER_2 = is_enabled((environ.get('ENABLE_SHORTENER_2', "False")), True)
 ENABLE_SHORTENER_3 = is_enabled((environ.get('ENABLE_SHORTENER_3', "False")), True)
 
 # How long (in seconds) a user gets FREE access after completing each verification,
@@ -222,6 +223,8 @@ else:
     DATABASE_URI2 = DATABASE_URI2
 #ignore this var but dont remove
 FILE_AUTO_DEL_TIMER = 600
+
+
 
 
 
