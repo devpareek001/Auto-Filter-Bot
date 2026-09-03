@@ -38,42 +38,37 @@ async def start(client, message):
             pass
     m = message
     if len(m.command) == 2 and m.command[1].startswith(('notcopy', 'sendall')):
-        _, userid, verify_id, file_id = m.command[1].split("_", 3)
+        _, userid, verify_id, stage, file_id = m.command[1].split("_", 4)
         user_id = int(userid)
+        stage = int(stage)
         grp_id = temp.VERIFICATIONS.get(user_id, 0)
         settings = await get_settings(grp_id)         
         verify_id_info = await db.get_verify_id_info(user_id, verify_id)
         if not verify_id_info or verify_id_info["verified"]:
             await message.reply("<b>ʟɪɴᴋ ᴇxᴘɪʀᴇᴅ ᴛʀʏ ᴀɢᴀɪɴ...</b>")
             return  
-        ist_timezone = pytz.timezone('Asia/Kolkata')
-        if await db.user_verified(user_id):
-            key = "third_time_verified"
-        else:
-            key = "second_time_verified" if await db.is_user_verified(user_id) else "last_verified"
-        current_time = datetime.now(tz=ist_timezone)
-        result = await db.update_notcopy_user(user_id, {key:current_time})
+        await db.set_verified_stage(user_id, stage)
         await db.update_verify_id_info(user_id, verify_id, {"verified":True})
-        if key == "third_time_verified": 
-            num = 3 
-        else: 
-            num =  2 if key == "second_time_verified" else 1 
-        if key == "third_time_verified": 
+        num = stage
+        gap = {1: TWO_VERIFY_GAP, 2: THREE_VERIFY_GAP, 3: ONE_VERIFY_GAP}.get(stage, TWO_VERIFY_GAP)
+        if stage == 3:
             msg = script.THIRDT_VERIFY_COMPLETE_TEXT
+        elif stage == 2:
+            msg = script.SECOND_VERIFY_COMPLETE_TEXT
         else:
-            msg = script.SECOND_VERIFY_COMPLETE_TEXT if key == "second_time_verified" else script.VERIFY_COMPLETE_TEXT
+            msg = script.VERIFY_COMPLETE_TEXT
         if message.command[1].startswith('sendall'):
             verifiedfiles = f"https://telegram.me/{temp.U_NAME}?start=allfiles_{grp_id}_{file_id}"
         else:
             verifiedfiles = f"https://telegram.me/{temp.U_NAME}?start=file_{grp_id}_{file_id}"
         await client.send_message(settings['log'], script.VERIFIED_LOG_TEXT.format(m.from_user.mention, user_id, datetime.now(pytz.timezone('Asia/Kolkata')).strftime('%d %B %Y'), num))
         btn = [[
-            InlineKeyboardButton("✅ ᴄʟɪᴄᴋ ʜᴇʀᴇ ᴛᴏ ɢᴇᴛ ꜰɪʟᴇ ✅", url=verifiedfiles),
+            InlineKeyboardButton("✅ ᴄʟɪᴄᴋ ʜᴇʀᴇ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ꜰɪʟᴇ ✅", url=verifiedfiles),
         ]]
         reply_markup=InlineKeyboardMarkup(btn)
         dlt=await m.reply_photo(
             photo=(VERIFY_IMG),
-            caption=msg.format(message.from_user.mention, get_readable_time(VERIFY_EXPIRE)),
+            caption=msg.format(message.from_user.mention, get_readable_time(gap)),
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
@@ -274,7 +269,7 @@ async def start(client, message):
     if not await db.has_premium_access(user_id):
         try:
             grp_id = int(grp_id)
-            user_verified = await db.is_user_verified(user_id)
+            user_verified, _current_stage, next_verify_stage = await db.get_verify_state(user_id)
             settings = await get_settings(grp_id)
 
             is_allfiles_request = data and data.startswith("allfiles")
@@ -370,10 +365,12 @@ async def start(client, message):
                 verify_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=7))
                 await db.create_verify_id(user_id, verify_id)
                 temp.VERIFICATIONS[user_id] = grp_id
+                is_second = next_verify_stage == 2
+                is_third = next_verify_stage == 3
                 if message.command[1].startswith('allfiles'):
-                    verify = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=sendall_{user_id}_{verify_id}_{file_id}", grp_id)
+                    verify = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=sendall_{user_id}_{verify_id}_{next_verify_stage}_{file_id}", grp_id, is_second, is_third)
                 else:
-                    verify = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=notcopy_{user_id}_{verify_id}_{file_id}", grp_id)
+                    verify = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=notcopy_{user_id}_{verify_id}_{next_verify_stage}_{file_id}", grp_id, is_second, is_third)
                 howtodownload = settings.get('tutorial', TUTORIAL)
                 buttons = [[
                     InlineKeyboardButton(text="♻️ ᴄʟɪᴄᴋ ʜᴇʀᴇ ᴛᴏ ᴠᴇʀɪꜰʏ ♻️", url=verify)
@@ -381,9 +378,15 @@ async def start(client, message):
                     InlineKeyboardButton(text="⁉️ ʜᴏᴡ ᴛᴏ ᴠᴇʀɪꜰʏ ⁉️", url=howtodownload)
                 ]]
                 reply_markup=InlineKeyboardMarkup(buttons)
-                msg = script.VERIFICATION_TEXT
-                n=await m.reply_text(
-                    text=msg.format(message.from_user.mention),
+                if next_verify_stage == 3:
+                    msg = script.THIRDT_VERIFICATION_TEXT
+                elif next_verify_stage == 2:
+                    msg = script.SECOND_VERIFICATION_TEXT
+                else:
+                    msg = script.VERIFICATION_TEXT
+                n=await m.reply_photo(
+                    photo=(VERIFY_IMG),
+                    caption=msg.format(message.from_user.mention, get_verify_counter_text(next_verify_stage)),
                     protect_content = True,
                     reply_markup=reply_markup,
                     parse_mode=enums.ParseMode.HTML
@@ -412,22 +415,33 @@ async def start(client, message):
                 settings = await get_settings(int(grp_id))
                 if settings.get("is_verify", IS_VERIFY):
                     user_id = message.from_user.id
-                    verify_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=7))
-                    await db.create_verify_id(user_id, verify_id)
-                    temp.VERIFICATIONS[user_id] = grp_id
-                    verify = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=sendall_{user_id}_{verify_id}_{file_id}", grp_id)
-                    howtodownload = settings.get('tutorial', TUTORIAL)
-                    buttons = [[
-                        InlineKeyboardButton(text="♻️ ᴄʟɪᴄᴋ ʜᴇʀᴇ ᴛᴏ ᴠᴇʀɪꜰʏ ♻️", url=verify)
-                    ],[
-                        InlineKeyboardButton(text="⁉️ ʜᴏᴡ ᴛᴏ ᴠᴇʀɪꜰʏ ⁉️", url=howtodownload)
-                    ]]
-                    return await message.reply_text(
-                        text=script.VERIFICATION_TEXT.format(message.from_user.mention),
-                        protect_content=True,
-                        reply_markup=InlineKeyboardMarkup(buttons),
-                        parse_mode=enums.ParseMode.HTML
-                    )
+                    is_verified, _current_stage, next_verify_stage = await db.get_verify_state(user_id)
+                    if not is_verified:
+                        verify_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=7))
+                        await db.create_verify_id(user_id, verify_id)
+                        temp.VERIFICATIONS[user_id] = grp_id
+                        is_second = next_verify_stage == 2
+                        is_third = next_verify_stage == 3
+                        verify = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=sendall_{user_id}_{verify_id}_{next_verify_stage}_{file_id}", grp_id, is_second, is_third)
+                        howtodownload = settings.get('tutorial', TUTORIAL)
+                        buttons = [[
+                            InlineKeyboardButton(text="♻️ ᴄʟɪᴄᴋ ʜᴇʀᴇ ᴛᴏ ᴠᴇʀɪꜰʏ ♻️", url=verify)
+                        ],[
+                            InlineKeyboardButton(text="⁉️ ʜᴏᴡ ᴛᴏ ᴠᴇʀɪꜰʏ ⁉️", url=howtodownload)
+                        ]]
+                        if next_verify_stage == 3:
+                            msg = script.THIRDT_VERIFICATION_TEXT
+                        elif next_verify_stage == 2:
+                            msg = script.SECOND_VERIFICATION_TEXT
+                        else:
+                            msg = script.VERIFICATION_TEXT
+                        return await message.reply_photo(
+                            photo=(VERIFY_IMG),
+                            caption=msg.format(message.from_user.mention, get_verify_counter_text(next_verify_stage)),
+                            protect_content=True,
+                            reply_markup=InlineKeyboardMarkup(buttons),
+                            parse_mode=enums.ParseMode.HTML
+                        )
                 else:
                     return await message.reply_text(
                         f"<b>📊 ᴛʜɪꜱ ʙᴀᴛᴄʜ ʜᴀꜱ {len(files)} ꜰɪʟᴇꜱ, ʙᴜᴛ ʏᴏᴜ ᴏɴʟʏ ʜᴀᴠᴇ {remaining} ꜰʀᴇᴇ ꜰɪʟᴇ(ꜱ) ʟᴇꜰᴛ ᴛᴏᴅᴀʏ ({current_file_count}/{FILES_LIMIT} ᴜꜱᴇᴅ).</b>\n\nʙᴜʏ ᴘʀᴇᴍɪᴜᴍ ꜰᴏʀ ᴜɴʟɪᴍɪᴛᴇᴅ ᴀᴄᴄᴇꜱꜱ 💎",
@@ -1179,7 +1193,9 @@ async def all_settings(client, message):
 <b>ɴᴀᴍᴇ</b> - <code>{settings["shortner"]}</code>
 <b>ᴀᴘɪ</b> - <code>{settings["api"]}</code>
 
-⏰ <b>ᴠᴇʀɪꜰɪᴄᴀᴛɪᴏɴ ᴠᴀʟɪᴅ ꜰᴏʀ</b> - <code>{get_readable_time(VERIFY_EXPIRE)}</code>
+⏰ <b>ꜱʜᴏʀᴛᴇɴᴇʀ 1 ꜰʀᴇᴇ ᴛɪᴍᴇ</b> - <code>{get_readable_time(TWO_VERIFY_GAP)}</code> {"✅" if ENABLE_SHORTENER_1 else "❌"}
+⏰ <b>ꜱʜᴏʀᴛᴇɴᴇʀ 2 ꜰʀᴇᴇ ᴛɪᴍᴇ</b> - <code>{get_readable_time(THREE_VERIFY_GAP)}</code> {"✅" if ENABLE_SHORTENER_2 else "❌"}
+⏰ <b>ꜱʜᴏʀᴛᴇɴᴇʀ 3 ꜰʀᴇᴇ ᴛɪᴍᴇ</b> - <code>{get_readable_time(ONE_VERIFY_GAP)}</code> {"✅" if ENABLE_SHORTENER_3 else "❌"}
 
 1️⃣ <b>ᴛᴜᴛᴏʀɪᴀʟ ʟɪɴᴋ</b> - {settings['tutorial']}
 
