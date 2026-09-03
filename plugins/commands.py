@@ -387,7 +387,6 @@ async def start(client, message):
                 n=await m.reply_photo(
                     photo=(VERIFY_IMG),
                     caption=msg.format(message.from_user.mention, get_verify_counter_text(next_verify_stage)),
-                    protect_content = True,
                     reply_markup=reply_markup,
                     parse_mode=enums.ParseMode.HTML
                 )
@@ -438,7 +437,6 @@ async def start(client, message):
                         return await message.reply_photo(
                             photo=(VERIFY_IMG),
                             caption=msg.format(message.from_user.mention, get_verify_counter_text(next_verify_stage)),
-                            protect_content=True,
                             reply_markup=InlineKeyboardMarkup(buttons),
                             parse_mode=enums.ParseMode.HTML
                         )
