@@ -200,92 +200,65 @@ class Database:
         if not user:
             res = {
                 "user_id": user_id,
-                "last_verified": datetime.datetime(2020, 5, 17, 0, 0, 0, tzinfo=ist_timezone),
-                "second_time_verified": datetime.datetime(2019, 5, 17, 0, 0, 0, tzinfo=ist_timezone),
+                "verify_stage": 0,  # 0 = never verified yet
+                "verify_time": datetime.datetime(2020, 1, 1, 0, 0, 0, tzinfo=ist_timezone),
             }
-            user = await self.misc.insert_one(res)
+            await self.misc.insert_one(res)
+            user = res
         return user
 
-    async def update_notcopy_user(self, user_id, value:dict):
+    async def update_notcopy_user(self, user_id, value: dict):
         user_id = int(user_id)
         myquery = {"user_id": user_id}
         newvalues = {"$set": value}
-        return await self.misc.update_one(myquery, newvalues)
+        return await self.misc.update_one(myquery, newvalues, upsert=True)
 
-    async def is_user_verified(self, user_id):
-        user = await self.get_notcopy_user(user_id)
-        try:
-            pastDate = user["last_verified"]
-        except Exception:
-            user = await self.get_notcopy_user(user_id)
-            pastDate = user["last_verified"]
+    @staticmethod
+    def _enabled_verify_stages():
+        stages = [s for s, on in ((1, ENABLE_SHORTENER_1), (2, ENABLE_SHORTENER_2), (3, ENABLE_SHORTENER_3)) if on]
+        return stages or [1]
+
+    @staticmethod
+    def _gap_for_stage(stage):
+        return {1: TWO_VERIFY_GAP, 2: THREE_VERIFY_GAP, 3: ONE_VERIFY_GAP}.get(stage, TWO_VERIFY_GAP)
+
+    async def set_verified_stage(self, user_id: int, stage: int):
+        """Call this right after a user successfully completes verification for `stage` (1, 2 or 3)."""
         ist_timezone = pytz.timezone('Asia/Kolkata')
-        pastDate = pastDate.astimezone(ist_timezone)
-        current_time = datetime.datetime.now(tz=ist_timezone)
-        seconds_since_midnight = (current_time - datetime.datetime(current_time.year, current_time.month, current_time.day, 0, 0, 0, tzinfo=ist_timezone)).total_seconds()
-        time_diff = current_time - pastDate
-        total_seconds = time_diff.total_seconds()
-        return total_seconds <= seconds_since_midnight
+        await self.update_notcopy_user(user_id, {
+            "verify_stage": stage,
+            "verify_time": datetime.datetime.now(tz=ist_timezone),
+        })
 
-    async def user_verified(self, user_id):
+    async def get_verify_state(self, user_id):
+        """
+        Returns (is_verified, current_stage, next_stage):
+          - is_verified   -> True if the user still has free access right now (no shortener needed)
+          - current_stage -> the last verification stage (1/2/3) the user completed, 0 if never
+          - next_stage    -> which shortener (1/2/3) should be shown to the user right now
+        Rotation only happens between the stages enabled via ENABLE_SHORTENER_1/2/3 in info.py.
+        """
+        enabled_stages = self._enabled_verify_stages()
         user = await self.get_notcopy_user(user_id)
-        try:
-            pastDate = user["second_time_verified"]
-        except Exception:
-            user = await self.get_notcopy_user(user_id)
-            pastDate = user["second_time_verified"]
+        stage = user.get("verify_stage", 0)
+
+        if not stage or stage not in enabled_stages:
+            return False, stage, enabled_stages[0]
+
         ist_timezone = pytz.timezone('Asia/Kolkata')
-        pastDate = pastDate.astimezone(ist_timezone)
+        verify_time = user.get("verify_time")
+        verify_time = verify_time.astimezone(ist_timezone)
         current_time = datetime.datetime.now(tz=ist_timezone)
-        seconds_since_midnight = (current_time - datetime.datetime(current_time.year, current_time.month, current_time.day, 0, 0, 0, tzinfo=ist_timezone)).total_seconds()
-        time_diff = current_time - pastDate
-        total_seconds = time_diff.total_seconds()
-        return total_seconds <= seconds_since_midnight
+        elapsed = (current_time - verify_time).total_seconds()
+        gap = self._gap_for_stage(stage)
 
-    async def use_second_shortener(self, user_id, time):
-        user = await self.get_notcopy_user(user_id)
-        if not user.get("second_time_verified"):
-            ist_timezone = pytz.timezone('Asia/Kolkata')
-            await self.update_notcopy_user(user_id, {"second_time_verified":datetime.datetime(2019, 5, 17, 0, 0, 0, tzinfo=ist_timezone)})
-            user = await self.get_notcopy_user(user_id)
-        if await self.is_user_verified(user_id):
-            try:
-                pastDate = user["last_verified"]
-            except Exception:
-                user = await self.get_notcopy_user(user_id)
-                pastDate = user["last_verified"]
-            ist_timezone = pytz.timezone('Asia/Kolkata')
-            pastDate = pastDate.astimezone(ist_timezone)
-            current_time = datetime.datetime.now(tz=ist_timezone)
-            time_difference = current_time - pastDate
-            if time_difference > datetime.timedelta(seconds=time):
-                pastDate = user["last_verified"].astimezone(ist_timezone)
-                second_time = user["second_time_verified"].astimezone(ist_timezone)
-                return second_time < pastDate
-        return False
+        if elapsed <= gap:
+            return True, stage, stage
 
-    async def use_third_shortener(self, user_id, time):
-        user = await self.get_notcopy_user(user_id)
-        if not user.get("third_time_verified"):
-            ist_timezone = pytz.timezone('Asia/Kolkata')
-            await self.update_notcopy_user(user_id, {"third_time_verified":datetime.datetime(2018, 5, 17, 0, 0, 0, tzinfo=ist_timezone)})
-            user = await self.get_notcopy_user(user_id)
-        if await self.user_verified(user_id):
-            try:
-                pastDate = user["second_time_verified"]
-            except Exception:
-                user = await self.get_notcopy_user(user_id)
-                pastDate = user["second_time_verified"]
-            ist_timezone = pytz.timezone('Asia/Kolkata')
-            pastDate = pastDate.astimezone(ist_timezone)
-            current_time = datetime.datetime.now(tz=ist_timezone)
-            time_difference = current_time - pastDate
-            if time_difference > datetime.timedelta(seconds=time):
-                pastDate = user["second_time_verified"].astimezone(ist_timezone)
-                second_time = user["third_time_verified"].astimezone(ist_timezone)
-                return second_time < pastDate
-        return False
-   
+        idx = enabled_stages.index(stage)
+        upcoming = enabled_stages[(idx + 1) % len(enabled_stages)]
+        return False, stage, upcoming
+
     async def create_verify_id(self, user_id: int, hash):
         res = {"user_id": user_id, "hash":hash, "verified":False}
         return await self.verify_id.insert_one(res)
