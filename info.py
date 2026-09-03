@@ -108,8 +108,17 @@ SHORTENER_WEBSITE2 = environ.get("SHORTENER_WEBSITE2", "arolinks.com")
 SHORTENER_API3 = environ.get("SHORTENER_API3", "082082f64ea69b98d05e921a1cf928ae07e76784")
 SHORTENER_WEBSITE3 = environ.get("SHORTENER_WEBSITE3", "arolinks.com")
 
-TWO_VERIFY_GAP = int(environ.get('TWO_VERIFY_GAP', "60"))
-THREE_VERIFY_GAP = int(environ.get('THREE_VERIFY_GAP', "60"))
+# Turn each shortener ON/OFF individually. Verification will rotate ONLY between
+# the shorteners that are set to True below (1 -> 2 -> 3 -> back to 1 ...).
+ENABLE_SHORTENER_1 = is_enabled((environ.get('ENABLE_SHORTENER_1', "True")), True)
+ENABLE_SHORTENER_2 = is_enabled((environ.get('ENABLE_SHORTENER_2', "True")), True)
+ENABLE_SHORTENER_3 = is_enabled((environ.get('ENABLE_SHORTENER_3', "False")), True)
+
+# How long (in seconds) a user gets FREE access after completing each verification,
+# before the NEXT shortener in the rotation is shown to them again.
+TWO_VERIFY_GAP = int(environ.get('TWO_VERIFY_GAP', "60"))      # free time after 1st verify (before 2nd is shown)
+THREE_VERIFY_GAP = int(environ.get('THREE_VERIFY_GAP', "60"))  # free time after 2nd verify (before 3rd is shown)
+ONE_VERIFY_GAP = int(environ.get('ONE_VERIFY_GAP', "60"))      # free time after 3rd verify (before it loops back to 1st)
 
 
 # other settings 
@@ -213,5 +222,6 @@ else:
     DATABASE_URI2 = DATABASE_URI2
 #ignore this var but dont remove
 FILE_AUTO_DEL_TIMER = 600
+
 
 
