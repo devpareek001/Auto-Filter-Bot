@@ -258,6 +258,21 @@ async def search_gagala(text):
     titles = soup.find_all( 'h3' )
     return [title.getText() for title in titles]
 
+def get_verify_counter_text(stage):
+    """
+    Builds the '#verification:- x/y' line shown in the verify message.
+    - If only ONE shortener is enabled, no number is shown at all.
+    - If 2 or 3 shorteners are enabled, shows position/total (e.g. 1/2, 2/3).
+    """
+    enabled_stages = [s for s, on in ((1, ENABLE_SHORTENER_1), (2, ENABLE_SHORTENER_2), (3, ENABLE_SHORTENER_3)) if on]
+    if not enabled_stages:
+        enabled_stages = [1]
+    total = len(enabled_stages)
+    if total <= 1:
+        return ""
+    position = enabled_stages.index(stage) + 1 if stage in enabled_stages else 1
+    return f"\n\n#ᴠᴇʀɪꜰɪᴄᴀᴛɪᴏɴ:- {position}/{total} ✓"
+
 async def get_shortlink(link, grp_id, is_second_shortener=False, is_third_shortener=False):
     settings = await get_settings(grp_id)
     if is_third_shortener:             
@@ -717,3 +732,4 @@ async def group_setting_buttons(grp_id):
                 InlineKeyboardButton('⇋ ᴄʟᴏꜱᴇ ꜱᴇᴛᴛɪɴɢꜱ ᴍᴇɴᴜ ⇋', callback_data='close_data')
     ]]
     return buttons
+
