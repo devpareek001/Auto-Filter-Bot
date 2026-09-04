@@ -181,7 +181,7 @@ async def get_poster(query, bulk=False, id=False, file=None):
                 year = list_to_str(year[:1]) 
         else:
             year = None
-        movieid = imdb.search_movie(title.lower(), results=10)
+        movieid = await asyncio.to_thread(imdb.search_movie, title.lower(), results=10)
         if not movieid:
             return None
         if year:
@@ -198,7 +198,7 @@ async def get_poster(query, bulk=False, id=False, file=None):
         movieid = movieid[0].movieID
     else:
         movieid = query
-    movie = imdb.get_movie(movieid)
+    movie = await asyncio.to_thread(imdb.get_movie, movieid)
     if movie.get("original air date"):
         date = movie["original air date"]
     elif movie.get("year"):
@@ -272,6 +272,26 @@ def get_verify_counter_text(stage):
         return ""
     position = enabled_stages.index(stage) + 1 if stage in enabled_stages else 1
     return f"\n\n#ᴠᴇʀɪꜰɪᴄᴀᴛɪᴏɴ:- {position}/{total} ✓"
+
+_ORDINAL_WORDS = {1: "1sᴛ", 2: "2ɴᴅ", 3: "3ʀᴅ"}
+
+def get_next_verify_note(stage):
+    """
+    Extra line for the verify-COMPLETE message.
+    - If only ONE shortener is enabled overall -> returns "" (nothing extra, just the time).
+    - If 2 or 3 shorteners are enabled -> tells the user which verification (by number)
+      they'll need to do again once their free time runs out.
+    """
+    enabled_stages = [s for s, on in ((1, ENABLE_SHORTENER_1), (2, ENABLE_SHORTENER_2), (3, ENABLE_SHORTENER_3)) if on]
+    if not enabled_stages:
+        enabled_stages = [1]
+    total = len(enabled_stages)
+    if total <= 1:
+        return ""
+    idx = enabled_stages.index(stage) if stage in enabled_stages else 0
+    next_stage = enabled_stages[(idx + 1) % total]
+    label = _ORDINAL_WORDS.get(next_stage, f"{next_stage}ᴛʜ")
+    return f"\n\nᴜꜱᴋᴇ ʙᴀᴀᴅ ᴀᴀᴘᴋᴏ {label} ᴠᴇʀɪꜰɪᴄᴀᴛɪᴏɴ ᴋᴀʀɴᴀ ʜᴏɢᴀ."
 
 async def get_shortlink(link, grp_id, is_second_shortener=False, is_third_shortener=False):
     settings = await get_settings(grp_id)
