@@ -85,14 +85,13 @@ class script(object):
 
 📌 ʜɪɴᴅɪ: Aap verified nahi hain, neeche verify par click karke agli verification tak ke liye free access pao.{1}
 
-ɪꜰ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ꜰɪʟᴇs ᴛʜᴇɴ ʏᴏᴜ ᴄᴀɴ ᴛᴀᴋᴇ ᴘʀᴇᴍɪᴜᴍ sᴇʀᴠɪᴄᴇ by using /plan (ɴᴏ ɴᴇᴇᴅ ᴛᴏ ᴠᴇʀɪꜰʏ).</i></b></blockquote>"""
+ɪꜰ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ꜰɪʟᴇs ᴛʜᴇɴ ʏᴏᴜ ᴄᴀɴ ᴛᴀᴋᴇ ᴘʀᴇᴍɪᴜᴍ sᴇʀᴠɪᴄᴇ (ɴᴏ ɴᴇᴇᴅ ᴛᴏ ᴠᴇʀɪꜰʏ).</i></b></blockquote>"""
     
 
     VERIFY_COMPLETE_TEXT = """<b><i>👋 ʜᴇʏ {},
 
-ʏᴏᴜ ʜᴀᴠᴇ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ᴛʜᴇ 1ꜱᴛ ᴠᴇʀɪꜰɪᴄᴀᴛɪᴏɴ ✓
-
-⏰ ɴᴏᴡ ʏᴏᴜ ʜᴀᴠᴇ ꜰʀᴇᴇ ᴀᴄᴄᴇss ꜰᴏʀ ɴᴇxᴛ <code>{}</code></i></b>"""
+✅ ᴠᴇʀɪꜰɪᴄᴀᴛɪᴏɴ ᴄᴏᴍᴘʟᴇᴛᴇ ʜᴏ ɢᴀʏᴀ!
+🎉 ɴᴏᴡ ʏᴏᴜ ᴄᴀɴ ᴇɴᴊᴏʏ ꜰʀᴇᴇ ᴀᴄᴄᴇss ꜰᴏʀ ᴛʜᴇ ɴᴇxᴛ <code>{}</code> — ɪs ᴅᴏᴜʀᴀɴ ᴋᴏɪ ʙʜɪ ꜰɪʟᴇ ʙᴇꜰɪᴋᴀʀ ʜᴏᴋᴇ ʟᴏ ✨{}</i></b>"""
 
     SECOND_VERIFICATION_TEXT = """<blockquote><b><i>👋 ʜᴇʏ {0},
 
@@ -100,13 +99,12 @@ class script(object):
 
 📌 ʜɪɴᴅɪ: Aap verified nahi hain, neeche verify link par tap karke agli verification tak ke liye free access pao.{1}
 
-ɪꜰ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ꜰɪʟᴇs ᴛʜᴇɴ ʏᴏᴜ ᴄᴀɴ ᴛᴀᴋᴇ ᴘʀᴇᴍɪᴜᴍ sᴇʀᴠɪᴄᴇ by using /plan (ɴᴏ ɴᴇᴇᴅ ᴛᴏ ᴠᴇʀɪꜰʏ).</i></b></blockquote>"""
+ɪꜰ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ꜰɪʟᴇs ᴛʜᴇɴ ʏᴏᴜ ᴄᴀɴ ᴛᴀᴋᴇ ᴘʀᴇᴍɪᴜᴍ sᴇʀᴠɪᴄᴇ (ɴᴏ ɴᴇᴇᴅ ᴛᴏ ᴠᴇʀɪꜰʏ).</i></b></blockquote>"""
 
     SECOND_VERIFY_COMPLETE_TEXT = """<b><i>👋 ʜᴇʏ {},
-    
-ʏᴏᴜ ʜᴀᴠᴇ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ᴛʜᴇ 2ɴᴅ ᴠᴇʀɪꜰɪᴄᴀᴛɪᴏɴ ✓
 
-⏰ ɴᴏᴡ ʏᴏᴜ ʜᴀᴠᴇ ꜰʀᴇᴇ ᴀᴄᴄᴇss ꜰᴏʀ ɴᴇxᴛ <code>{}</code></i></b>"""
+✅ ᴠᴇʀɪꜰɪᴄᴀᴛɪᴏɴ ᴄᴏᴍᴘʟᴇᴛᴇ ʜᴏ ɢᴀʏᴀ!
+🎉 ɴᴏᴡ ʏᴏᴜ ᴄᴀɴ ᴇɴᴊᴏʏ ꜰʀᴇᴇ ᴀᴄᴄᴇss ꜰᴏʀ ᴛʜᴇ ɴᴇxᴛ <code>{}</code> — ɪs ᴅᴏᴜʀᴀɴ ᴋᴏɪ ʙʜɪ ꜰɪʟᴇ ʙᴇꜰɪᴋᴀʀ ʜᴏᴋᴇ ʟᴏ ✨{}</i></b>"""
 
     THIRDT_VERIFICATION_TEXT = """<blockquote><b><i>👋 ʜᴇʏ {0},
     
@@ -114,13 +112,12 @@ class script(object):
 
 📌 ʜɪɴᴅɪ: Aap verified nahi hain, neeche verify link par tap karke free access pao.{1}
 
-ɪꜰ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ꜰɪʟᴇs ᴛʜᴇɴ ʏᴏᴜ ᴄᴀɴ ᴛᴀᴋᴇ ᴘʀᴇᴍɪᴜᴍ sᴇʀᴠɪᴄᴇ by us8ng /plan (ɴᴏ ɴᴇᴇᴅ ᴛᴏ ᴠᴇʀɪꜰʏ)</i></b></blockquote>"""
+ɪꜰ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ꜰɪʟᴇs ᴛʜᴇɴ ʏᴏᴜ ᴄᴀɴ ᴛᴀᴋᴇ ᴘʀᴇᴍɪᴜᴍ sᴇʀᴠɪᴄᴇ (ɴᴏ ɴᴇᴇᴅ ᴛᴏ ᴠᴇʀɪꜰʏ)</i></b></blockquote>"""
 
     THIRDT_VERIFY_COMPLETE_TEXT= """<b><i>👋 ʜᴇʏ {},
-    
-ʏᴏᴜ ʜᴀᴠᴇ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ᴛʜᴇ 3ʀᴅ ᴠᴇʀɪꜰɪᴄᴀᴛɪᴏɴ ✓
 
-⏰ ɴᴏᴡ ʏᴏᴜ ʜᴀᴠᴇ ꜰʀᴇᴇ ᴀᴄᴄᴇss ꜰᴏʀ ɴᴇxᴛ <code>{}</code></i></b>"""
+✅ ᴠᴇʀɪꜰɪᴄᴀᴛɪᴏɴ ᴄᴏᴍᴘʟᴇᴛᴇ ʜᴏ ɢᴀʏᴀ!
+🎉 ɴᴏᴡ ʏᴏᴜ ᴄᴀɴ ᴇɴᴊᴏʏ ꜰʀᴇᴇ ᴀᴄᴄᴇss ꜰᴏʀ ᴛʜᴇ ɴᴇxᴛ <code>{}</code> — ɪs ᴅᴏᴜʀᴀɴ ᴋᴏɪ ʙʜɪ ꜰɪʟᴇ ʙᴇꜰɪᴋᴀʀ ʜᴏᴋᴇ ʟᴏ ✨{}</i></b>"""
 
     VERIFIED_LOG_TEXT = """ᴜꜱᴇʀ ᴠᴇʀɪꜰɪᴇᴅ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ✓
 
@@ -390,4 +387,3 @@ Requested by : {message.from_user.mention}</b>"""
 
 🚀 Entertainment without Limits – Upgrade Today!
 """
-
