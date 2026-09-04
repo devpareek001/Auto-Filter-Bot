@@ -68,11 +68,11 @@ async def start(client, message):
         reply_markup=InlineKeyboardMarkup(btn)
         dlt=await m.reply_photo(
             photo=(VERIFY_IMG),
-            caption=msg.format(message.from_user.mention, get_readable_time(gap)),
+            caption=msg.format(message.from_user.mention, get_readable_time(gap), get_next_verify_note(stage)),
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
-        await asyncio.sleep(300)
+        await asyncio.sleep(DELETE_TIME)
         await dlt.delete()
         return         
     if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
@@ -89,16 +89,10 @@ async def start(client, message):
         buttons = [[
                     InlineKeyboardButton('➕ Add Me To Your Group', url=f'http://telegram.me/{temp.U_NAME}?startgroup=true')
                 ],[
-                    InlineKeyboardButton('💰 Earn Money', callback_data="earn"),
                     InlineKeyboardButton('🎭 Movie Group', url=GRP_LNK)
                 ],[
-                    InlineKeyboardButton('💎 Premium', callback_data="premium"),
-                    InlineKeyboardButton('🔍 Most Search', callback_data="topsearch")
-                ],[
                     InlineKeyboardButton('⚠️ Help', callback_data='help'),
-                    InlineKeyboardButton('📗 About', callback_data='about')
-                ],[
-                    InlineKeyboardButton('📢 Join Update Channel', url=UPDATE_CHANNEL_LNK)
+                    InlineKeyboardButton('📂 Other', callback_data='other_menu')
                 ]]
         reply_markup = InlineKeyboardMarkup(buttons)
         await message.reply_photo(
@@ -390,7 +384,7 @@ async def start(client, message):
                     reply_markup=reply_markup,
                     parse_mode=enums.ParseMode.HTML
                 )
-                await asyncio.sleep(300) 
+                await asyncio.sleep(DELETE_TIME) 
                 await n.delete()
                 await m.delete()
                 return
