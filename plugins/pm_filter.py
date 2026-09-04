@@ -1300,16 +1300,10 @@ async def cb_handler(client: Client, query: CallbackQuery):
         buttons = [[
                     InlineKeyboardButton('➕ Add Me To Your Group', url=f'http://telegram.me/{temp.U_NAME}?startgroup=true')
                 ],[
-                    InlineKeyboardButton('💰 Earn Money', callback_data="earn"),
                     InlineKeyboardButton('🎭 Movie Group', url=GRP_LNK)
                 ],[
-                    InlineKeyboardButton('💎 Premium', callback_data="premium"),
-                    InlineKeyboardButton('🔍 Most Search', callback_data="topsearch")
-                ],[
                     InlineKeyboardButton('⚠️ Help', callback_data='help'),
-                    InlineKeyboardButton('📗 About', callback_data='about')
-                ],[
-                    InlineKeyboardButton('📢 Join Update Channel', url=UPDATE_CHANNEL_LNK)
+                    InlineKeyboardButton('📂 Other', callback_data='other_menu')
                 ]]
         reply_markup = InlineKeyboardMarkup(buttons)
         await client.edit_message_media(
@@ -1319,6 +1313,22 @@ async def cb_handler(client: Client, query: CallbackQuery):
         )
         await query.message.edit_text(
             text=script.START_TXT.format(query.from_user.mention, temp.U_NAME, temp.B_NAME),
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )
+
+    elif query.data == "other_menu":
+        buttons = [[
+                    InlineKeyboardButton('💰 Earn Money', callback_data="earn"),
+                    InlineKeyboardButton('💎 Premium', callback_data="premium")
+                ],[
+                    InlineKeyboardButton('📗 About', callback_data='about')
+                ],[
+                    InlineKeyboardButton('⇋ ʙᴀᴄᴋ ⇋', callback_data='start')
+                ]]
+        reply_markup = InlineKeyboardMarkup(buttons)
+        await query.message.edit_text(
+            text="<b>📂 ᴏᴛʜᴇʀ ᴏᴘᴛɪᴏɴs\n\nᴄʜᴏᴏsᴇ ꜰʀᴏᴍ ʙᴇʟᴏᴡ 👇</b>",
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
@@ -2016,7 +2026,10 @@ async def auto_filter(client, msg, spoll=False):
         btn.append(
             [InlineKeyboardButton(text="↭ ɴᴏ ᴍᴏʀᴇ ᴘᴀɢᴇꜱ ᴀᴠᴀɪʟᴀʙʟᴇ ↭",callback_data="pages")]
         )
-    imdb = await get_poster(search, file=(files[0]).file_name) if settings["imdb"] else None
+    try:
+        imdb = await asyncio.wait_for(get_poster(search, file=(files[0]).file_name), timeout=7) if settings["imdb"] else None
+    except asyncio.TimeoutError:
+        imdb = None
     cur_time = datetime.now(pytz.timezone('Asia/Kolkata')).time()
     time_difference = timedelta(hours=cur_time.hour, minutes=cur_time.minute, seconds=(cur_time.second+(cur_time.microsecond/1000000))) - timedelta(hours=curr_time.hour, minutes=curr_time.minute, seconds=(curr_time.second+(curr_time.microsecond/1000000)))
     remaining_seconds = "{:.2f}".format(time_difference.total_seconds())
@@ -2119,7 +2132,7 @@ async def auto_filter(client, msg, spoll=False):
 
 async def ai_spell_check(chat_id, wrong_name):
     async def search_movie(wrong_name):
-        search_results = imdb.search_movie(wrong_name)
+        search_results = await asyncio.to_thread(imdb.search_movie, wrong_name)
         movie_list = [movie['title'] for movie in search_results]
         return movie_list
     movie_list = await search_movie(wrong_name)
