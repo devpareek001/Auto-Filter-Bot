@@ -11,22 +11,31 @@ import requests
 from info import *
 from utils import *
 from logging_helper import LOGGER
-from typing import Optional
+from typing import Optional, Dict, Any
 from datetime import datetime
 from pyrogram import Client, filters
+from pyrogram.enums import ParseMode
 from database.ia_filterdb import save_file
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 
 
 CAPTION_LANGUAGES = ["Bhojpuri", "Hindi", "Bengali", "Tamil", "English", "Bangla", "Telugu", "Malayalam", "Kannada", "Marathi", "Punjabi", "Bengoli", "Gujrati", "Korean", "Gujarati", "Spanish", "French", "German", "Chinese", "Arabic", "Portuguese", "Russian", "Japanese", "Odia", "Assamese", "Urdu"]
 
-DEV_UPDATE_CAPTION = """𝖭𝖤𝖶 𝖥𝖨𝖫𝖤 𝖠𝖣𝖣𝖤𝖣 ✅
+DEV_UPDATE_CAPTION = """
+<blockquote>🎬 𝗠𝗢𝗩𝗜𝗘 𝗨𝗣𝗗𝗔𝗧𝗘 🎥</blockquote>
 
-{} #{}
-📺 𝖥𝗈𝗋𝗆𝖺𝗍 - {}
-🔰 𝖰𝗎𝖺𝗅𝗂𝗍𝗒 - {}
-🔈 𝖠𝗎𝖽𝗂𝗈 - {}
-🖇️ <a href="{}">𝖨𝖬𝖣𝖡 𝖨𝗇𝖿𝗈</a>
+<b><u>{}</u></b> <code>#{}</code>
+
+<code>━━━━━━━━━━━━━━━━━━</code>
+<b>🔈 Audio</b>: {}
+<b>📺 Format</b>: {}
+
+<code>━━━━━━━━━━━━━━━━━━</code>
+<b>🎭 Director</b>: {}
+<b>📅 Release</b>: {}
+<b>⭐ IMDb</b>: {}/10 (<code>{}</code> votes)
+<b>🏷️ Genres</b>: {}
+<code>━━━━━━━━━━━━━━━━━━</code>
 """
 
 notified_movies = set()
@@ -66,22 +75,50 @@ async def send_movie_update(bot, file_name, caption):
         elif season_match:
             season = season_match.group(1)
             file_name = file_name[:file_name.find(season) + 1]
-        quality = await get_qualities(caption) or "HDRip"
-        pixel = await get_pixels(caption) or "720p"
-        language = ", ".join([lang for lang in CAPTION_LANGUAGES if lang.lower() in caption.lower()]) or "Not Idea"
+        language = ", ".join([lang for lang in CAPTION_LANGUAGES if lang.lower() in caption.lower()]) or "Multi-Audio"
         if file_name in notified_movies:
             return 
         notified_movies.add(file_name)
-        imdb_data = await get_imdb_details(file_name)
-        title = imdb_data.get("title", file_name)
-        imdb_link = imdb_data.get("url", "") if imdb_data else ""
-        kind = imdb_data.get("kind", "").strip().upper().replace(" ", "_") if imdb_data else ""
-        poster = await fetch_movie_poster(title, year)        
+
+        tmdb_data = await fetch_tmdb_data(file_name, year)
         search_movie = file_name.replace(" ", "-")
         unique_id = generate_unique_id(search_movie)
         reaction_counts[unique_id] = {"❤️": 0, "👍": 0, "👎": 0, "🔥": 0}
-        user_reactions[unique_id] = {}        
-        full_caption = DEV_UPDATE_CAPTION.format(file_name, kind, quality, pixel, language, imdb_link)
+        user_reactions[unique_id] = {}
+
+        if tmdb_data:
+            title = tmdb_data["title"]
+            kind = tmdb_data["kind"]
+            director = tmdb_data["director"] or "N/A"
+            release_date = tmdb_data["release_date"] or "TBA"
+            vote_average = tmdb_data["vote_average"]
+            vote_count = tmdb_data["vote_count"]
+            genres = ", ".join(tmdb_data["genres"][:3]) or "N/A"
+            poster = tmdb_data.get("backdrop")
+        else:
+            # TMDb had no match at all for this title - fall back to the old IMDb lookup + custom poster API.
+            imdb_data = await get_imdb_details(file_name)
+            title = imdb_data.get("title", file_name)
+            kind = (imdb_data.get("kind", "") or "MOVIE").strip().upper().replace(" ", "_")
+            director = "N/A"
+            release_date = "TBA"
+            vote_average = 0
+            vote_count = 0
+            genres = "N/A"
+            poster = await fetch_custom_poster(title, year)
+
+        audio_format = "MKV" if "mkv" in file_name.lower() else "MP4"
+        full_caption = DEV_UPDATE_CAPTION.format(
+            escape_html(title),
+            kind,
+            escape_html(language),
+            audio_format,
+            escape_html(director),
+            escape_html(release_date),
+            vote_average,
+            vote_count,
+            escape_html(genres)
+        )
         buttons = [[
             InlineKeyboardButton(f"❤️ {reaction_counts[unique_id]['❤️']}", callback_data=f"r_{unique_id}_{search_movie}_heart"),                
             InlineKeyboardButton(f"👍 {reaction_counts[unique_id]['👍']}", callback_data=f"r_{unique_id}_{search_movie}_like"),
@@ -93,12 +130,17 @@ async def send_movie_update(bot, file_name, caption):
         if poster:
             photo_file = io.BytesIO(poster)
             photo_file.name = await generate_random_filename()
-            await bot.send_photo(chat_id=MOVIE_UPDATE_CHANNEL, photo=photo_file, caption=full_caption, reply_markup=InlineKeyboardMarkup(buttons))    
+            await bot.send_photo(chat_id=MOVIE_UPDATE_CHANNEL, photo=photo_file, caption=full_caption, parse_mode=ParseMode.HTML, reply_markup=InlineKeyboardMarkup(buttons))    
         else:
             image_url = "https://te.legra.ph/file/88d845b4f8a024a71465d.jpg"   
-            await bot.send_photo(chat_id=MOVIE_UPDATE_CHANNEL, photo=image_url, caption=full_caption, reply_markup=InlineKeyboardMarkup(buttons))                
+            await bot.send_photo(chat_id=MOVIE_UPDATE_CHANNEL, photo=image_url, caption=full_caption, parse_mode=ParseMode.HTML, reply_markup=InlineKeyboardMarkup(buttons))                
     except Exception as e:
         LOGGER.error(f"Error in send_movie_update: {e}")
+
+def escape_html(text) -> str:
+    if not text:
+        return ""
+    return str(text).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 
 @Client.on_callback_query(filters.regex(r"^r_"))
 async def reaction_handler(client, query):
@@ -152,24 +194,20 @@ async def get_imdb_details(name):
         LOGGER.error(f"IMDB fetch error: {e}")
         return {}
 
-async def fetch_movie_poster(title: str, year: Optional[int] = None) -> Optional[bytes]:
+async def fetch_tmdb_data(title: str, year: Optional[str] = None) -> Optional[Dict[str, Any]]:
     """
-    Tries to fetch a wide 16:9 landscape backdrop image via TMDb first.
-    If TMDb has no backdrop for this title, falls back to the custom poster
-    API (2:3 portrait format) so something is still shown.
+    Searches TMDb for this title (movie first, then TV series) and returns a dict with
+    everything needed for the update caption: title, kind, release_date, rating,
+    genres, director - plus the raw 16:9 backdrop image bytes.
+    Returns None if TMDb has no match at all for this title (caller then falls
+    back to the old IMDb lookup + 2:3 custom poster API).
     """
-    banner = await fetch_tmdb_backdrop(title, year)
-    if banner:
-        return banner
-    return await fetch_custom_poster(title, year)
-
-
-async def fetch_tmdb_backdrop(title: str, year: Optional[int] = None) -> Optional[bytes]:
     if not TMDB_API_KEY:
         return None
     try:
         async with aiohttp.ClientSession() as session:
             result = None
+            matched_endpoint = None
             # Try: movie+year -> movie without year (in case the extracted year was wrong) -> tv show.
             attempts = [("movie", True), ("movie", False), ("tv", False)]
             for endpoint, use_year in attempts:
@@ -188,25 +226,73 @@ async def fetch_tmdb_backdrop(title: str, year: Optional[int] = None) -> Optiona
                     results = data.get("results") or []
                     if results:
                         result = results[0]
+                        matched_endpoint = endpoint
                         break
                     else:
                         LOGGER.info(f"TMDb search ({endpoint}, year={use_year}) found no results for '{title}'")
 
-            if not result:
-                LOGGER.info(f"TMDb has no match at all for '{title}' - falling back to custom poster API")
+            if not result or not matched_endpoint:
+                LOGGER.info(f"TMDb has no match at all for '{title}' - falling back to IMDb + custom poster API")
                 return None
 
-            backdrop_path = result.get("backdrop_path") or result.get("poster_path")
+            tmdb_id = result.get("id")
+
+            # One combined call: full details + cast/crew (for director) + all images (for backdrop).
+            async with session.get(
+                f"https://api.themoviedb.org/3/{matched_endpoint}/{tmdb_id}",
+                params={"api_key": TMDB_API_KEY, "append_to_response": "credits,images"},
+                timeout=aiohttp.ClientTimeout(total=15)
+            ) as detail_resp:
+                if detail_resp.status != 200:
+                    LOGGER.error(f"TMDb details fetch failed for '{title}' (id={tmdb_id}): HTTP {detail_resp.status}")
+                    return None
+                details = await detail_resp.json(content_type=None)
+
+            movie_title = details.get("title") or details.get("name") or title
+            kind = "MOVIE" if matched_endpoint == "movie" else "TV_SERIES"
+            release_date = details.get("release_date") or details.get("first_air_date") or ""
+            vote_average = round(details.get("vote_average", 0) or 0, 1)
+            vote_count = details.get("vote_count", 0) or 0
+            genres = [g.get("name") for g in (details.get("genres") or []) if g.get("name")]
+
+            director = ""
+            if matched_endpoint == "movie":
+                crew = (details.get("credits") or {}).get("crew") or []
+                directors = [c.get("name") for c in crew if c.get("job") == "Director"]
+                director = ", ".join(directors[:2])
+            else:
+                creators = details.get("created_by") or []
+                director = ", ".join([c.get("name") for c in creators if c.get("name")][:2])
+
+            # Pick the best-rated 16:9 backdrop from the FULL image list (much more
+            # reliable than the single 'backdrop_path' field, which is often empty).
+            backdrop_path = None
+            backdrops = (details.get("images") or {}).get("backdrops") or []
+            if backdrops:
+                backdrops.sort(key=lambda b: b.get("vote_average", 0), reverse=True)
+                backdrop_path = backdrops[0].get("file_path")
             if not backdrop_path:
-                LOGGER.info(f"TMDb matched '{title}' but has no backdrop/poster image - falling back")
-                return None
+                backdrop_path = details.get("backdrop_path")
 
-            image_url = f"https://image.tmdb.org/t/p/original{backdrop_path}"
-            async with session.get(image_url, timeout=aiohttp.ClientTimeout(total=20)) as img_resp:
-                if img_resp.status == 200:
-                    return await img_resp.read()
-                LOGGER.error(f"TMDb backdrop download failed for '{title}': HTTP {img_resp.status}")
-                return None
+            backdrop_bytes = None
+            if backdrop_path:
+                image_url = f"https://image.tmdb.org/t/p/original{backdrop_path}"
+                async with session.get(image_url, timeout=aiohttp.ClientTimeout(total=20)) as img_resp:
+                    if img_resp.status == 200:
+                        backdrop_bytes = await img_resp.read()
+                    else:
+                        LOGGER.error(f"TMDb backdrop download failed for '{title}': HTTP {img_resp.status}")
+
+            return {
+                "title": movie_title,
+                "kind": kind,
+                "release_date": release_date,
+                "vote_average": vote_average,
+                "vote_count": vote_count,
+                "genres": genres,
+                "director": director,
+                "backdrop": backdrop_bytes,
+            }
     except aiohttp.ClientError as e:
         LOGGER.error(f"TMDb network error for '{title}': {str(e)}")
     except asyncio.TimeoutError:
