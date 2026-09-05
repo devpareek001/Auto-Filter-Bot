@@ -153,6 +153,65 @@ async def get_imdb_details(name):
         return {}
 
 async def fetch_movie_poster(title: str, year: Optional[int] = None) -> Optional[bytes]:
+    """
+    Fetches a wide/landscape 'banner' style backdrop image via TMDb (matches the
+    castle-scene wide banner format). Falls back to the custom poster API
+    (portrait format) if TMDb has nothing for this title.
+    """
+    banner = await fetch_tmdb_backdrop(title, year)
+    if banner:
+        return banner
+    return await fetch_custom_poster(title, year)
+
+
+async def fetch_tmdb_backdrop(title: str, year: Optional[int] = None) -> Optional[bytes]:
+    if not TMDB_API_KEY:
+        return None
+    try:
+        async with aiohttp.ClientSession() as session:
+            result = None
+            # Try as a movie first, then as a TV/web series if nothing was found.
+            for endpoint in ("movie", "tv"):
+                search_params = {"api_key": TMDB_API_KEY, "query": title.strip()}
+                if year is not None and endpoint == "movie":
+                    search_params["year"] = str(year)
+                async with session.get(
+                    f"https://api.themoviedb.org/3/search/{endpoint}",
+                    params=search_params,
+                    timeout=aiohttp.ClientTimeout(total=15)
+                ) as resp:
+                    if resp.status != 200:
+                        LOGGER.error(f"TMDb search ({endpoint}) failed for '{title}': HTTP {resp.status}")
+                        continue
+                    data = await resp.json(content_type=None)
+                    results = data.get("results") or []
+                    if results:
+                        result = results[0]
+                        break
+
+            if not result:
+                return None
+
+            backdrop_path = result.get("backdrop_path") or result.get("poster_path")
+            if not backdrop_path:
+                return None
+
+            image_url = f"https://image.tmdb.org/t/p/w1280{backdrop_path}"
+            async with session.get(image_url, timeout=aiohttp.ClientTimeout(total=20)) as img_resp:
+                if img_resp.status == 200:
+                    return await img_resp.read()
+                LOGGER.error(f"TMDb backdrop download failed for '{title}': HTTP {img_resp.status}")
+                return None
+    except aiohttp.ClientError as e:
+        LOGGER.error(f"TMDb network error for '{title}': {str(e)}")
+    except asyncio.TimeoutError:
+        LOGGER.error(f"TMDb request timed out for '{title}'")
+    except Exception as e:
+        LOGGER.error(f"TMDb unexpected error for '{title}': {str(e)}")
+    return None
+
+
+async def fetch_custom_poster(title: str, year: Optional[int] = None) -> Optional[bytes]:
     base_url = "https://black-bonus-46d1.parikgovind45.workers.dev/api/v2/poster"
     params = {"title": title.strip(), "type": "poster"}
     if year is not None:
