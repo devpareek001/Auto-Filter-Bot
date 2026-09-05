@@ -117,7 +117,7 @@ ENABLE_SHORTENER_3 = is_enabled((environ.get('ENABLE_SHORTENER_3', "False")), Tr
 
 # How long (in seconds) a user gets FREE access after completing each verification,
 # before the NEXT shortener in the rotation is shown to them again.
-TWO_VERIFY_GAP = int(environ.get('TWO_VERIFY_GAP', "1200"))      # free time after 1st verify (before 2nd is shown)
+TWO_VERIFY_GAP = int(environ.get('TWO_VERIFY_GAP', "12000"))      # free time after 1st verify (before 2nd is shown)
 THREE_VERIFY_GAP = int(environ.get('THREE_VERIFY_GAP', "60"))  # free time after 2nd verify (before 3rd is shown)
 ONE_VERIFY_GAP = int(environ.get('ONE_VERIFY_GAP', "60"))      # free time after 3rd verify (before it loops back to 1st)
 
