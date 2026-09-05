@@ -21,6 +21,8 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQ
 
 CAPTION_LANGUAGES = ["Bhojpuri", "Hindi", "Bengali", "Tamil", "English", "Bangla", "Telugu", "Malayalam", "Kannada", "Marathi", "Punjabi", "Bengoli", "Gujrati", "Korean", "Gujarati", "Spanish", "French", "German", "Chinese", "Arabic", "Portuguese", "Russian", "Japanese", "Odia", "Assamese", "Urdu"]
 
+DEFAULT_IMAGE_URL = "https://te.legra.ph/file/88d845b4f8a024a71465d.jpg"
+
 DEV_UPDATE_CAPTION = """
 <blockquote>🎬 𝗠𝗢𝗩𝗜𝗘 𝗨𝗣𝗗𝗔𝗧𝗘 🎥</blockquote>
 
@@ -43,6 +45,7 @@ user_reactions = {}
 reaction_counts = {}
 
 media_filter = filters.document | filters.video | filters.audio
+media_process_lock = asyncio.Lock()
 
 @Client.on_message(filters.chat(CHANNELS) & media_filter)
 async def media(bot, message):
@@ -55,13 +58,15 @@ async def media(bot, message):
         return
     media.file_type = file_type
     media.caption = message.caption
-    success, dev = await save_file(media)
-    try:  
-        if success and dev == 1 and await get_status(bot.me.id):            
-            await send_movie_update(bot, file_name=media.file_name, caption=media.caption)
-    except Exception as e:
-        LOGGER.error(f"Error In Movie Update - {e}")
-        pass
+
+    async with media_process_lock:
+        try:
+            success, dev = await save_file(media)
+            if success and dev == 1 and await get_status(bot.me.id):
+                await send_movie_update(bot, file_name=media.file_name, caption=media.caption)
+        except Exception as e:
+            LOGGER.error(f"Error In Movie Update - {e}")
+            pass
 
 async def send_movie_update(bot, file_name, caption):
     try:
@@ -94,9 +99,7 @@ async def send_movie_update(bot, file_name, caption):
             vote_average = tmdb_data["vote_average"]
             vote_count = tmdb_data["vote_count"]
             genres = ", ".join(tmdb_data["genres"][:3]) or "N/A"
-            poster = tmdb_data.get("backdrop")
         else:
-            # TMDb had no match at all for this title - fall back to the old IMDb lookup + custom poster API.
             imdb_data = await get_imdb_details(file_name)
             title = imdb_data.get("title", file_name)
             kind = (imdb_data.get("kind", "") or "MOVIE").strip().upper().replace(" ", "_")
@@ -105,7 +108,6 @@ async def send_movie_update(bot, file_name, caption):
             vote_average = 0
             vote_count = 0
             genres = "N/A"
-            poster = await fetch_custom_poster(title, year)
 
         audio_format = "MKV" if "mkv" in file_name.lower() else "MP4"
         full_caption = DEV_UPDATE_CAPTION.format(
@@ -127,13 +129,7 @@ async def send_movie_update(bot, file_name, caption):
         ],[
             InlineKeyboardButton('Get File', url=f'https://telegram.me/{temp.U_NAME}?start=getfile-{search_movie}')
         ]]
-        if poster:
-            photo_file = io.BytesIO(poster)
-            photo_file.name = await generate_random_filename()
-            await bot.send_photo(chat_id=MOVIE_UPDATE_CHANNEL, photo=photo_file, caption=full_caption, parse_mode=ParseMode.HTML, reply_markup=InlineKeyboardMarkup(buttons))    
-        else:
-            image_url = "https://te.legra.ph/file/88d845b4f8a024a71465d.jpg"   
-            await bot.send_photo(chat_id=MOVIE_UPDATE_CHANNEL, photo=image_url, caption=full_caption, parse_mode=ParseMode.HTML, reply_markup=InlineKeyboardMarkup(buttons))                
+        await send_with_visual(bot, full_caption, tmdb_data, title, year, InlineKeyboardMarkup(buttons))
     except Exception as e:
         LOGGER.error(f"Error in send_movie_update: {e}")
 
@@ -141,6 +137,68 @@ def escape_html(text) -> str:
     if not text:
         return ""
     return str(text).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+
+async def send_with_visual(bot, caption: str, tmdb_data: Optional[Dict], title: str, year, reply_markup):
+    """
+    Mirrors the friend's send_with_visual flow:
+    get_best_visual() -> a plain image URL (16:9 TMDb backdrop, if we have one)
+    -> download it here and send.
+    If TMDb had nothing at all, falls back to the 2:3 custom poster API,
+    and only if THAT also fails, uses the generic default banner image.
+    """
+    try:
+        visual_url = get_best_visual(tmdb_data)
+
+        if visual_url:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(visual_url, timeout=aiohttp.ClientTimeout(total=20)) as img_resp:
+                    if img_resp.status == 200:
+                        img_bytes = await img_resp.read()
+                        photo_file = io.BytesIO(img_bytes)
+                        photo_file.name = await generate_random_filename()
+                        await bot.send_photo(
+                            chat_id=MOVIE_UPDATE_CHANNEL,
+                            photo=photo_file,
+                            caption=caption,
+                            parse_mode=ParseMode.HTML,
+                            reply_markup=reply_markup
+                        )
+                        return
+                    LOGGER.error(f"Visual URL download failed for '{title}': HTTP {img_resp.status}")
+
+        # TMDb had no 16:9 backdrop at all - try the 2:3 custom poster API.
+        poster_bytes = await fetch_custom_poster(title, year)
+        if poster_bytes:
+            photo_file = io.BytesIO(poster_bytes)
+            photo_file.name = await generate_random_filename()
+            await bot.send_photo(
+                chat_id=MOVIE_UPDATE_CHANNEL,
+                photo=photo_file,
+                caption=caption,
+                parse_mode=ParseMode.HTML,
+                reply_markup=reply_markup
+            )
+            return
+
+        # Nothing worked at all - generic default banner so the update still goes out.
+        await bot.send_photo(
+            chat_id=MOVIE_UPDATE_CHANNEL,
+            photo=DEFAULT_IMAGE_URL,
+            caption=caption,
+            parse_mode=ParseMode.HTML,
+            reply_markup=reply_markup
+        )
+    except Exception as e:
+        LOGGER.error(f"Visual Send Error: {e}")
+
+def get_best_visual(tmdb_data: Optional[Dict]) -> Optional[str]:
+    """Returns the full 16:9 TMDb backdrop image URL, or None if we have no TMDb data."""
+    if not tmdb_data:
+        return None
+    backdrop_path = tmdb_data.get("backdrop_path")
+    if not backdrop_path:
+        return None
+    return f"https://image.tmdb.org/t/p/original{backdrop_path}"
 
 @Client.on_callback_query(filters.regex(r"^r_"))
 async def reaction_handler(client, query):
@@ -198,11 +256,12 @@ async def fetch_tmdb_data(title: str, year: Optional[str] = None) -> Optional[Di
     """
     Searches TMDb for this title (movie first, then TV series) and returns a dict with
     everything needed for the update caption: title, kind, release_date, rating,
-    genres, director - plus the raw 16:9 backdrop image bytes.
-    Returns None if TMDb has no match at all for this title (caller then falls
-    back to the old IMDb lookup + 2:3 custom poster API).
+    genres, director - plus backdrop_path (a TMDb file path string, NOT downloaded
+    bytes - get_best_visual() turns this into the full image URL).
+    Returns None if TMDb has no match at all for this title.
     """
     if not TMDB_API_KEY:
+        LOGGER.error(f"TMDB_API_KEY is empty/not set - skipping TMDb lookup for '{title}'")
         return None
     try:
         async with aiohttp.ClientSession() as session:
@@ -274,14 +333,8 @@ async def fetch_tmdb_data(title: str, year: Optional[str] = None) -> Optional[Di
             if not backdrop_path:
                 backdrop_path = details.get("backdrop_path")
 
-            backdrop_bytes = None
-            if backdrop_path:
-                image_url = f"https://image.tmdb.org/t/p/original{backdrop_path}"
-                async with session.get(image_url, timeout=aiohttp.ClientTimeout(total=20)) as img_resp:
-                    if img_resp.status == 200:
-                        backdrop_bytes = await img_resp.read()
-                    else:
-                        LOGGER.error(f"TMDb backdrop download failed for '{title}': HTTP {img_resp.status}")
+            if not backdrop_path:
+                LOGGER.info(f"TMDb matched '{title}' but has no 16:9 backdrop at all")
 
             return {
                 "title": movie_title,
@@ -291,7 +344,7 @@ async def fetch_tmdb_data(title: str, year: Optional[str] = None) -> Optional[Di
                 "vote_count": vote_count,
                 "genres": genres,
                 "director": director,
-                "backdrop": backdrop_bytes,
+                "backdrop_path": backdrop_path,
             }
     except aiohttp.ClientError as e:
         LOGGER.error(f"TMDb network error for '{title}': {str(e)}")
@@ -302,7 +355,7 @@ async def fetch_tmdb_data(title: str, year: Optional[str] = None) -> Optional[Di
     return None
 
 
-async def fetch_custom_poster(title: str, year: Optional[int] = None) -> Optional[bytes]:
+async def fetch_custom_poster(title: str, year: Optional[str] = None) -> Optional[bytes]:
     base_url = "https://black-bonus-46d1.parikgovind45.workers.dev/api/v2/poster"
     params = {"title": title.strip(), "type": "poster"}
     if year is not None:
@@ -413,3 +466,4 @@ async def generate_random_filename(extension=".jpg"):
     random_part = ''.join(random.choices(string.ascii_lowercase + string.digits, k=6))   
     filename = f"dev_{int(sin_value*10000)}_{random_part}{extension}"
     return filename
+
