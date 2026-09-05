@@ -88,12 +88,15 @@ PM_SEARCH = bool(environ.get('PM_SEARCH', True))
 EMOJI_MODE = bool(environ.get('EMOJI_MODE', False)) 
 PAID_STREAM = bool(environ.get('PAID_STREAM', True))
 
+
+# TMDb API - used to fetch wide/landscape "banner" style backdrop images for movie/series update posts.
+TMDB_API_KEY = environ.get("TMDB_API_KEY", "476a21c13072ffc90b18fcb081a9dfa7")
 # shortner infos
 
 IS_VERIFY = is_enabled('IS_VERIFY', True)
 LOG_VR_CHANNEL = int(environ.get('LOG_VR_CHANNEL', '-1003900052105'))
 LOG_API_CHANNEL = int(environ.get('LOG_API_CHANNEL', '-1003900052105'))
-VERIFY_IMG = environ.get("VERIFY_IMG", "https://graph.org/file/e3add5e199126fe8ab5ba-4459dd80bc412c6f7c.jpg")   # shown on the "verify complete" message
+VERIFY_IMG = environ.get("VERIFY_IMG", "https://telegra.ph/file/9ecc5d6e4df5b83424896.jpg")   # shown on the "verify complete" message
 BEFORE_VERIFY_IMG = environ.get("BEFORE_VERIFY_IMG", "https://graph.org/file/50d7769ab97d6d896c893-9767740bed19d699b2.jpg")  # shown on the "please verify" message
 
 TUTORIAL = environ.get("TUTORIAL", "https://t.me/howtoopenanylinkin1min/3")
@@ -122,6 +125,7 @@ THREE_VERIFY_GAP = int(environ.get('THREE_VERIFY_GAP', "60"))  # free time after
 ONE_VERIFY_GAP = int(environ.get('ONE_VERIFY_GAP', "60"))      # free time after 3rd verify (before it loops back to 1st)
 
 
+
 # other settings 
 
 NO_RESULTS_MSG = bool(environ.get("NO_RESULTS_MSG", True))
@@ -133,7 +137,7 @@ P_TTI_SHOW_OFF = is_enabled((environ.get('P_TTI_SHOW_OFF', "False")), False)
 IMDB = is_enabled((environ.get('IMDB', "False")), False)
 AUTO_FFILTER = is_enabled((environ.get('AUTO_FFILTER', "True")), True)
 AUTO_DELETE = is_enabled((environ.get('AUTO_DELETE', "True")), True)
-DELETE_TIME = int(environ.get("DELETE_TIME", "120"))  
+DELETE_TIME = int(environ.get("DELETE_TIME", "300"))  
 LINK_MODE = is_enabled((environ.get('LINK_MODE', "True")), True)
 CUSTOM_FILE_CAPTION = environ.get("CUSTOM_FILE_CAPTION", f"{script.CAPTION}")
 BATCH_FILE_CAPTION = environ.get("BATCH_FILE_CAPTION", CUSTOM_FILE_CAPTION)
@@ -223,8 +227,6 @@ else:
     DATABASE_URI2 = DATABASE_URI2
 #ignore this var but dont remove
 FILE_AUTO_DEL_TIMER = 600
-
-
 
 
 
