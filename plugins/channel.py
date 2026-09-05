@@ -3,6 +3,7 @@ import io
 import math
 import random
 import string
+import base64
 import aiohttp
 import asyncio
 import hashlib
@@ -151,38 +152,87 @@ async def get_imdb_details(name):
         LOGGER.error(f"IMDB fetch error: {e}")
         return {}
 
-async def fetch_movie_poster(title: str, year: Optional[int] = None) -> Optional[str]:
-    base_url = "https://image.silentxbotz.tech/api/v1/poster"
-    params = {"title": title.strip()}    
+async def fetch_movie_poster(title: str, year: Optional[int] = None) -> Optional[bytes]:
+    base_url = "https://black-bonus-46d1.parikgovind45.workers.dev/api/v2/poster"
+    params = {"title": title.strip(), "type": "poster"}
     if year is not None:
         params["year"] = str(year)
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+        "Accept": "*/*",
+    }
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(
                 base_url,
                 params=params,
+                headers=headers,
                 timeout=aiohttp.ClientTimeout(total=20)
             ) as response:
-                if response.status == 200:
-                    image_data = await response.read()
-                    return image_data                
-                response_text = await response.text()
-                if response.status == 400:
-                    raise ValueError(f"Invalid request: {response_text}")
-                elif response.status == 404:
-                    raise ValueError(f"No poster found for: {title}")
-                elif response.status == 500:
-                    raise ValueError(f"Server error: {response_text}")
-                else:
-                    raise ValueError(f"API error: HTTP {response.status} - {response_text}")
+                content_type = (response.headers.get("Content-Type") or "").lower()
+
+                if response.status != 200:
+                    response_text = await response.text()
+                    LOGGER.error(f"Poster API error for '{title}': HTTP {response.status} - {response_text[:300]}")
+                    return None
+
+                # Case 1: API directly returns the image bytes.
+                if content_type.startswith("image/"):
+                    return await response.read()
+
+                # Case 2: API returns JSON with a poster URL / base64 image inside it.
+                if "application/json" in content_type or content_type == "":
+                    try:
+                        data = await response.json(content_type=None)
+                    except Exception:
+                        raw = await response.read()
+                        LOGGER.error(f"Poster API returned unreadable JSON for '{title}': {raw[:200]}")
+                        return None
+
+                    if isinstance(data, dict):
+                        poster_value = (
+                            data.get("poster") or data.get("image") or data.get("url")
+                            or data.get("poster_url") or data.get("data") or data.get("result")
+                        )
+                    else:
+                        poster_value = None
+
+                    if not poster_value:
+                        LOGGER.error(f"Poster API JSON had no usable image field for '{title}': {str(data)[:300]}")
+                        return None
+
+                    # Sub-case: JSON gave us a base64-encoded image instead of a URL.
+                    if isinstance(poster_value, str) and poster_value.strip().startswith("data:image"):
+                        try:
+                            b64_part = poster_value.split(",", 1)[1]
+                            return base64.b64decode(b64_part)
+                        except Exception as e:
+                            LOGGER.error(f"Failed decoding base64 poster for '{title}': {e}")
+                            return None
+
+                    # Sub-case: JSON gave us a plain image URL - fetch the actual image.
+                    if isinstance(poster_value, str) and poster_value.startswith("http"):
+                        async with session.get(poster_value, timeout=aiohttp.ClientTimeout(total=20)) as img_resp:
+                            if img_resp.status == 200:
+                                return await img_resp.read()
+                            LOGGER.error(f"Failed downloading poster image URL for '{title}': HTTP {img_resp.status}")
+                            return None
+
+                    LOGGER.error(f"Poster API JSON field wasn't a usable URL/base64 for '{title}': {str(poster_value)[:200]}")
+                    return None
+
+                # Fallback: unknown content-type, just try treating it as raw image bytes.
+                raw = await response.read()
+                if raw:
+                    return raw
+                return None
+
     except aiohttp.ClientError as e:
-        LOGGER.error(f"Network error occurred: {str(e)}")
+        LOGGER.error(f"Network error occurred while fetching poster for '{title}': {str(e)}")
     except asyncio.TimeoutError:
-        LOGGER.error("Request timed out after 20 seconds")
-    except ValueError as e:
-        LOGGER.error(str(e))
+        LOGGER.error(f"Poster API request timed out after 20 seconds for '{title}'")
     except Exception as e:
-        LOGGER.error(f"Unexpected error: {str(e)}")   
+        LOGGER.error(f"Unexpected error fetching poster for '{title}': {str(e)}")
     return None
 
 
