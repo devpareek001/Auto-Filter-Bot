@@ -154,9 +154,9 @@ async def get_imdb_details(name):
 
 async def fetch_movie_poster(title: str, year: Optional[int] = None) -> Optional[bytes]:
     """
-    Fetches a wide/landscape 'banner' style backdrop image via TMDb (matches the
-    castle-scene wide banner format). Falls back to the custom poster API
-    (portrait format) if TMDb has nothing for this title.
+    Tries to fetch a wide 16:9 landscape backdrop image via TMDb first.
+    If TMDb has no backdrop for this title, falls back to the custom poster
+    API (2:3 portrait format) so something is still shown.
     """
     banner = await fetch_tmdb_backdrop(title, year)
     if banner:
@@ -170,10 +170,11 @@ async def fetch_tmdb_backdrop(title: str, year: Optional[int] = None) -> Optiona
     try:
         async with aiohttp.ClientSession() as session:
             result = None
-            # Try as a movie first, then as a TV/web series if nothing was found.
-            for endpoint in ("movie", "tv"):
+            # Try: movie+year -> movie without year (in case the extracted year was wrong) -> tv show.
+            attempts = [("movie", True), ("movie", False), ("tv", False)]
+            for endpoint, use_year in attempts:
                 search_params = {"api_key": TMDB_API_KEY, "query": title.strip()}
-                if year is not None and endpoint == "movie":
+                if use_year and year is not None:
                     search_params["year"] = str(year)
                 async with session.get(
                     f"https://api.themoviedb.org/3/search/{endpoint}",
@@ -181,22 +182,26 @@ async def fetch_tmdb_backdrop(title: str, year: Optional[int] = None) -> Optiona
                     timeout=aiohttp.ClientTimeout(total=15)
                 ) as resp:
                     if resp.status != 200:
-                        LOGGER.error(f"TMDb search ({endpoint}) failed for '{title}': HTTP {resp.status}")
+                        LOGGER.error(f"TMDb search ({endpoint}, year={use_year}) failed for '{title}': HTTP {resp.status}")
                         continue
                     data = await resp.json(content_type=None)
                     results = data.get("results") or []
                     if results:
                         result = results[0]
                         break
+                    else:
+                        LOGGER.info(f"TMDb search ({endpoint}, year={use_year}) found no results for '{title}'")
 
             if not result:
+                LOGGER.info(f"TMDb has no match at all for '{title}' - falling back to custom poster API")
                 return None
 
             backdrop_path = result.get("backdrop_path") or result.get("poster_path")
             if not backdrop_path:
+                LOGGER.info(f"TMDb matched '{title}' but has no backdrop/poster image - falling back")
                 return None
 
-            image_url = f"https://image.tmdb.org/t/p/w1280{backdrop_path}"
+            image_url = f"https://image.tmdb.org/t/p/original{backdrop_path}"
             async with session.get(image_url, timeout=aiohttp.ClientTimeout(total=20)) as img_resp:
                 if img_resp.status == 200:
                     return await img_resp.read()
